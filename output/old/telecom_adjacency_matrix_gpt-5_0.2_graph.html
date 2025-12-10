@@ -1,0 +1,163 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 800px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#97c2fc", "id": "Calculate", "label": "Calculate", "shape": "dot"}, {"color": "#97c2fc", "id": "Think", "label": "Think", "shape": "dot"}, {"color": "#97c2fc", "id": "FindCustomerByEmail", "label": "FindCustomerByEmail", "shape": "dot"}, {"color": "#97c2fc", "id": "FindCustomerByPhone", "label": "FindCustomerByPhone", "shape": "dot"}, {"color": "#97c2fc", "id": "GetCustomerDetails", "label": "GetCustomerDetails", "shape": "dot"}, {"color": "#97c2fc", "id": "GetServiceDetails", "label": "GetServiceDetails", "shape": "dot"}, {"color": "#97c2fc", "id": "GetDeviceDetails", "label": "GetDeviceDetails", "shape": "dot"}, {"color": "#97c2fc", "id": "GetBillingDetails", "label": "GetBillingDetails", "shape": "dot"}, {"color": "#97c2fc", "id": "ManageService", "label": "ManageService", "shape": "dot"}, {"color": "#97c2fc", "id": "TroubleshootDevice", "label": "TroubleshootDevice", "shape": "dot"}, {"color": "#97c2fc", "id": "CreateSupportTicket", "label": "CreateSupportTicket", "shape": "dot"}, {"color": "#97c2fc", "id": "GetSupportTicketDetails", "label": "GetSupportTicketDetails", "shape": "dot"}, {"color": "#97c2fc", "id": "AddDevice", "label": "AddDevice", "shape": "dot"}, {"color": "#97c2fc", "id": "ManageBilling", "label": "ManageBilling", "shape": "dot"}, {"color": "#97c2fc", "id": "GetServices", "label": "GetServices", "shape": "dot"}, {"color": "#97c2fc", "id": "GetSeniorDiscount", "label": "GetSeniorDiscount", "shape": "dot"}, {"color": "#97c2fc", "id": "ModifySupportTicket", "label": "ModifySupportTicket", "shape": "dot"}, {"color": "#97c2fc", "id": "RecordPayment", "label": "RecordPayment", "shape": "dot"}]);
+                  edges = new vis.DataSet([{"arrows": "to", "from": "Calculate", "label": "Yes \u2014 the computed result can be embedde\u2026", "title": "Yes \u2014 the computed result can be embedded into the \u0027thought\u0027 string to log what was calculated.", "to": "Think"}, {"arrows": "to", "from": "Calculate", "label": "Yes \u2014 the calculated value can be used a\u2026", "title": "Yes \u2014 the calculated value can be used as the original_price (converted to string) to apply the $5 discount.", "to": "GetSeniorDiscount"}, {"arrows": "to", "from": "Calculate", "label": "Yes \u2014 the calculated numeric result can \u2026", "title": "Yes \u2014 the calculated numeric result can directly be used as the \u0027amount\u0027 when recording a payment.", "to": "RecordPayment"}, {"arrows": "to", "from": "FindCustomerByEmail", "label": "After finding a customer, their customer\u2026", "title": "After finding a customer, their customer_id can be used to fetch detailed info, so the output directly supplies the required input.", "to": "GetCustomerDetails"}, {"arrows": "to", "from": "FindCustomerByEmail", "label": "Uses customer_id from the find result to\u2026", "title": "Uses customer_id from the find result to retrieve billing details.", "to": "GetBillingDetails"}, {"arrows": "to", "from": "FindCustomerByEmail", "label": "Uses customer_id from the find result to\u2026", "title": "Uses customer_id from the find result to add/remove/list services.", "to": "ManageService"}, {"arrows": "to", "from": "FindCustomerByEmail", "label": "Uses customer_id from the find result to\u2026", "title": "Uses customer_id from the find result to open a support ticket.", "to": "CreateSupportTicket"}, {"arrows": "to", "from": "FindCustomerByEmail", "label": "Uses customer_id from the find result to\u2026", "title": "Uses customer_id from the find result to add a device to the customer\u0027s account.", "to": "AddDevice"}, {"arrows": "to", "from": "FindCustomerByEmail", "label": "Uses customer_id from the find result to\u2026", "title": "Uses customer_id from the find result to update billing preferences.", "to": "ManageBilling"}, {"arrows": "to", "from": "FindCustomerByEmail", "label": "Uses customer_id from the find result to\u2026", "title": "Uses customer_id from the find result to record a payment.", "to": "RecordPayment"}, {"arrows": "to", "from": "FindCustomerByPhone", "label": "Takes customer_id that would come from t\u2026", "title": "Takes customer_id that would come from the phone lookup result, so it can follow the target.", "to": "GetCustomerDetails"}, {"arrows": "to", "from": "FindCustomerByPhone", "label": "Requires customer_id, which the phone lo\u2026", "title": "Requires customer_id, which the phone lookup provides, so it can follow the target.", "to": "GetBillingDetails"}, {"arrows": "to", "from": "FindCustomerByPhone", "label": "Requires customer_id (from phone lookup)\u2026", "title": "Requires customer_id (from phone lookup) along with action; thus can follow the target.", "to": "ManageService"}, {"arrows": "to", "from": "FindCustomerByPhone", "label": "Needs customer_id, which comes from the \u2026", "title": "Needs customer_id, which comes from the phone lookup result, so it can be called next.", "to": "CreateSupportTicket"}, {"arrows": "to", "from": "FindCustomerByPhone", "label": "Uses customer_id from the phone lookup t\u2026", "title": "Uses customer_id from the phone lookup to add a device.", "to": "AddDevice"}, {"arrows": "to", "from": "FindCustomerByPhone", "label": "Uses customer_id from the phone lookup t\u2026", "title": "Uses customer_id from the phone lookup to manage billing settings.", "to": "ManageBilling"}, {"arrows": "to", "from": "FindCustomerByPhone", "label": "Requires customer_id from the phone look\u2026", "title": "Requires customer_id from the phone lookup to record a payment.", "to": "RecordPayment"}, {"arrows": "to", "from": "GetCustomerDetails", "label": "Customer details include service identif\u2026", "title": "Customer details include service identifiers that can be passed as service_id to fetch each service\u2019s details.", "to": "GetServiceDetails"}, {"arrows": "to", "from": "GetCustomerDetails", "label": "Customer details list devices, allowing \u2026", "title": "Customer details list devices, allowing their names to be used as device_name to fetch device information.", "to": "GetDeviceDetails"}, {"arrows": "to", "from": "GetCustomerDetails", "label": "The returned customer details include th\u2026", "title": "The returned customer details include the customer_id, which can be used to request billing info.", "to": "GetBillingDetails"}, {"arrows": "to", "from": "GetCustomerDetails", "label": "Use customer_id from details and service\u2026", "title": "Use customer_id from details and service/device IDs from the customer\u2019s data to add/remove/list services.", "to": "ManageService"}, {"arrows": "to", "from": "GetCustomerDetails", "label": "Use device_name from the customer\u2019s devi\u2026", "title": "Use device_name from the customer\u2019s devices to troubleshoot a reported issue.", "to": "TroubleshootDevice"}, {"arrows": "to", "from": "GetCustomerDetails", "label": "Use customer_id from details and choose \u2026", "title": "Use customer_id from details and choose a category based on the services/devices to open a ticket.", "to": "CreateSupportTicket"}, {"arrows": "to", "from": "GetCustomerDetails", "label": "Use customer_id from details to add a se\u2026", "title": "Use customer_id from details to add a selected device to the customer.", "to": "AddDevice"}, {"arrows": "to", "from": "GetCustomerDetails", "label": "Use customer_id from details; account in\u2026", "title": "Use customer_id from details; account info can guide paperless/auto-pay/billing-cycle changes.", "to": "ManageBilling"}, {"arrows": "to", "from": "GetCustomerDetails", "label": "Seeing the customer\u2019s current services c\u2026", "title": "Seeing the customer\u2019s current services can trigger listing all services for recommendations; target output influences the call.", "to": "GetServices"}, {"arrows": "to", "from": "GetCustomerDetails", "label": "Use customer_id from details to record a\u2026", "title": "Use customer_id from details to record a payment (amount/method/date supplied separately).", "to": "RecordPayment"}, {"arrows": "to", "from": "GetServiceDetails", "label": "Use service details (e.g., monthly price\u2026", "title": "Use service details (e.g., monthly price) to compute totals/taxes via a math expression.", "to": "Calculate"}, {"arrows": "to", "from": "GetServiceDetails", "label": "Service details may include a recommende\u2026", "title": "Service details may include a recommended/required device name (e.g., router/TV box) that can be passed here.", "to": "GetDeviceDetails"}, {"arrows": "to", "from": "GetServiceDetails", "label": "Use the retrieved service_id (and knowle\u2026", "title": "Use the retrieved service_id (and knowledge of features/eligibility) to add/remove the service for a customer.", "to": "ManageService"}, {"arrows": "to", "from": "GetServiceDetails", "label": "Service details reveal service type (mob\u2026", "title": "Service details reveal service type (mobile/internet/tv), which can set the ticket category and trigger ticket creation.", "to": "CreateSupportTicket"}, {"arrows": "to", "from": "GetServiceDetails", "label": "If the service includes/recommends a dev\u2026", "title": "If the service includes/recommends a device, its name from service details can be used to add the device to the customer.", "to": "AddDevice"}, {"arrows": "to", "from": "GetServiceDetails", "label": "Apply the discount to the service\u2019s pric\u2026", "title": "Apply the discount to the service\u2019s price value returned by service details.", "to": "GetSeniorDiscount"}, {"arrows": "to", "from": "GetDeviceDetails", "label": "Price/specs from GetDeviceDetails can be\u2026", "title": "Price/specs from GetDeviceDetails can be used inside a math expression (e.g., price + tax) to calculate totals.", "to": "Calculate"}, {"arrows": "to", "from": "GetDeviceDetails", "label": "Device_name from the details (and the de\u2026", "title": "Device_name from the details (and the device characteristics) can be passed to troubleshooting for a reported issue, so details directly inform this call.", "to": "TroubleshootDevice"}, {"arrows": "to", "from": "GetDeviceDetails", "label": "Device_name obtained/confirmed from deta\u2026", "title": "Device_name obtained/confirmed from details can be used to add the device to a customer; the details influence the decision to add.", "to": "AddDevice"}, {"arrows": "to", "from": "GetDeviceDetails", "label": "After identifying the device type (e.g.,\u2026", "title": "After identifying the device type (e.g., router/phone) from details, one may fetch available services; the details directly trigger this call.", "to": "GetServices"}, {"arrows": "to", "from": "GetDeviceDetails", "label": "The device\u2019s price from details can be p\u2026", "title": "The device\u2019s price from details can be passed as original_price to compute a senior discount.", "to": "GetSeniorDiscount"}, {"arrows": "to", "from": "GetBillingDetails", "label": "Billing totals/balance from GetBillingDe\u2026", "title": "Billing totals/balance from GetBillingDetails can be inserted into a math expression to compute proration or totals, so the output becomes part of the input expression.", "to": "Calculate"}, {"arrows": "to", "from": "GetBillingDetails", "label": "If billing info looks off, you may fetch\u2026", "title": "If billing info looks off, you may fetch broader account details; the billing output directly triggers calling GetCustomerDetails (decision influence).", "to": "GetCustomerDetails"}, {"arrows": "to", "from": "GetBillingDetails", "label": "Monthly charges often list service IDs; \u2026", "title": "Monthly charges often list service IDs; those IDs from billing details can be used to fetch that service\u2019s details (output becomes input).", "to": "GetServiceDetails"}, {"arrows": "to", "from": "GetBillingDetails", "label": "Billing may list device installment item\u2026", "title": "Billing may list device installment items by name; that device name can be used to retrieve device details (output becomes input).", "to": "GetDeviceDetails"}, {"arrows": "to", "from": "GetBillingDetails", "label": "High charges seen in billing details may\u2026", "title": "High charges seen in billing details may trigger removing/suspending/listing services; the billing output directly influences calling ManageService.", "to": "ManageService"}, {"arrows": "to", "from": "GetBillingDetails", "label": "Detecting a billing anomaly from GetBill\u2026", "title": "Detecting a billing anomaly from GetBillingDetails can prompt creating a billing ticket; the output influences the decision to execute CreateSupportTicket.", "to": "CreateSupportTicket"}, {"arrows": "to", "from": "GetBillingDetails", "label": "Seeing balance/late payments or current \u2026", "title": "Seeing balance/late payments or current cycle details can drive enabling auto-pay or changing billing cycle; billing output influences ManageBilling.", "to": "ManageBilling"}, {"arrows": "to", "from": "GetBillingDetails", "label": "High monthly charges can lead to explori\u2026", "title": "High monthly charges can lead to exploring available plans; billing output influences the decision to call GetServices.", "to": "GetServices"}, {"arrows": "to", "from": "GetBillingDetails", "label": "A charge from billing details can be pas\u2026", "title": "A charge from billing details can be passed as original_price to compute a senior-discounted price (output becomes input).", "to": "GetSeniorDiscount"}, {"arrows": "to", "from": "GetBillingDetails", "label": "After reviewing billing details you migh\u2026", "title": "After reviewing billing details you might resolve a billing ticket and update its status/priority; billing output influences ModifySupportTicket.", "to": "ModifySupportTicket"}, {"arrows": "to", "from": "GetBillingDetails", "label": "Current balance/payment history from bil\u2026", "title": "Current balance/payment history from billing details guides the amount to pay and prompts recording a payment; the output influences execution and inputs.", "to": "RecordPayment"}, {"arrows": "to", "from": "ManageService", "label": "After adding/removing services, the succ\u2026", "title": "After adding/removing services, the success result can trigger a refresh of customer details (criterion 3: output influences execution).", "to": "GetCustomerDetails"}, {"arrows": "to", "from": "ManageService", "label": "When a service is added/removed, the con\u2026", "title": "When a service is added/removed, the confirmed service_id from manage_service can be used to fetch that service\u2019s details (criteria 1/2).", "to": "GetServiceDetails"}, {"arrows": "to", "from": "ManageService", "label": "Service changes impact billing; a succes\u2026", "title": "Service changes impact billing; a successful manage_service operation can trigger fetching billing details using the same customer (criterion 3).", "to": "GetBillingDetails"}, {"arrows": "to", "from": "ManageService", "label": "If manage_service fails or flags an issu\u2026", "title": "If manage_service fails or flags an issue during service changes, it can directly trigger opening a support ticket (criterion 3).", "to": "CreateSupportTicket"}, {"arrows": "to", "from": "ManageService", "label": "If manage_service indicates a required d\u2026", "title": "If manage_service indicates a required device is missing for the service, that outcome can prompt adding a device (criterion 3).", "to": "AddDevice"}, {"arrows": "to", "from": "TroubleshootDevice", "label": "If troubleshooting fails or indicates es\u2026", "title": "If troubleshooting fails or indicates escalation, its outcome directly triggers creating a support ticket (escalation).", "to": "CreateSupportTicket"}, {"arrows": "to", "from": "TroubleshootDevice", "label": "If troubleshooting resolves or changes s\u2026", "title": "If troubleshooting resolves or changes severity of an existing issue, its outcome directly drives modifying ticket status/priority.", "to": "ModifySupportTicket"}, {"arrows": "to", "from": "CreateSupportTicket", "label": "Yes. Immediately after creating a ticket\u2026", "title": "Yes. Immediately after creating a ticket, the returned ticket_id is used to fetch its details via get_support_ticket_details.", "to": "GetSupportTicketDetails"}, {"arrows": "to", "from": "CreateSupportTicket", "label": "Yes. The ticket_id returned by create_su\u2026", "title": "Yes. The ticket_id returned by create_support_ticket is required to modify the ticket\u2019s status/priority.", "to": "ModifySupportTicket"}, {"arrows": "to", "from": "GetSupportTicketDetails", "label": "Ticket details typically include custome\u2026", "title": "Ticket details typically include customer_id, which can be fed to GetCustomerDetails to fetch the customer profile.", "to": "GetCustomerDetails"}, {"arrows": "to", "from": "GetSupportTicketDetails", "label": "If the ticket references a service (serv\u2026", "title": "If the ticket references a service (service_id), those details can be used to fetch that service via GetServiceDetails.", "to": "GetServiceDetails"}, {"arrows": "to", "from": "GetSupportTicketDetails", "label": "If the ticket references a device (devic\u2026", "title": "If the ticket references a device (device_name), those details can be used to fetch device info via GetDeviceDetails.", "to": "GetDeviceDetails"}, {"arrows": "to", "from": "GetSupportTicketDetails", "label": "For billing-related tickets, the custome\u2026", "title": "For billing-related tickets, the customer_id from the ticket can be used to get billing details.", "to": "GetBillingDetails"}, {"arrows": "to", "from": "GetSupportTicketDetails", "label": "Using customer_id (and possibly service_\u2026", "title": "Using customer_id (and possibly service_id) from the ticket, you can manage services per the ticket\u2019s request (add/remove/suspend/activate).", "to": "ManageService"}, {"arrows": "to", "from": "GetSupportTicketDetails", "label": "Device issue tickets provide device_name\u2026", "title": "Device issue tickets provide device_name and issue, which can be passed directly to TroubleshootDevice.", "to": "TroubleshootDevice"}, {"arrows": "to", "from": "GetSupportTicketDetails", "label": "If ticket details show it\u2019s closed/misro\u2026", "title": "If ticket details show it\u2019s closed/misrouted or needs a new case, that output can directly drive creating a new support ticket (execution influenced by ticket status/category).", "to": "CreateSupportTicket"}, {"arrows": "to", "from": "GetSupportTicketDetails", "label": "If the ticket requests adding hardware, \u2026", "title": "If the ticket requests adding hardware, use customer_id and device_name from the ticket to add the device.", "to": "AddDevice"}, {"arrows": "to", "from": "GetSupportTicketDetails", "label": "For billing preference tickets, use cust\u2026", "title": "For billing preference tickets, use customer_id from the ticket to set paperless/auto_pay/billing_cycle in ManageBilling.", "to": "ManageBilling"}, {"arrows": "to", "from": "GetSupportTicketDetails", "label": "If the ticket is about plan changes or s\u2026", "title": "If the ticket is about plan changes or service options, that output can trigger listing services (execution decision influenced by ticket content).", "to": "GetServices"}, {"arrows": "to", "from": "GetSupportTicketDetails", "label": "After viewing ticket details (ticket_id,\u2026", "title": "After viewing ticket details (ticket_id, current status/priority), you may modify status/priority using ModifySupportTicket.", "to": "ModifySupportTicket"}, {"arrows": "to", "from": "GetSupportTicketDetails", "label": "For payment-related tickets, the custome\u2026", "title": "For payment-related tickets, the customer_id from the ticket can be used to record a payment along with provided amount/method/date.", "to": "RecordPayment"}, {"arrows": "to", "from": "AddDevice", "label": "After adding a device, you often attach \u2026", "title": "After adding a device, you often attach it to a service by passing the newly created device ID(s) to manage_service (devices_ids); AddDevice output feeds this.", "to": "ManageService"}, {"arrows": "to", "from": "ManageBilling", "label": "After changing billing preferences, you \u2026", "title": "After changing billing preferences, you may fetch customer details to verify updates; the ManageBilling result influences calling this with the same customer_id.", "to": "GetCustomerDetails"}, {"arrows": "to", "from": "ManageBilling", "label": "After updating paperless/auto_pay/billin\u2026", "title": "After updating paperless/auto_pay/billing_cycle, you may pull billing details to confirm; ManageBilling\u2019s outcome drives this call (same customer_id).", "to": "GetBillingDetails"}, {"arrows": "to", "from": "ManageBilling", "label": "If ManageBilling fails or reveals an iss\u2026", "title": "If ManageBilling fails or reveals an issue, its outcome can trigger creating a billing ticket (category=\u0027billing\u0027) for that customer.", "to": "CreateSupportTicket"}, {"arrows": "to", "from": "ManageBilling", "label": "Enabling auto_pay or changing billing_cy\u2026", "title": "Enabling auto_pay or changing billing_cycle may prompt immediately applying a payment; ManageBilling\u2019s outcome can drive recording a payment for the same customer_id.", "to": "RecordPayment"}, {"arrows": "to", "from": "GetServices", "label": "Service prices/details from GetServices \u2026", "title": "Service prices/details from GetServices can be inserted into the expression (part of input) to compute totals, taxes, or bundle costs.", "to": "Calculate"}, {"arrows": "to", "from": "GetServices", "label": "Service IDs obtained from GetServices ar\u2026", "title": "Service IDs obtained from GetServices are used to request specific service details (output of GetServices becomes input service_id).", "to": "GetServiceDetails"}, {"arrows": "to", "from": "GetServices", "label": "When adding/removing a service, the serv\u2026", "title": "When adding/removing a service, the service_id selected from the GetServices catalog is part of the input along with customer_id/action.", "to": "ManageService"}, {"arrows": "to", "from": "GetServices", "label": "Takes original_price; a service price fr\u2026", "title": "Takes original_price; a service price from GetServices can be passed as original_price to apply the discount.", "to": "GetSeniorDiscount"}, {"arrows": "to", "from": "GetSeniorDiscount", "label": "Discounted price can be embedded in a ma\u2026", "title": "Discounted price can be embedded in a math expression (e.g., to compute tax/fees), so the target\u2019s output becomes part of the Calculate input.", "to": "Calculate"}, {"arrows": "to", "from": "GetSeniorDiscount", "label": "We might log a thought like \u201csenior disc\u2026", "title": "We might log a thought like \u201csenior discount applied, new price X,\u201d passing the discounted price as the thought text, making the target\u2019s output part of the input.", "to": "Think"}, {"arrows": "to", "from": "GetSeniorDiscount", "label": "The discounted price can be used as the \u2026", "title": "The discounted price can be used as the payment amount, feeding the \u0027amount\u0027 parameter when recording a payment.", "to": "RecordPayment"}, {"arrows": "to", "from": "ModifySupportTicket", "label": "Yes; after modifying a ticket, its ticke\u2026", "title": "Yes; after modifying a ticket, its ticket_id can be used to fetch updated details to confirm status/priority via GetSupportTicketDetails.", "to": "GetSupportTicketDetails"}, {"arrows": "to", "from": "RecordPayment", "label": "After recording a payment, fetching bill\u2026", "title": "After recording a payment, fetching billing details to confirm the new balance is a typical next step; payment outcome directly prompts this call (same customer context).", "to": "GetBillingDetails"}, {"arrows": "to", "from": "RecordPayment", "label": "If the payment fails or a discrepancy is\u2026", "title": "If the payment fails or a discrepancy is detected, the payment result directly triggers creating a billing support ticket for the customer.", "to": "CreateSupportTicket"}, {"arrows": "to", "from": "RecordPayment", "label": "Payment outcome can prompt checking an e\u2026", "title": "Payment outcome can prompt checking an existing billing ticket\u2019s details (e.g., to verify resolution), so execution is directly influenced though no fields are passed.", "to": "GetSupportTicketDetails"}, {"arrows": "to", "from": "RecordPayment", "label": "A successful payment can directly trigge\u2026", "title": "A successful payment can directly trigger closing or reprioritizing an existing billing ticket; payment result influences status/priority updates.", "to": "ModifySupportTicket"}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "barnesHut": {
+            "avoidOverlap": 0,
+            "centralGravity": 0.3,
+            "damping": 0.09,
+            "gravitationalConstant": -80000,
+            "springConstant": 0.001,
+            "springLength": 250
+        },
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>

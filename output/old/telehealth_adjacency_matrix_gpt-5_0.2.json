@@ -1,0 +1,1882 @@
+{
+  "tools": [
+    {
+      "name": "FindPatientByEmail",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "find_patient_by_email",
+          "description": "Find a patient by their email address to authenticate their identity.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "email": {
+                "type": "string",
+                "description": "The patient's email address"
+              }
+            },
+            "required": [
+              "email"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "FindPatientByNameDOB",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "find_patient_by_name_dob",
+          "description": "Find a patient by their full name and date of birth to authenticate their identity.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "first_name": {
+                "type": "string",
+                "description": "The patient's first name"
+              },
+              "last_name": {
+                "type": "string",
+                "description": "The patient's last name"
+              },
+              "date_of_birth": {
+                "type": "string",
+                "description": "The patient's date of birth in YYYY-MM-DD format"
+              }
+            },
+            "required": [
+              "first_name",
+              "last_name",
+              "date_of_birth"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "GetPatientDetails",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "get_patient_details",
+          "description": "Get detailed information about a patient including demographics, address, insurance, and medical history.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "patient_id": {
+                "type": "string",
+                "description": "The patient's unique identifier"
+              }
+            },
+            "required": [
+              "patient_id"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "GetAppointmentDetails",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "get_appointment_details",
+          "description": "Get detailed information about a scheduled appointment including patient, provider, date, time, and clinical details.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "appointment_id": {
+                "type": "string",
+                "description": "The appointment's unique identifier"
+              }
+            },
+            "required": [
+              "appointment_id"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "GetProviderDetails",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "get_provider_details",
+          "description": "Get detailed information about a healthcare provider including specialty, schedule, credentials, and contact information.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "provider_id": {
+                "type": "string",
+                "description": "The provider's unique identifier"
+              }
+            },
+            "required": [
+              "provider_id"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "GetMedicalRecord",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "get_medical_record",
+          "description": "Retrieve a patient's medical record by record ID or related appointment ID.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "record_id": {
+                "type": "string",
+                "description": "The unique medical record identifier."
+              },
+              "appointment_id": {
+                "type": "string",
+                "description": "The appointment ID associated with the medical record."
+              }
+            },
+            "required": []
+          }
+        }
+      }
+    },
+    {
+      "name": "GetRegimenOptions",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "get_regimen_options",
+          "description": "Retrieve current regimen components and optimized alternative combinations for a patient, including costs and pill burden details.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "patient_id": {
+                "type": "string",
+                "description": "ID of the patient"
+              }
+            },
+            "required": [
+              "patient_id"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "ListPatientMedicalRecords",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "list_patient_medical_records",
+          "description": "List medical record identifiers for a patient sorted with the newest first.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "patient_id": {
+                "type": "string",
+                "description": "ID of the patient"
+              },
+              "limit": {
+                "type": "integer",
+                "description": "Optional maximum number of records to return"
+              }
+            },
+            "required": [
+              "patient_id"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "ListAvailableProviders",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "list_available_providers",
+          "description": "List all available healthcare providers, optionally filtered by specialty (e.g., Primary Care, Cardiology, Dermatology, Psychiatry).",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "specialty": {
+                "type": "string",
+                "description": "Optional specialty to filter providers by (e.g., 'Primary Care', 'Cardiology', 'Dermatology', 'Psychiatry')"
+              }
+            },
+            "required": []
+          }
+        }
+      }
+    },
+    {
+      "name": "ListPatientAppointments",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "list_patient_appointments",
+          "description": "List all appointments for a patient, optionally filtering by an appointment status such as scheduled, pending_approval, or cancelled.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "patient_id": {
+                "type": "string",
+                "description": "The patient's unique identifier."
+              },
+              "status_filter": {
+                "type": "string",
+                "description": "Optional appointment status filter (e.g., 'scheduled', 'pending_approval', 'cancelled')."
+              }
+            },
+            "required": [
+              "patient_id"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "ListMedicationSuppliers",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "list_medication_suppliers",
+          "description": "List suppliers for a given medication, optionally filtered by country and sorted by price.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "medication": {
+                "type": "string",
+                "description": "Medication name to search for"
+              },
+              "country_filter": {
+                "type": "string",
+                "description": "Optional country name to filter suppliers"
+              },
+              "limit": {
+                "type": "integer",
+                "description": "Optional maximum number of suppliers to list"
+              }
+            },
+            "required": [
+              "medication"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "ListTelemetryUploads",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "list_telemetry_uploads",
+          "description": "List telemetry upload artifacts for a device over an optional date window.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "device_id": {
+                "type": "string",
+                "description": "Unique identifier of the telemetry device"
+              },
+              "start_date": {
+                "type": "string",
+                "description": "Start date (inclusive, YYYY-MM-DD)"
+              },
+              "end_date": {
+                "type": "string",
+                "description": "End date (inclusive, YYYY-MM-DD)"
+              },
+              "limit": {
+                "type": "integer",
+                "description": "Optional maximum number of entries to return"
+              }
+            },
+            "required": [
+              "device_id"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "CheckDrugInteractions",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "check_drug_interactions",
+          "description": "Evaluate potential interactions between an incident medication and a patient’s current regimen.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "primary_medication": {
+                "type": "string",
+                "description": "The medication that was taken accidentally or requires review."
+              },
+              "current_medications": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "List of the patient’s active medications."
+              }
+            },
+            "required": [
+              "primary_medication",
+              "current_medications"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "ScheduleAppointment",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "schedule_appointment",
+          "description": "Schedule a new telehealth appointment for a patient with a healthcare provider.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "patient_id": {
+                "type": "string",
+                "description": "The patient's unique identifier"
+              },
+              "provider_id": {
+                "type": "string",
+                "description": "The provider's unique identifier"
+              },
+              "date": {
+                "type": "string",
+                "description": "Appointment date in YYYY-MM-DD format"
+              },
+              "time": {
+                "type": "string",
+                "description": "Appointment time in HH:MM format (24-hour)"
+              },
+              "appointment_type": {
+                "type": "string",
+                "description": "Type of appointment (routine_checkup, follow_up, consultation, specialist_consultation, sick_visit)"
+              },
+              "bill_insurance": {
+                "type": "boolean",
+                "description": "Set to false to skip insurance billing for this appointment"
+              },
+              "voucher_id": {
+                "type": "string",
+                "description": "Optional voucher identifier applied to this appointment"
+              },
+              "payment_notes": {
+                "type": "string",
+                "description": "Optional notes regarding payment handling"
+              }
+            },
+            "required": [
+              "patient_id",
+              "provider_id",
+              "date",
+              "time",
+              "appointment_type"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "CancelAppointment",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "cancel_appointment",
+          "description": "Cancel a scheduled appointment.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "appointment_id": {
+                "type": "string",
+                "description": "The appointment's unique identifier"
+              }
+            },
+            "required": [
+              "appointment_id"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "RescheduleAppointment",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "reschedule_appointment",
+          "description": "Reschedule an existing appointment to a new date and time.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "appointment_id": {
+                "type": "string",
+                "description": "The appointment's unique identifier"
+              },
+              "new_date": {
+                "type": "string",
+                "description": "New appointment date in YYYY-MM-DD format"
+              },
+              "new_time": {
+                "type": "string",
+                "description": "New appointment time in HH:MM format (24-hour)"
+              }
+            },
+            "required": [
+              "appointment_id",
+              "new_date",
+              "new_time"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "Calculate",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "calculate",
+          "description": "Calculate the result of a mathematical expression.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "expression": {
+                "type": "string",
+                "description": "The mathematical expression to calculate, such as '2 + 2'. The expression can contain numbers, operators (+, -, *, /), parentheses, and spaces."
+              }
+            },
+            "required": [
+              "expression"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "Think",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "think",
+          "description": "Use the tool to think about something. It will not obtain new information or change the database, but just append the thought to the log. Use it when complex reasoning or some cache memory is needed.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "thought": {
+                "type": "string",
+                "description": "A thought to think about."
+              }
+            },
+            "required": [
+              "thought"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "TransferToHumanSupport",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "transfer_to_human_support",
+          "description": "Transfer the patient to human support staff when the request cannot be handled by the automated system.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "reason": {
+                "type": "string",
+                "description": "Reason for transferring to human support"
+              }
+            },
+            "required": [
+              "reason"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "UpdatePrescriptionSupplier",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "update_prescription_supplier",
+          "description": "Update the supplier information for a prescription in a medical record.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "record_id": {
+                "type": "string",
+                "description": "The medical record identifier, such as 'REC001'."
+              },
+              "medication": {
+                "type": "string",
+                "description": "Name of the medication to update."
+              },
+              "supplier_company": {
+                "type": "string",
+                "description": "Name of the supplier company providing the medication."
+              },
+              "brand_name": {
+                "type": "string",
+                "description": "Brand name used by the supplier for this medication."
+              },
+              "price_usd": {
+                "type": "number",
+                "description": "Price in USD from the supplier catalog."
+              },
+              "currency": {
+                "type": "string",
+                "description": "Currency code for the quoted price (defaults to 'USD')."
+              }
+            },
+            "required": [
+              "record_id",
+              "medication",
+              "supplier_company",
+              "brand_name",
+              "price_usd"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "ListTelemetryDevices",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "list_telemetry_devices",
+          "description": "List telemetry wearable devices optionally filtered by status.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "status_filter": {
+                "type": "string",
+                "description": "Optional status filter (e.g., 'available', 'missing_overdue')."
+              },
+              "limit": {
+                "type": "integer",
+                "description": "Optional maximum number of devices to list."
+              }
+            },
+            "required": []
+          }
+        }
+      }
+    },
+    {
+      "name": "GetTelemetryUpload",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "get_telemetry_upload",
+          "description": "Retrieve a specific telemetry upload artifact for a device and date.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "device_id": {
+                "type": "string",
+                "description": "Unique identifier of the telemetry device"
+              },
+              "date": {
+                "type": "string",
+                "description": "Target date (YYYY-MM-DD)"
+              }
+            },
+            "required": [
+              "device_id",
+              "date"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "UpdateMedicalRecordNote",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "update_medical_record_note",
+          "description": "Append an audit or compliance note to a medical record.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "record_id": {
+                "type": "string",
+                "description": "Identifier of the medical record to update"
+              },
+              "note": {
+                "type": "string",
+                "description": "Note text to append"
+              },
+              "metadata": {
+                "type": "object",
+                "description": "Optional structured metadata to attach"
+              }
+            },
+            "required": [
+              "record_id",
+              "note"
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "adjacency_matrix": [
+    [
+      [
+        false,
+        false,
+        true,
+        false,
+        false,
+        false,
+        true,
+        true,
+        false,
+        true,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        false,
+        false
+      ]
+    ],
+    [
+      [
+        false,
+        false,
+        true,
+        false,
+        false,
+        false,
+        true,
+        true,
+        false,
+        true,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        false,
+        false
+      ]
+    ],
+    [
+      [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        false,
+        false
+      ]
+    ],
+    [
+      [
+        false,
+        false,
+        true,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false,
+        false,
+        false,
+        true,
+        true,
+        true,
+        false,
+        false,
+        true,
+        false,
+        false,
+        false,
+        false
+      ]
+    ],
+    [
+      [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        true,
+        false,
+        false,
+        true,
+        false,
+        false,
+        false,
+        false
+      ]
+    ],
+    [
+      [
+        false,
+        false,
+        true,
+        true,
+        true,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false,
+        true,
+        true,
+        true,
+        true,
+        false,
+        false,
+        true,
+        true,
+        false,
+        false,
+        true
+      ]
+    ],
+    [
+      [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true
+      ]
+    ],
+    [
+      [
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        false,
+        false,
+        true
+      ]
+    ],
+    [
+      [
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        false,
+        false
+      ]
+    ],
+    [
+      [
+        false,
+        false,
+        false,
+        true,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
+    ],
+    [
+      [
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        true,
+        false,
+        true,
+        true,
+        false,
+        false,
+        true
+      ]
+    ],
+    [
+      [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        true,
+        true,
+        false
+      ]
+    ],
+    [
+      [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        true,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        false,
+        true
+      ]
+    ],
+    [
+      [
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false,
+        true,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        false,
+        false,
+        true,
+        false,
+        false,
+        false,
+        false
+      ]
+    ],
+    [
+      [
+        false,
+        false,
+        false,
+        true,
+        false,
+        true,
+        false,
+        false,
+        true,
+        true,
+        false,
+        false,
+        false,
+        true,
+        false,
+        true,
+        false,
+        false,
+        true,
+        false,
+        false,
+        false,
+        false
+      ]
+    ],
+    [
+      [
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        false,
+        false
+      ]
+    ],
+    [
+      [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        false,
+        false
+      ]
+    ],
+    [
+      [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        true,
+        false,
+        false,
+        false,
+        true
+      ]
+    ],
+    [
+      [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
+    ],
+    [
+      [
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        false,
+        true
+      ]
+    ],
+    [
+      [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        true,
+        false
+      ]
+    ],
+    [
+      [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        true,
+        false,
+        true,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        true,
+        false,
+        true
+      ]
+    ],
+    [
+      [
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        false,
+        false,
+        false
+      ]
+    ]
+  ],
+  "reason_matrix": [
+    [
+      [
+        "No self-edge; the target function cannot be its own neighbour.",
+        "Alternate identity lookup entry-point that doesn’t consume output of FindPatientByEmail (and entry functions shouldn’t have incoming edges).",
+        "Uses patient_id returned from FindPatientByEmail to fetch full patient details.",
+        "Requires appointment_id, which is not provided by the email lookup.",
+        "Requires provider_id, not produced by the email lookup.",
+        "Needs record_id or appointment_id, neither comes directly from the email lookup.",
+        "Consumes patient_id from FindPatientByEmail to compute regimen options.",
+        "Consumes patient_id from FindPatientByEmail to list the patient’s record IDs.",
+        "Does not use patient-specific output; can be called independently of the email lookup.",
+        "Consumes patient_id from FindPatientByEmail to list the patient’s appointments.",
+        "Independent of patient lookup; requires a medication name and optional filters.",
+        "Requires device_id, not provided by the email lookup.",
+        "Needs medication names, not directly yielded by the email lookup result.",
+        "Patient_id from FindPatientByEmail is part of the required inputs to create the appointment (other fields come from elsewhere).",
+        "Needs appointment_id, not provided by the email lookup.",
+        "Needs appointment_id, not provided by the email lookup.",
+        "Unrelated utility; does not depend on the email lookup output.",
+        "Unrelated logging/thinking tool; does not depend on the email lookup output.",
+        "If identity lookup fails or is inconclusive, that outcome directly triggers transfer to human support (control-flow influence).",
+        "Needs record_id and medication details; not provided by the email lookup.",
+        "Independent listing that doesn’t use patient lookup output.",
+        "Requires device_id and date; not provided by the email lookup.",
+        "Needs record_id, not provided by the email lookup."
+      ]
+    ],
+    [
+      [
+        "Requires only an email and is an entry-point lookup; the output of FindPatientByNameDOB is not used and such find-by-* functions shouldn’t have incoming edges.",
+        "Self-edge is not allowed; the target function cannot be its own neighbour.",
+        "Takes patient_id, which is the likely output of the identity lookup; direct use of target output as input.",
+        "Needs an appointment_id, which is not produced by the name+DOB lookup.",
+        "Needs a provider_id, not provided by the identity lookup.",
+        "Needs record_id or appointment_id, neither of which comes from the target output.",
+        "Requires patient_id; directly uses the patient_id returned by FindPatientByNameDOB.",
+        "Requires patient_id; directly uses the patient_id returned by FindPatientByNameDOB.",
+        "Does not require patient info; target output is neither used nor required to execute.",
+        "Requires patient_id; directly uses the patient_id returned by FindPatientByNameDOB.",
+        "Requires a medication input unrelated to the identity lookup result.",
+        "Requires a device_id, which is not produced by the name+DOB lookup.",
+        "Requires medication inputs (primary and current) not provided by the identity lookup; needs additional steps first.",
+        "Includes patient_id among required inputs; the patient_id from the lookup is part of this function’s input.",
+        "Needs an appointment_id, not produced by the identity lookup.",
+        "Needs an appointment_id, not produced by the identity lookup.",
+        "Pure math utility unrelated to patient identity.",
+        "Internal thinking/logging tool; unrelated to the lookup result.",
+        "Called when identity verification fails or is ambiguous; the outcome of FindPatientByNameDOB directly influences executing a transfer.",
+        "Requires record_id and medication details; not supplied by the identity lookup.",
+        "No required inputs; execution does not depend on the lookup result.",
+        "Requires device_id/date; not produced by the identity lookup.",
+        "Requires record_id; not produced by the identity lookup."
+      ]
+    ],
+    [
+      [
+        "Lookup by email is an entry point and does not consume anything from patient details.",
+        "Lookup by name and DOB is an entry point and does not consume anything from patient details.",
+        "No self edge allowed.",
+        "Requires appointment_id, which patient details do not provide.",
+        "Requires provider_id; patient details (demographics/insurance/history) don’t include it per description.",
+        "Needs record_id or appointment_id; patient details do not output those identifiers.",
+        "Consumes patient_id and the regimen in patient details can trigger calling this; output influences execution.",
+        "Consumes patient_id directly available from/gettable with patient details.",
+        "Specialty filter can be chosen based on medical history from patient details, influencing execution.",
+        "Consumes patient_id directly available from/gettable with patient details.",
+        "Medication name can come from current medications in patient details.",
+        "Requires device_id, which patient details don’t provide.",
+        "Uses current_medications list that comes from patient details’ medical history.",
+        "Consumes patient_id and insurance info can set bill_insurance; patient details influence execution.",
+        "Requires appointment_id, not provided by patient details.",
+        "Requires appointment_id, not provided by patient details.",
+        "Unrelated math utility; no inputs come from patient details.",
+        "Internal thought/logging; not driven by patient details output.",
+        "Decision to transfer can be made based on complexities/missing info seen in patient details (output influences execution).",
+        "Needs record_id and supplier info not present directly in patient details.",
+        "Telemetry devices listing not driven by patient details output.",
+        "Requires device_id/date; not available from patient details.",
+        "Needs record_id; patient details don’t directly provide it."
+      ]
+    ],
+    [
+      [
+        "FindPatientByEmail is an entry-point auth lookup and the appointment details output does not provide/require an email, so no incoming edge.",
+        "FindPatientByNameDOB is an entry-point auth lookup and the appointment details output does not provide/require name/DOB, so no incoming edge.",
+        "GetPatientDetails can use the patient_id included in the appointment details output.",
+        "GetAppointmentDetails is the same function as the target; self-edges are not allowed.",
+        "GetProviderDetails can use the provider_id included in the appointment details output.",
+        "GetMedicalRecord can take the appointment_id from the appointment details to fetch the related record.",
+        "GetRegimenOptions can use the patient_id from the appointment details output.",
+        "ListPatientMedicalRecords can use the patient_id from the appointment details output.",
+        "ListAvailableProviders may be triggered by details (e.g., need to change provider/specialty), so the appointment details directly influence calling it.",
+        "ListPatientAppointments can use the patient_id from the appointment details output.",
+        "ListMedicationSuppliers requires a specific medication; appointment details don’t reliably provide this input, so not directly related.",
+        "ListTelemetryUploads concerns device telemetry and doesn’t use appointment information.",
+        "CheckDrugInteractions needs medications lists not directly provided by appointment details.",
+        "ScheduleAppointment can use patient_id/provider_id from appointment details to book a follow-up.",
+        "CancelAppointment can use the appointment_id from the appointment details output.",
+        "RescheduleAppointment can use the appointment_id and is directly influenced by the current date/time from appointment details.",
+        "Calculate is unrelated to appointment information.",
+        "Think is a meta/logging tool and not driven by appointment details.",
+        "TransferToHumanSupport may be triggered if the appointment details reveal an issue the bot can’t handle (directly influencing execution).",
+        "UpdatePrescriptionSupplier requires a record_id and medication not provided by the appointment details.",
+        "ListTelemetryDevices is unrelated to appointment information.",
+        "GetTelemetryUpload is unrelated to appointment information.",
+        "UpdateMedicalRecordNote requires a record_id not provided by the appointment details."
+      ]
+    ],
+    [
+      [
+        "Does not use provider details; requires only a patient email to search.",
+        "Does not use provider details; requires name and DOB to search for a patient.",
+        "Patient-centric input (patient_id); provider details are not used.",
+        "Needs appointment_id; provider details do not supply or influence this input.",
+        "Self-edge is not allowed.",
+        "Requires record_id or appointment_id; provider details are not inputs here.",
+        "Depends on patient_id; provider details are irrelevant.",
+        "Requires patient_id (and optional limit); provider details are not part of inputs.",
+        "Yes; can use the provider’s specialty from details as the specialty filter to list similar providers.",
+        "Takes patient_id and status only; no way to use provider details as input.",
+        "Medication supplier lookup is unrelated to provider details.",
+        "Telemetry uploads are device-based; provider details do not apply.",
+        "Drug interaction checking is medication-based, not provider-based.",
+        "Yes; use provider availability from details to choose date/time and pass provider_id/date/time when scheduling.",
+        "Cancel needs only appointment_id; provider details do not feed into it.",
+        "Yes; provider’s schedule from details determines suitable new_date/new_time values for rescheduling.",
+        "Math calculation does not depend on provider details.",
+        "Internal thought logging; not influenced by provider details.",
+        "Yes; if details show no availability or other constraints, that output can trigger transfer with a reason derived from it.",
+        "Updating a prescription supplier is unrelated to provider details.",
+        "Telemetry device listing is unrelated to provider details.",
+        "Getting a telemetry upload is device/date-based; provider details are not inputs.",
+        "Appending a record note uses record_id/note; provider details are not used."
+      ]
+    ],
+    [
+      [
+        "Entry-point lookup by email; does not consume output of GetMedicalRecord and typically has no incoming edges.",
+        "Entry-point lookup by name/DOB; does not consume medical-record output and has no incoming edges.",
+        "The medical record contains patient_id, which can be used to fetch detailed patient info.",
+        "Medical record is associated with an appointment_id, which can be used to get appointment details.",
+        "Medical record typically includes provider_id from the visit, enabling provider detail lookup.",
+        "Self-edge not allowed; the target function cannot be its own neighbour.",
+        "Using patient_id from the medical record to request regimen options is a common follow-up.",
+        "Using patient_id from the medical record to list all of the patient’s records is natural.",
+        "Medical record can indicate the needed specialty (e.g., diagnosis), which can be passed as the specialty filter.",
+        "Using patient_id from the medical record to list the patient’s appointments fits the workflow.",
+        "Prescription data in the medical record provides a medication name to query suppliers.",
+        "Requires device_id; medical records typically don’t provide this, so no direct linkage.",
+        "Use the record’s current_medications as part of the input when checking an incident drug.",
+        "Use patient_id (and possibly provider_id) from the medical record to schedule a follow-up appointment.",
+        "Use the record’s associated appointment_id (if upcoming) to cancel the appointment.",
+        "Use the record’s associated appointment_id to reschedule to a new time/date.",
+        "General math tool; no input derives from a medical record.",
+        "Internal thinking/logging; not driven by medical-record output.",
+        "If the record reveals issues (missing data/conflicts/urgent concerns), it can trigger transfer and populate the reason.",
+        "Use record_id from the retrieved medical record to update the supplier for a listed prescription.",
+        "Device listing is unrelated; no input comes from the medical record.",
+        "Needs device_id/date not provided by the medical record; no direct influence.",
+        "Use record_id from the retrieved medical record to append a compliance/audit note."
+      ]
+    ],
+    [
+      [
+        "Output is regimen details, while this requires only an email and is an entry-point lookup; no data dependency.",
+        "Output is regimen details, while this requires name/DOB and is an entry-point lookup; no data dependency.",
+        "Requires patient_id (an input to the target), not produced by the regimen output; no direct dependency.",
+        "Needs appointment_id, which is not provided by regimen results; unrelated.",
+        "Needs provider_id; regimen output does not provide or govern this; unrelated.",
+        "Needs record_id or appointment_id; regimen output doesn’t provide these identifiers.",
+        "Self edge is disallowed.",
+        "Needs patient_id; regimen output doesn’t supply it; no direct data flow.",
+        "Provider listing doesn’t take regimen output as input; at most an indirect decision, not a data dependency.",
+        "Needs patient_id/status filter; regimen output doesn’t supply these; unrelated.",
+        "Yes; medication names from current/alternative regimen can be used as the medication input to look up suppliers and prices.",
+        "Telemetry uploads are unrelated to regimen data; no shared inputs.",
+        "Yes; the current regimen medications from the output map directly to the current_medications input for interaction checking.",
+        "Scheduling needs patient_id/provider/date/time, none of which come from regimen output; only an indirect decision at best.",
+        "Cancellation requires appointment_id; regimen output doesn’t provide it.",
+        "Rescheduling requires appointment_id/new time; regimen output doesn’t provide these.",
+        "Math utility; no dependency on regimen output.",
+        "Meta thinking tool; does not consume regimen data as input.",
+        "Transfer is a generic fallback; regimen output doesn’t supply required input, and influence is too indirect to qualify here.",
+        "Requires record_id and supplier details not provided by regimen output; costs may inform choice but not supply inputs.",
+        "Telemetry device listing is unrelated to regimen content.",
+        "Specific telemetry upload retrieval is unrelated to regimen content.",
+        "Yes; the note content can be composed from regimen options, making the regimen output part of the note input."
+      ]
+    ],
+    [
+      [
+        "Not a neighbour: requires an email to find a patient (entry-point), while the target outputs record IDs, and entry finders shouldn’t have incoming edges.",
+        "Not a neighbour: requires name and DOB (entry-point); target outputs record IDs, not applicable and finders don’t take incoming edges.",
+        "Not a neighbour: needs patient_id; target returns record IDs, not a patient_id.",
+        "Not a neighbour: needs appointment_id; target returns record IDs, not appointment IDs.",
+        "Not a neighbour: needs provider_id; target returns record IDs, unrelated.",
+        "Neighbour: accepts record_id, which comes directly from the list of medical record IDs returned by the target.",
+        "Not a neighbour: needs patient_id; target outputs record IDs, not used here.",
+        "Not a neighbour: self-edge is not allowed.",
+        "Not a neighbour: does not take record IDs and is unrelated to the list output.",
+        "Not a neighbour: needs patient_id; target outputs record IDs, not used here.",
+        "Not a neighbour: needs a medication name; target outputs record IDs, not directly usable.",
+        "Not a neighbour: needs device_id; target outputs record IDs, unrelated.",
+        "Not a neighbour: needs medication inputs; target outputs record IDs, not used here.",
+        "Not a neighbour: requires patient_id/provider_id/date/time; target outputs record IDs, not applicable.",
+        "Not a neighbour: needs appointment_id; target outputs record IDs, not used here.",
+        "Not a neighbour: needs appointment_id; target outputs record IDs, not used here.",
+        "Not a neighbour: takes a math expression; record IDs do not feed into it.",
+        "Not a neighbour: takes an arbitrary thought string; list of record IDs doesn’t directly serve as input.",
+        "Neighbour: if the list is empty or access is restricted, that output directly triggers a transfer to human support (execution decision based on target’s result).",
+        "Neighbour: requires record_id; the record IDs from the target can be used to update prescription supplier info for that record.",
+        "Not a neighbour: telemetry devices are unrelated to record IDs.",
+        "Not a neighbour: needs device_id/date; target outputs record IDs, unrelated.",
+        "Neighbour: requires record_id; the record IDs from the target can be used to append a note to a medical record."
+      ]
+    ],
+    [
+      [
+        "Requires an email to find a patient; the provider list output does not supply or affect this input and it’s an entry-point style function.",
+        "Requires name and DOB; unrelated to a provider list and typically not called based on provider selection.",
+        "Needs a patient_id which is not produced by listing providers; no direct dependency.",
+        "Needs an appointment_id; a provider list does not provide or influence this directly.",
+        "Yes; after listing providers you can pick one and fetch details using the provider_id from the list.",
+        "Needs record_id or appointment_id, which are not provided by the provider list; no direct link.",
+        "Needs a patient_id; unrelated to provider listing output.",
+        "Needs a patient_id; the provider list does not provide it or influence the call.",
+        "No self-edge permitted even though one might re-list with different filters.",
+        "Needs a patient_id and does not accept provider_id; provider list output doesn’t feed into it.",
+        "Requires a medication; unrelated to providers listing.",
+        "Requires a device_id/time window; unrelated to provider listing.",
+        "Takes medications as input; unrelated to provider listing.",
+        "Yes; the provider_id selected from the list becomes part of the inputs to schedule an appointment.",
+        "Needs an appointment_id; not provided by the provider list.",
+        "Needs an appointment_id; not provided by the provider list.",
+        "Generic calculator; not influenced by provider listings.",
+        "Internal thinking/log tool; does not take provider list output as input.",
+        "Yes; if the provider list is empty or unsuitable, that outcome directly prompts transferring to human support.",
+        "Requires record_id/medication/supplier info; unrelated to provider listing output.",
+        "Lists devices by status; unrelated to provider listing.",
+        "Requires device_id/date; unrelated to provider listing.",
+        "Requires a record_id and note; unrelated to provider listing output."
+      ]
+    ],
+    [
+      [
+        "Entry/identity lookup by email; does not consume appointment list output.",
+        "Entry/identity lookup by name and DOB; not driven by appointment list output.",
+        "Requires patient_id (already known before listing); appointment list output is not needed as input.",
+        "Uses appointment_id from the listed appointments to fetch full details.",
+        "Can use provider_id present in each listed appointment to get the provider’s details.",
+        "Accepts appointment_id to fetch related record; appointment IDs come from the appointment list output.",
+        "Needs patient_id; appointment listing output doesn’t supply new inputs for this directly.",
+        "Needs patient_id; not directly using any values from the appointment list output.",
+        "Lists providers by specialty; no direct inputs from the appointment list output.",
+        "No self edge allowed to the same function.",
+        "Unrelated to appointments; expects a medication name.",
+        "Telemetry uploads are unrelated to appointment list output.",
+        "Needs medication names; appointment list output doesn’t provide these.",
+        "Can reuse a provider_id from a listed appointment to book a follow-up, making list output part of the input.",
+        "Takes appointment_id to cancel; appointment IDs come from the list output.",
+        "Takes appointment_id to reschedule; appointment IDs come from the list output.",
+        "Pure math utility; unrelated to appointment output.",
+        "Internal reasoning tool; not driven by appointment list output.",
+        "Escalation action not determined by appointment list values in a direct input sense.",
+        "Needs record_id and medication info; not available from appointment list output.",
+        "Telemetry devices domain; unrelated to appointment list output.",
+        "Telemetry upload retrieval; unrelated to appointment list output.",
+        "Needs record_id; appointment list output doesn’t provide it directly."
+      ]
+    ],
+    [
+      [
+        "Entry/auth function; takes only email and does not consume supplier list output.",
+        "Entry/auth function; takes name/DOB and does not consume supplier list output.",
+        "Uses patient_id and is typically called before supplier search (e.g., to know country); supplier list output is not used.",
+        "Needs appointment_id; supplier list output provides no such input and doesn’t drive this call.",
+        "Needs provider_id; supplier results don’t provide or affect this.",
+        "After selecting a supplier from the list, one may open the medical record to review/update the prescription; supplier results trigger this step (criterion 3).",
+        "If suppliers/prices are unfavorable, one may explore alternative regimens; the supplier list outcome directly drives this action (criterion 3).",
+        "To update a prescription with a chosen supplier, we may first list the patient’s records to find the right record_id; supplier results drive this (criterion 3).",
+        "Poor supplier options can prompt listing providers to consult on alternatives; supplier outcomes drive this step (criterion 3).",
+        "Supplier list neither provides inputs nor directly prompts listing existing appointments in a typical flow.",
+        "No self edge allowed for the target function.",
+        "Telemetry uploads are unrelated to medication suppliers.",
+        "Checks interactions between medications; supplier/vendor info isn’t used.",
+        "Supplier availability/pricing can prompt scheduling a consult; list results drive this decision (criterion 3).",
+        "Unrelated to supplier selection; no input from supplier list.",
+        "Unrelated to supplier selection; no input from supplier list.",
+        "Supplier prices from the list can be inserted into an expression to compare totals (criterion 2).",
+        "Internal reasoning tool, not a domain action; supplier list output is not an input here.",
+        "If no suitable suppliers are found, the outcome triggers escalation to human support (criterion 3).",
+        "Direct follow-up: uses selected supplier_company/brand/price from the list to update the prescription (criteria 1–2).",
+        "Telemetry devices are unrelated to medication suppliers.",
+        "Telemetry upload retrieval is unrelated to suppliers.",
+        "Supplier details from the list can be included in the note content added to a medical record (criterion 2)."
+      ]
+    ],
+    [
+      [
+        "No; it's an entry-point lookup by email and does not take device uploads output as input.",
+        "No; it's an entry-point lookup by name/DOB and unrelated to telemetry upload output.",
+        "No; requires a patient_id, while telemetry uploads return device/date info, not patient identifiers.",
+        "No; needs an appointment_id which the telemetry upload list does not provide.",
+        "No; needs a provider_id which is not part of telemetry upload outputs.",
+        "No; needs record_id/appointment_id, not provided by listing telemetry uploads.",
+        "No; requires patient_id, which is not yielded by telemetry uploads.",
+        "No; requires patient_id; telemetry upload output doesn’t supply it.",
+        "No; optional specialty filter is unrelated to telemetry upload results.",
+        "No; requires patient_id; telemetry upload output doesn’t provide it.",
+        "No; needs a medication name; unrelated to telemetry uploads.",
+        "No; self-edge is not allowed.",
+        "No; needs medication inputs not derived from telemetry uploads.",
+        "No; needs patient/provider/time info not derived from telemetry uploads.",
+        "No; needs appointment_id not produced by telemetry uploads.",
+        "No; needs appointment_id not produced by telemetry uploads.",
+        "No; generic math expression input isn’t derived from telemetry upload outputs in a defined way.",
+        "No; internal thinking log doesn’t take telemetry upload outputs as defined inputs.",
+        "Yes; if uploads are missing/anomalous, that outcome can trigger a transfer and populate the reason string.",
+        "No; requires medical record and medication supplier details not related to telemetry uploads.",
+        "Yes; if uploads are missing for the device, you may list devices (e.g., with a status filter) based on that result.",
+        "Yes; uses the device_id and dates returned by the upload listing to fetch a specific upload artifact.",
+        "No; needs a record_id and takes a free-form note; telemetry outputs don’t provide the required record context."
+      ]
+    ],
+    [
+      [
+        "Entry-point auth function; it neither consumes nor is driven by interaction results.",
+        "Entry-point auth function; not triggered by drug interaction outcomes.",
+        "Requires patient_id (not produced) and is typically used before interaction checking, not driven by its result.",
+        "Needs appointment_id; interaction results neither supply it nor directly trigger fetching appointment details.",
+        "Needs provider_id; interaction results don’t supply it or directly necessitate fetching provider details.",
+        "Requires record_id/appointment_id; interaction output doesn’t provide these and doesn’t directly require retrieval.",
+        "After detecting a risky interaction, the system may fetch regimen alternatives for the patient (decision driven by the interaction result).",
+        "A serious interaction may prompt documenting the incident by first listing the patient’s records to find the right one (execution driven by result).",
+        "If an interaction is concerning, the system may list providers (e.g., primary care, pharmacy consult) to arrange follow-up (execution driven by result).",
+        "Listing appointments isn’t directly required by the interaction evaluation and doesn’t use its output.",
+        "Supplier lookup is unrelated to interaction risk evaluation and doesn’t use the interaction result as input.",
+        "Self-edge not allowed; the function cannot be its own neighbor.",
+        "A significant interaction can trigger scheduling an urgent telehealth visit (execution decision based on interaction finding).",
+        "Cancellation requires an appointment_id and is not a typical direct consequence of an interaction check result.",
+        "Rescheduling similarly needs appointment_id and isn’t directly driven by the interaction result.",
+        "Unrelated math utility; does not consume or respond to interaction outcomes.",
+        "Internal thinking/logging tool; not part of patient workflow driven by interaction results.",
+        "Severe or unclear interaction findings can trigger escalation to human support (execution decision based on result).",
+        "Updating a prescription’s supplier is unrelated to interaction evaluation outputs.",
+        "Telemetry device listing is unrelated to medication interaction checks.",
+        "Telemetry uploads are unrelated to drug interaction outcomes.",
+        "Interaction findings can be appended into the medical record as a note (interaction result becomes part of the note input)."
+      ]
+    ],
+    [
+      [
+        "Entry-point lookup by email; no value from a scheduled appointment is used as its input.",
+        "Entry-point lookup by name/DOB; scheduling output does not feed into it.",
+        "Can use the appointment’s patient_id to fetch detailed patient info.",
+        "Can use the returned appointment_id to retrieve the full appointment details.",
+        "Can use the appointment’s provider_id to get provider information.",
+        "Can use the returned appointment_id to fetch the medical record tied to that visit (when available).",
+        "Can use the appointment’s patient_id to compute/compare regimen options.",
+        "Can use the appointment’s patient_id to list their medical records.",
+        "Takes an optional specialty filter, but no compatible value comes from the scheduling result (no specialty provided).",
+        "Can use the appointment’s patient_id to list all of the patient’s appointments, including the new one.",
+        "Requires a medication name; nothing from the scheduling output provides this.",
+        "Requires a device_id (and optional dates); the scheduling result provides neither device context nor relevant IDs.",
+        "Requires medication names; appointment scheduling output does not include them.",
+        "No self-edge allowed; the target function cannot be its own neighbor.",
+        "Can directly use the new appointment_id to cancel the just-scheduled visit if necessary.",
+        "Can directly use the new appointment_id to move the visit to a new time/date.",
+        "Math calculation is unrelated to the appointment output.",
+        "Thought logging doesn’t consume any scheduling output values.",
+        "If scheduling fails or needs special handling, that outcome can trigger a transfer to human support (output influences execution).",
+        "Needs a medical record_id and supplier fields not produced by scheduling.",
+        "Telemetry device listing doesn’t take any value from the appointment output.",
+        "Needs a device_id; appointment output doesn’t provide device context (date alone isn’t sufficient here).",
+        "Needs a medical record_id to update; the scheduling result does not supply one."
+      ]
+    ],
+    [
+      [
+        "Entry-point identity lookup; not triggered by cancellation output.",
+        "Entry-point identity lookup; not triggered by cancellation output.",
+        "Needs patient_id, which the cancel call doesn’t output directly (it mainly yields appointment_id/status).",
+        "Can immediately fetch the canceled appointment’s details using the appointment_id from the cancel result.",
+        "Needs provider_id, which isn’t produced by the cancel call without an extra lookup.",
+        "Can use the appointment_id from the canceled appointment to retrieve any associated medical record.",
+        "Unrelated to appointment cancellation flow and inputs.",
+        "Requires patient_id; cancel output doesn’t provide it directly, so no direct linkage.",
+        "After a successful cancel, the system may list providers to rebook; the cancel outcome triggers this action.",
+        "After canceling, refreshing the patient’s appointments to confirm updated status is a common next step driven by the cancel result.",
+        "Medication supplier search is unrelated to appointment cancellation.",
+        "Telemetry uploads are unrelated to appointment cancellation.",
+        "Drug interaction checking is unrelated to appointment cancellation.",
+        "After canceling, scheduling a new appointment is a typical next step; the cancel outcome drives this call.",
+        "No self-edge: the target function cannot be its own neighbor.",
+        "If cancellation is denied or user opts to change time instead, rescheduling with the same appointment_id is driven by the cancel result.",
+        "General math calculation is unrelated to appointment cancellation.",
+        "Internal thinking/logging is not driven by the cancel output.",
+        "If cancellation fails or needs an exception, escalation to human support is triggered by the cancel outcome.",
+        "Prescription supplier updates are unrelated to appointment cancellation.",
+        "Telemetry device listing is unrelated to appointment cancellation.",
+        "Specific telemetry upload retrieval is unrelated to appointment cancellation.",
+        "Needs record_id; cancel output doesn’t supply it, so you’d first fetch the record via another call."
+      ]
+    ],
+    [
+      [
+        "FindPatientByEmail is an entry-point (needs only email) and isn’t driven by any output of reschedule_appointment.",
+        "FindPatientByNameDOB is an entry-point (needs name/DOB) and isn’t driven by reschedule_appointment output.",
+        "After rescheduling, the updated appointment typically includes patient_id, which can be used to fetch patient details.",
+        "The appointment_id (and new date/time) from reschedule_appointment can be used to retrieve the full, updated appointment details.",
+        "The rescheduled appointment commonly includes provider_id, enabling retrieval of the provider’s details post-change.",
+        "get_medical_record accepts appointment_id, which is available from the rescheduled appointment, to fetch associated records.",
+        "Regimen options require patient_id but are not a typical or direct follow-up to an appointment reschedule; reschedule output doesn’t drive this call.",
+        "Listing patient medical records isn’t driven by the reschedule result; it requires patient_id and isn’t a direct consequence of the update.",
+        "Listing available providers isn’t dependent on the rescheduled appointment’s output (no shared required inputs).",
+        "Using the patient_id from the updated appointment, one might list all of the patient’s appointments to confirm the new schedule.",
+        "Medication supplier lookup is unrelated to appointment rescheduling and shares no inputs.",
+        "Telemetry uploads are unrelated to appointment rescheduling and share no inputs.",
+        "Drug interaction checks are unrelated to appointment rescheduling and share no inputs.",
+        "Scheduling a new appointment doesn’t depend on the reschedule result even if IDs are known; it’s a separate flow.",
+        "If the rescheduled time doesn’t work, the same appointment_id can be used to cancel the appointment.",
+        "No self-edge: RescheduleAppointment cannot be a neighbour of itself.",
+        "A generic math calculation isn’t influenced by or dependent on the reschedule output.",
+        "The internal Think tool isn’t driven by reschedule output and doesn’t consume it.",
+        "If rescheduling fails or conflicts, that outcome can directly trigger a transfer to human support (execution decision influenced by result).",
+        "Updating a prescription’s supplier is unrelated to rescheduling and shares no required inputs.",
+        "Telemetry device listing is unrelated to appointment rescheduling and shares no inputs.",
+        "Getting a specific telemetry upload is unrelated to appointment rescheduling and shares no inputs.",
+        "Updating a medical record note requires record_id, which isn’t produced directly by reschedule_appointment (would need another step)."
+      ]
+    ],
+    [
+      [
+        "Entry-point auth by email expects an email string; a numeric calculation result cannot be used here.",
+        "Entry-point auth by name/DOB expects strings; calculation output isn’t applicable and these functions shouldn’t have incoming edges.",
+        "Requires patient_id string; a calculated numeric result doesn’t feed this input.",
+        "Requires appointment_id string; calculation output isn’t used.",
+        "Requires provider_id string; calculation output isn’t used.",
+        "Takes record_id/appointment_id strings; no use for a numeric calculation result.",
+        "Needs patient_id string; calculation output isn’t used.",
+        "Accepts an integer limit; the calculated number can set how many records to return (e.g., 2+3=5).",
+        "Only specialty string is accepted; calculation result isn’t used.",
+        "Needs patient_id/status strings; calculation output isn’t used.",
+        "Accepts an integer limit; the calculated number can cap the number of suppliers listed.",
+        "Accepts an integer limit; the calculated number can cap telemetry uploads returned.",
+        "Inputs are medication names/arrays; calculation result isn’t relevant.",
+        "Inputs are IDs, date/time, and flags/notes; no direct numeric parameter to pass the calculation result.",
+        "Requires appointment_id string; calculation result isn’t used.",
+        "Requires appointment_id and new date/time strings; calculation output isn’t used.",
+        "Self edge is not allowed.",
+        "Requires a thought string; calculation output isn’t a direct parameter here.",
+        "Requires a reason string; calculation output doesn’t directly drive this call.",
+        "Has a numeric price_usd field; the calculated result can be used as the computed price (e.g., after discount/conversion).",
+        "Has an integer limit; the calculated number can control how many devices to list.",
+        "Requires device_id/date strings; calculation output isn’t used.",
+        "Requires a note string; calculation result isn’t a direct parameter."
+      ]
+    ],
+    [
+      [
+        "FindPatientByEmail is an entry-point lookup and its input (email) is unrelated to Think’s logged thought; such functions shouldn’t have incoming edges.",
+        "FindPatientByNameDOB requires structured identity fields, not a free-form thought, and is an entry-point lookup.",
+        "GetPatientDetails needs a patient_id; Think’s output is a generic thought and not a patient_id.",
+        "GetAppointmentDetails needs an appointment_id; the thought log isn’t that identifier.",
+        "GetProviderDetails needs a provider_id; Think does not output such IDs.",
+        "GetMedicalRecord expects a record_id/appointment_id; a thought string is not that structured identifier.",
+        "GetRegimenOptions requires patient_id, which isn’t produced by Think.",
+        "ListPatientMedicalRecords requires patient_id; Think’s output doesn’t supply it.",
+        "ListAvailableProviders optionally takes a specialty, but Think doesn’t produce a reliable structured specialty value and doesn’t directly feed this call.",
+        "ListPatientAppointments requires patient_id; Think doesn’t output it.",
+        "ListMedicationSuppliers needs a medication name (and optional filters); a generic thought isn’t a direct input here.",
+        "ListTelemetryUploads requires device_id/dates; a thought doesn’t provide those.",
+        "CheckDrugInteractions needs specific medication inputs; Think doesn’t produce those lists/values.",
+        "ScheduleAppointment needs multiple structured fields; Think’s output isn’t used as any required input.",
+        "CancelAppointment needs appointment_id; the thought log isn’t that ID.",
+        "RescheduleAppointment needs appointment_id plus new date/time; Think doesn’t supply these inputs.",
+        "Calculate accepts a free-form expression string; a thought can directly be that expression, so the Think output can be passed as input.",
+        "Think cannot be its own neighbour (no self edge).",
+        "TransferToHumanSupport accepts a free-text reason; the thought content can be used as that reason and the thought can trigger the transfer decision.",
+        "UpdatePrescriptionSupplier needs structured supplier and medication fields; a thought string isn’t used as input here.",
+        "ListTelemetryDevices may take a status filter, but Think doesn’t provide a concrete, structured status value to feed it directly.",
+        "GetTelemetryUpload needs device_id and date; a thought does not provide those inputs.",
+        "UpdateMedicalRecordNote accepts a free-text note; the thought text can directly serve as the note content (with record_id supplied from elsewhere)."
+      ]
+    ],
+    [
+      [
+        "FindPatientByEmail is an entry/authentication function and does not consume any output from a transfer; transfer is a terminal action.",
+        "FindPatientByNameDOB is an entry/authentication function and does not take any output from the transfer; transfer ends automation.",
+        "GetPatientDetails requires a patient_id which the transfer call does not output; transfer is terminal.",
+        "GetAppointmentDetails requires an appointment_id not produced by the transfer call; transfer is terminal.",
+        "GetProviderDetails requires a provider_id not produced by the transfer call; transfer is terminal.",
+        "GetMedicalRecord needs a record_id/appointment_id which the transfer call does not provide; transfer is terminal.",
+        "GetRegimenOptions needs a patient_id which is not an output of the transfer call; transfer is terminal.",
+        "ListPatientMedicalRecords needs a patient_id not provided by the transfer call; transfer is terminal.",
+        "ListAvailableProviders has no required inputs but is not triggered or influenced by the transfer output; the transfer ends the automated flow.",
+        "ListPatientAppointments needs a patient_id not produced by the transfer call; transfer is terminal.",
+        "ListMedicationSuppliers needs a medication input that is not an output of the transfer call; transfer is terminal.",
+        "ListTelemetryUploads needs a device_id not produced by the transfer call; transfer is terminal.",
+        "CheckDrugInteractions needs medication inputs not produced by the transfer call; transfer is terminal.",
+        "ScheduleAppointment needs patient/provider/time inputs not produced by the transfer call; transfer is terminal.",
+        "CancelAppointment needs an appointment_id not produced by the transfer call; transfer is terminal.",
+        "RescheduleAppointment needs an appointment_id and new time not produced by the transfer call; transfer is terminal.",
+        "Calculate is unrelated and not triggered by transfer output; transfer is terminal.",
+        "Think is unrelated logging and not triggered by transfer output; transfer is terminal.",
+        "TransferToHumanSupport cannot be its own neighbor (no self-edge).",
+        "UpdatePrescriptionSupplier needs record/supplier details not produced by the transfer call; transfer is terminal.",
+        "ListTelemetryDevices is not triggered or influenced by the transfer output; transfer ends the automated flow.",
+        "GetTelemetryUpload needs a device_id/date not produced by the transfer call; transfer is terminal.",
+        "UpdateMedicalRecordNote needs a record_id/note and is not triggered by any transfer output; transfer is terminal."
+      ]
+    ],
+    [
+      [
+        "Entry-point lookup; its input (email) and behavior aren’t driven by a supplier update, and such functions shouldn’t have incoming edges.",
+        "Entry-point lookup; its inputs (name, DOB) aren’t driven by the supplier update, and this function shouldn’t have incoming edges.",
+        "Requires patient_id; a supplier/price update on a record doesn’t provide patient_id nor directly trigger this call.",
+        "Needs appointment_id; updating supplier info in a record doesn’t yield or influence appointment retrieval.",
+        "Provider details aren’t affected by changing supplier/brand/price on a prescription record.",
+        "After updating the prescription’s supplier/price, you may fetch the medical record by record_id to verify changes—the update directly motivates this retrieval.",
+        "Updating brand/price in the medical record can change cost calculations; you might recompute regimen options afterward, so the update influences this call.",
+        "Lists records by patient_id; the supplier update doesn’t supply patient_id nor directly prompt listing.",
+        "Provider availability isn’t affected by a prescription supplier update.",
+        "Appointment listing isn’t driven by a change to supplier/price on a prescription.",
+        "Typically used before choosing a supplier; the update’s result isn’t required as input to list suppliers.",
+        "Telemetry uploads are unrelated to prescription supplier updates.",
+        "Drug interaction checks depend on medications, not supplier/brand/price changes.",
+        "Scheduling isn’t directly driven by a supplier update outcome.",
+        "Cancellation is unrelated to a prescription supplier update.",
+        "Rescheduling is unrelated to a prescription supplier update.",
+        "The math calculator doesn’t directly consume the update’s output as its input in this flow.",
+        "Internal thinking/logging tool, not a business step triggered by the supplier update.",
+        "If the update fails/conflicts or needs human intervention, the update outcome can directly trigger transfer to human support (sink node).",
+        "Self-edge is not allowed; the target function cannot be its own neighbour.",
+        "Telemetry device listing is unrelated to prescription supplier updates.",
+        "Fetching a telemetry upload is unrelated to prescription supplier updates.",
+        "Common to append an audit/compliance note on the same record right after changing supplier/price; the update directly motivates this note."
+      ]
+    ],
+    [
+      [
+        "Entry-point auth by email; device list output provides no email and does not drive this call.",
+        "Entry-point auth by name/DOB; device list output provides none of these.",
+        "Needs patient_id; ListTelemetryDevices returns device info (e.g., device_id), not patient_id.",
+        "Needs appointment_id; unrelated to the telemetry device list output.",
+        "Needs provider_id; unrelated to telemetry device listing.",
+        "Needs record_id/appointment_id; telemetry device list does not supply these.",
+        "Needs patient_id; telemetry device listing does not provide it.",
+        "Needs patient_id; no direct linkage from device list output.",
+        "Provider listing is independent; device list output is not used.",
+        "Needs patient_id; device list output is not used.",
+        "Medication supplier search is unrelated to telemetry devices.",
+        "True: Uses device_id from the listed telemetry devices to fetch their uploads.",
+        "Drug interaction checking is unrelated to telemetry devices listing.",
+        "Scheduling requires patient/provider/time info; device list doesn’t supply inputs and only indirectly affects decisions at best.",
+        "Cancel needs appointment_id; no relation to device list output.",
+        "Reschedule needs appointment_id and new date/time; not driven by device list output.",
+        "Generic math utility; not related to telemetry devices.",
+        "Internal thought utility; no dependency on device list.",
+        "True: If the device list is empty or shows missing/overdue status, that output can trigger escalation to human support.",
+        "Prescription supplier update is unrelated to telemetry devices.",
+        "Self-edge not allowed.",
+        "True: Uses device_id from the listed devices to retrieve a specific upload by date.",
+        "Would require record_id; device list output doesn’t provide it and any influence would be too indirect."
+      ]
+    ],
+    [
+      [
+        "Entry-point auth by email; cannot be triggered by a telemetry upload result and typically has no incoming edge.",
+        "Entry-point auth by name/DOB; not driven by a telemetry upload and typically has no incoming edge.",
+        "Requires patient_id, which the telemetry artifact doesn’t explicitly provide; no clear input match from the upload.",
+        "Needs appointment_id; unrelated to a telemetry upload artifact.",
+        "Needs provider_id; unrelated to the telemetry upload output.",
+        "Requires record_id or appointment_id; not provided by the upload.",
+        "Needs patient_id; no direct input from telemetry upload.",
+        "Needs patient_id; the upload output doesn’t supply it.",
+        "Abnormal telemetry could prompt finding providers by specialty; upload result can directly influence calling this (criterion 3).",
+        "Needs patient_id and status; not derivable from the upload output, so no clear link.",
+        "Medication supplier search is unrelated to telemetry data.",
+        "After fetching a specific upload, one may list other uploads around that date/device; the upload result can drive this follow-up (criterion 3).",
+        "Drug interaction checks require medication lists; unrelated to telemetry upload output.",
+        "If telemetry shows a concerning finding, it can trigger scheduling a visit; upload result directly influences execution (criterion 3).",
+        "Canceling a visit isn’t naturally triggered by viewing a telemetry upload.",
+        "Rescheduling isn’t naturally triggered by viewing a telemetry upload.",
+        "Generic calculator is not meaningfully driven by a telemetry upload result.",
+        "Internal thought/logging tool; not an API neighbor driven by the upload.",
+        "If the upload is missing/corrupt or indicates urgent risk, escalate to human support; upload result influences this action (criterion 3).",
+        "Updating prescription supplier is unrelated to telemetry uploads.",
+        "If retrieval fails or shows device issues, listing devices by status (e.g., missing_overdue) is a follow-up influenced by the result (criterion 3).",
+        "No self-edge; the target cannot be its own neighbor.",
+        "Commonly, the upload details (summary/URL/metrics) are appended as a note/metadata to a medical record; upload output becomes part of the note input (criterion 2)."
+      ]
+    ],
+    [
+      [
+        "Entry-point lookup by email; update note output doesn’t provide an email and this function typically has no incoming edges.",
+        "Entry-point lookup by name/DOB; update note output doesn’t provide these fields and this function has no incoming edges.",
+        "Requires patient_id; the note update’s result is about a record and doesn’t provide a patient_id as usable input.",
+        "Requires appointment_id; the note update output doesn’t yield an appointment_id to feed this call.",
+        "Requires provider_id; the note update output doesn’t provide a provider_id.",
+        "Uses record_id; the note update result confirms/returns the record_id which can be used to fetch the updated medical record.",
+        "Requires patient_id; the note update output doesn’t provide it for input.",
+        "Requires patient_id; the note update output doesn’t provide it.",
+        "Provider listing is unrelated to the note update output.",
+        "Requires patient_id; the note update output doesn’t provide it.",
+        "Needs a medication name; unrelated to the note update output.",
+        "Needs device_id/date; unrelated to the note update output.",
+        "Needs medications; the note update output doesn’t supply them.",
+        "Scheduling needs patient/provider/date/time; not influenced by the note update output.",
+        "Needs appointment_id; not produced by the note update output.",
+        "Needs appointment_id; not produced by the note update output.",
+        "Generic math utility; unrelated to the note update output.",
+        "Internal thought/log; not driven by the note update output.",
+        "If the note update fails or triggers escalation, that outcome directly prompts transferring to human support (reason derived from result).",
+        "Can reuse the record_id confirmed by the note update to modify supplier info within the same medical record.",
+        "Telemetry device list is unrelated to the note update output.",
+        "Telemetry upload retrieval is unrelated to the note update output.",
+        "No self-edge; the target function cannot be its own neighbor."
+      ]
+    ]
+  ]
+}

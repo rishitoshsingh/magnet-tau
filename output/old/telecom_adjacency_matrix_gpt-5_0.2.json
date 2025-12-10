@@ -1,0 +1,1267 @@
+{
+  "tools": [
+    {
+      "name": "Calculate",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "calculate",
+          "description": "Calculate the result of a mathematical expression.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "expression": {
+                "type": "string",
+                "description": "The mathematical expression to calculate, such as '2 + 2'. The expression can contain numbers, operators (+, -, *, /), parentheses, and spaces."
+              }
+            },
+            "required": [
+              "expression"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "Think",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "think",
+          "description": "Use the tool to think about something. It will not obtain new information or change the database, but just append the thought to the log. Use it when complex reasoning or some cache memory is needed.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "thought": {
+                "type": "string",
+                "description": "A thought to think about."
+              }
+            },
+            "required": [
+              "thought"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "FindCustomerByEmail",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "find_customer_by_email",
+          "description": "Find a customer by their email address.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "email": {
+                "type": "string",
+                "description": "The customer's email address, such as 'john.smith@email.com'."
+              }
+            },
+            "required": [
+              "email"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "FindCustomerByPhone",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "find_customer_by_phone",
+          "description": "Find a customer by their phone number.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "phone": {
+                "type": "string",
+                "description": "The customer's phone number, such as '(555) 123-4567'."
+              }
+            },
+            "required": [
+              "phone"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "GetCustomerDetails",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "get_customer_details",
+          "description": "Get detailed information about a customer, including their account, services, and devices.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "customer_id": {
+                "type": "string",
+                "description": "The customer's unique identifier, such as 'first_last_1234'."
+              }
+            },
+            "required": [
+              "customer_id"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "GetServiceDetails",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "get_service_details",
+          "description": "Get detailed information about a telecom service.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "service_id": {
+                "type": "string",
+                "description": "The service identifier, such as 'mobile_unlimited' or 'internet_fiber_1gb'."
+              }
+            },
+            "required": [
+              "service_id"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "GetDeviceDetails",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "get_device_details",
+          "description": "Get detailed information about a device on the market",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "device_name": {
+                "type": "string",
+                "description": "The name of the device to get details about.Options: iPhone 15 ProiPhone 14iPhone 13Samsung Galaxy S23iPhone 12iPhone 15Google Pixel 8Samsung Galaxy A54iPhone SE (3rd gen)WiFi 6 RouterStandard WiFi RouterEnterprise RouterBasic WiFi RouterSamsung 65\" Smart TVHD Cable Box55\" Smart TVConference Room TVConference Phone SystemHome Security System"
+              }
+            },
+            "required": [
+              "device_name"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "GetBillingDetails",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "get_billing_details",
+          "description": "Get billing information for a customer, including current balance, payment history, and monthly charges.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "customer_id": {
+                "type": "string",
+                "description": "The customer's unique identifier, such as 'john_smith_1234'."
+              }
+            },
+            "required": [
+              "customer_id"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "ManageService",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "manage_service",
+          "description": "Manage customer services: add, remove, suspend, activate, or list services.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "customer_id": {
+                "type": "string",
+                "description": "The customer's unique identifier, such as 'john_smith_1234'."
+              },
+              "action": {
+                "type": "string",
+                "description": "Action to perform: 'add', 'remove', or 'list'."
+              },
+              "service_id": {
+                "type": "string",
+                "description": "Service identifier (required for add/remove/suspend/activate), such as 'mobile_unlimited'."
+              },
+              "devices_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "The device ids. Should be a list of strings corresponding to the device ids in the customer's list of devices."
+              }
+            },
+            "required": [
+              "customer_id",
+              "action"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "TroubleshootDevice",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "troubleshoot_device",
+          "description": "Provide troubleshooting steps for device issues.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "device_name": {
+                "type": "string",
+                "description": "The device name, such as 'iPhone 15 Pro' or 'WiFi 6 Router'."
+              },
+              "issue": {
+                "type": "string",
+                "description": "Description of the issue with the device. Options: no_service, slow_speeds, battery_drain."
+              }
+            },
+            "required": [
+              "device_name",
+              "issue"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "CreateSupportTicket",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "create_support_ticket",
+          "description": "Create a new support ticket for a customer.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "customer_id": {
+                "type": "string",
+                "description": "The customer's unique identifier, such as 'john_smith_1234'."
+              },
+              "category": {
+                "type": "string",
+                "description": "Ticket category: 'mobile', 'internet', 'tv', 'billing', 'account', 'device', 'security', or 'phone'."
+              },
+              "priority": {
+                "type": "string",
+                "description": "Priority level: 'low', 'medium', 'high', or 'urgent'. Defaults to 'medium'.                             Low is non-urgent, medium is standard, high is important, and urgent is critical (within 24 hours)"
+              }
+            },
+            "required": [
+              "customer_id",
+              "category"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "GetSupportTicketDetails",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "get_support_ticket_details",
+          "description": "Get details of a support ticket.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "ticket_id": {
+                "type": "string",
+                "description": "The support ticket identifier, such as 'TICKET001'."
+              }
+            },
+            "required": [
+              "ticket_id"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "AddDevice",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "add_device",
+          "description": "Add a device to a customer.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "customer_id": {
+                "type": "string",
+                "description": "The customer's unique identifier, such as 'john_smith_1234'."
+              },
+              "device_name": {
+                "type": "string",
+                "description": "The name of the device to add.Options: iPhone 15 ProiPhone 14iPhone 13Samsung Galaxy S23iPhone 12iPhone 15Google Pixel 8Samsung Galaxy A54iPhone SE (3rd gen)WiFi 6 RouterStandard WiFi RouterEnterprise RouterBasic WiFi RouterSamsung 65\" Smart TVHD Cable Box55\" Smart TVConference Room TVConference Phone SystemHome Security System"
+              }
+            },
+            "required": [
+              "customer_id",
+              "device_name"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "ManageBilling",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "manage_billing",
+          "description": "Manage customer billing: paperless, auto_pay, or billing_cycle.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "customer_id": {
+                "type": "string",
+                "description": "The customer's unique identifier, such as 'john_smith_1234'."
+              },
+              "paperless": {
+                "type": "boolean",
+                "description": "Paperless billing."
+              },
+              "auto_pay": {
+                "type": "boolean",
+                "description": "Auto pay."
+              },
+              "billing_cycle": {
+                "type": "string",
+                "items": {
+                  "type": "string"
+                },
+                "description": "The billing cycle. Should be a string. Options are: monthly, quarterly, annual."
+              }
+            },
+            "required": [
+              "customer_id",
+              "paperless",
+              "auto_pay",
+              "billing_cycle"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "GetServices",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "get_services",
+          "description": "Get detailed information about all telecom services.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": []
+          }
+        }
+      }
+    },
+    {
+      "name": "GetSeniorDiscount",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "get_senior_discount",
+          "description": "Apply a fixed $5 senior discount to the provided service price.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "original_price": {
+                "type": "string",
+                "description": "Original price before applying the senior discount, e.g. '95.00'."
+              }
+            },
+            "required": [
+              "original_price"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "ModifySupportTicket",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "modify_support_ticket",
+          "description": "Modify the status and priority of a support ticket.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "ticket_id": {
+                "type": "string",
+                "description": "The support ticket identifier, such as 'TICKET001'."
+              },
+              "status": {
+                "type": "string",
+                "description": "The status of the support ticket, such as 'open' or 'closed'."
+              },
+              "priority": {
+                "type": "string",
+                "description": "The priority of the support ticket, such as 'low', 'medium', 'high', or 'urgent'."
+              }
+            },
+            "required": [
+              "ticket_id",
+              "status",
+              "priority"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "RecordPayment",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "record_payment",
+          "description": "Apply a payment to a customer account and update the remaining balance.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "customer_id": {
+                "type": "string",
+                "description": "Unique customer identifier, e.g. 'lisa_chen_3456'."
+              },
+              "amount": {
+                "type": "number",
+                "description": "Payment amount to apply."
+              },
+              "method": {
+                "type": "string",
+                "description": "Payment method used. Options: credit_card, bank_transfer  ."
+              },
+              "date": {
+                "type": "string",
+                "description": "Payment date in ISO format, e.g. '2025-09-18'."
+              }
+            },
+            "required": [
+              "customer_id",
+              "amount",
+              "method",
+              "date"
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "adjacency_matrix": [
+    [
+      [
+        false,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        true
+      ]
+    ],
+    [
+      [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
+    ],
+    [
+      [
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        true,
+        true,
+        false,
+        true,
+        false,
+        true,
+        true,
+        false,
+        false,
+        false,
+        true
+      ]
+    ],
+    [
+      [
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        true,
+        true,
+        false,
+        true,
+        false,
+        true,
+        true,
+        false,
+        false,
+        false,
+        true
+      ]
+    ],
+    [
+      [
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false,
+        true,
+        true,
+        true,
+        false,
+        false,
+        true
+      ]
+    ],
+    [
+      [
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        true,
+        false,
+        true,
+        false,
+        true,
+        false,
+        false,
+        true,
+        false,
+        false
+      ]
+    ],
+    [
+      [
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        true,
+        false,
+        true,
+        true,
+        false,
+        false
+      ]
+    ],
+    [
+      [
+        true,
+        false,
+        false,
+        false,
+        true,
+        true,
+        true,
+        false,
+        true,
+        false,
+        true,
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true
+      ]
+    ],
+    [
+      [
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        false,
+        true,
+        false,
+        false,
+        true,
+        false,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
+    ],
+    [
+      [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false
+      ]
+    ],
+    [
+      [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false
+      ]
+    ],
+    [
+      [
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false,
+        true,
+        true,
+        true,
+        false,
+        true,
+        true
+      ]
+    ],
+    [
+      [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
+    ],
+    [
+      [
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        true,
+        false,
+        false,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true
+      ]
+    ],
+    [
+      [
+        true,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false
+      ]
+    ],
+    [
+      [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true
+      ]
+    ],
+    [
+      [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
+    ],
+    [
+      [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false
+      ]
+    ]
+  ],
+  "reason_matrix": [
+    [
+      [
+        "No — this is the same function as the target; self-edges are not allowed.",
+        "Yes — the computed result can be embedded into the 'thought' string to log what was calculated.",
+        "No — this is an entry-point requiring an email; the calculation result is not an email and entry points have no incoming edges.",
+        "No — this is an entry-point requiring a phone number; the calculation result is not a phone and entry points have no incoming edges.",
+        "No — requires a customer_id, which is not produced by a math calculation.",
+        "No — requires a service_id string; a numeric calculation result doesn’t provide this.",
+        "No — requires a device_name; the calculation output is not used here.",
+        "No — requires a customer_id; the calculation result is unrelated.",
+        "No — requires customer_id/action (and optionally service/devices); the calculation output isn’t used.",
+        "No — requires device_name and issue; a numeric calculation result doesn’t apply.",
+        "No — requires customer_id and category (and optional priority); the calculation result is not used.",
+        "No — requires a ticket_id; the calculation result is not a ticket identifier.",
+        "No — requires customer_id and device_name; the calculation output is irrelevant.",
+        "No — expects booleans and a billing_cycle; the numeric calculation result isn’t an input here.",
+        "No — this function takes no inputs and does not consume or depend on the calculation result.",
+        "Yes — the calculated value can be used as the original_price (converted to string) to apply the $5 discount.",
+        "No — requires ticket_id/status/priority; the calculation result isn’t used as any of these.",
+        "Yes — the calculated numeric result can directly be used as the 'amount' when recording a payment."
+      ]
+    ],
+    [
+      [
+        "Think only appends an internal thought to a log and does not output a calculable expression for calculate(expression), so no direct I/O link.",
+        "Self-edge is not allowed; the target function cannot be its own neighbour.",
+        "This is an entry/lookup by email and requires an email; Think produces no email output and generally has no incoming edges.",
+        "This is an entry/lookup by phone and requires a phone; Think produces no phone output and generally has no incoming edges.",
+        "Requires customer_id; Think does not output a customer_id or related identifier.",
+        "Requires service_id; Think does not output a service_id.",
+        "Requires device_name; Think does not output a device_name.",
+        "Requires customer_id; Think does not output a customer_id.",
+        "Requires customer_id, action (and possibly service/device ids); Think outputs no such data.",
+        "Requires device_name and issue; Think does not output these fields.",
+        "Requires customer_id and category; Think outputs neither.",
+        "Requires ticket_id; Think does not output a ticket_id.",
+        "Requires customer_id and device_name; Think outputs neither.",
+        "Requires customer_id and billing options; Think outputs none of these.",
+        "No input required, but Think’s output does not directly trigger or parameterize its execution; no direct dependency.",
+        "Requires original_price; Think does not output a price value.",
+        "Requires ticket_id/status/priority; Think outputs none of these.",
+        "Requires customer_id, amount, method, date; Think outputs none of these."
+      ]
+    ],
+    [
+      [
+        "FindCustomerByEmail returns customer info (e.g., customer_id), which is not used as a mathematical expression input.",
+        "Does not take customer data; it just logs a thought, so the find result is not an input.",
+        "Self-edge is not allowed; the target function cannot be its own neighbour.",
+        "Finder functions are entry points and generally do not have incoming edges; although a phone could be extracted from the customer record, this is treated as a separate lookup entry step.",
+        "After finding a customer, their customer_id can be used to fetch detailed info, so the output directly supplies the required input.",
+        "Requires a service_id, which is not directly produced by the email lookup (typically obtained after fetching customer/services), so not a direct neighbour.",
+        "Requires a device_name, not provided by the email lookup output.",
+        "Uses customer_id from the find result to retrieve billing details.",
+        "Uses customer_id from the find result to add/remove/list services.",
+        "Needs device_name and issue; neither comes from the email lookup result.",
+        "Uses customer_id from the find result to open a support ticket.",
+        "Requires a ticket_id, which is not produced by the email lookup.",
+        "Uses customer_id from the find result to add a device to the customer's account.",
+        "Uses customer_id from the find result to update billing preferences.",
+        "Has no inputs and is independent of the email lookup result.",
+        "Requires an original price, not related to the email lookup output.",
+        "Requires ticket_id, which is not produced by the email lookup.",
+        "Uses customer_id from the find result to record a payment."
+      ]
+    ],
+    [
+      [
+        "Does not take any customer-related input; output of FindCustomerByPhone is not used.",
+        "Generic reasoning/logging tool; does not consume customer data from phone lookup.",
+        "Entry-point finder function (no incoming edges per rule) and requires an email, not phone-lookup output.",
+        "No self edge is allowed; target function cannot be its own neighbour.",
+        "Takes customer_id that would come from the phone lookup result, so it can follow the target.",
+        "Requires a service_id, which is not produced directly by a phone lookup.",
+        "Requires a device_name, which the phone lookup does not provide.",
+        "Requires customer_id, which the phone lookup provides, so it can follow the target.",
+        "Requires customer_id (from phone lookup) along with action; thus can follow the target.",
+        "Needs device_name and issue; not directly derived from phone lookup output.",
+        "Needs customer_id, which comes from the phone lookup result, so it can be called next.",
+        "Requires a ticket_id, not provided by phone lookup; unrelated to the target's output.",
+        "Uses customer_id from the phone lookup to add a device.",
+        "Uses customer_id from the phone lookup to manage billing settings.",
+        "Has no inputs and is not influenced by the phone lookup result.",
+        "Requires an original_price string; unrelated to phone lookup output.",
+        "Requires ticket_id and status/priority; not driven by phone lookup output.",
+        "Requires customer_id from the phone lookup to record a payment."
+      ]
+    ],
+    [
+      [
+        "Does not consume customer details; requires a math expression string unrelated to the target's output.",
+        "Takes only a thought string and is not driven by customer data, so target output isn't used.",
+        "Entry-point lookup by email; cannot have incoming edges and does not take the target's output.",
+        "Entry-point lookup by phone; cannot have incoming edges and does not take the target's output.",
+        "No self-edge allowed.",
+        "Customer details include service identifiers that can be passed as service_id to fetch each service’s details.",
+        "Customer details list devices, allowing their names to be used as device_name to fetch device information.",
+        "The returned customer details include the customer_id, which can be used to request billing info.",
+        "Use customer_id from details and service/device IDs from the customer’s data to add/remove/list services.",
+        "Use device_name from the customer’s devices to troubleshoot a reported issue.",
+        "Use customer_id from details and choose a category based on the services/devices to open a ticket.",
+        "Requires a ticket_id, which is not provided by the customer details and not directly influenced.",
+        "Use customer_id from details to add a selected device to the customer.",
+        "Use customer_id from details; account info can guide paperless/auto-pay/billing-cycle changes.",
+        "Seeing the customer’s current services can trigger listing all services for recommendations; target output influences the call.",
+        "Needs an original_price string; customer details do not provide a price value to pass.",
+        "Needs a ticket_id; customer details do not provide or determine a specific ticket to modify.",
+        "Use customer_id from details to record a payment (amount/method/date supplied separately)."
+      ]
+    ],
+    [
+      [
+        "Use service details (e.g., monthly price) to compute totals/taxes via a math expression.",
+        "Does not take any data from service details; it is a generic reasoning tool not data-dependent.",
+        "Entry-point search by email; requires email and cannot take output from service details.",
+        "Entry-point search by phone; not fed by service details output.",
+        "Needs customer_id, which service details do not provide.",
+        "No self edge; same function cannot be its own neighbor.",
+        "Service details may include a recommended/required device name (e.g., router/TV box) that can be passed here.",
+        "Needs customer_id and is unrelated to a specific service’s details.",
+        "Use the retrieved service_id (and knowledge of features/eligibility) to add/remove the service for a customer.",
+        "Requires device_name and issue; those are not produced by service details.",
+        "Service details reveal service type (mobile/internet/tv), which can set the ticket category and trigger ticket creation.",
+        "Needs ticket_id, which is not obtained from service details.",
+        "If the service includes/recommends a device, its name from service details can be used to add the device to the customer.",
+        "Billing options are customer-level and not driven by service detail output.",
+        "Takes no input; not fed or controlled by the service details output.",
+        "Apply the discount to the service’s price value returned by service details.",
+        "Requires an existing ticket_id plus status/priority; unrelated to service details.",
+        "Payment needs customer_id and amount; not directly derived from viewing a service’s details."
+      ]
+    ],
+    [
+      [
+        "Price/specs from GetDeviceDetails can be used inside a math expression (e.g., price + tax) to calculate totals.",
+        "Generic reasoning tool; no structured input from device details is required or used.",
+        "Entry-point lookup by email; requires an email and should not have incoming edges from device details.",
+        "Entry-point lookup by phone; requires a phone number and should not have incoming edges from device details.",
+        "Requires customer_id; device details output does not provide or affect this.",
+        "Requires service_id; device details don’t supply a service_id directly, so no direct data flow.",
+        "No self edge; the target function cannot be its own neighbour.",
+        "Requires customer_id; unrelated to device details output.",
+        "Manipulates customer services using customer_id/devices_ids from a customer record; market device details don’t feed into it.",
+        "Device_name from the details (and the device characteristics) can be passed to troubleshooting for a reported issue, so details directly inform this call.",
+        "Creating a ticket needs customer_id/category; device details alone don’t provide these.",
+        "Needs a ticket_id; device details output is unrelated.",
+        "Device_name obtained/confirmed from details can be used to add the device to a customer; the details influence the decision to add.",
+        "Billing settings require customer_id; no dependency on device details.",
+        "After identifying the device type (e.g., router/phone) from details, one may fetch available services; the details directly trigger this call.",
+        "The device’s price from details can be passed as original_price to compute a senior discount.",
+        "Modifying a ticket needs ticket_id/status/priority; device details don’t affect it.",
+        "Recording a payment needs customer_id, amount, method, date; device details are unrelated."
+      ]
+    ],
+    [
+      [
+        "Billing totals/balance from GetBillingDetails can be inserted into a math expression to compute proration or totals, so the output becomes part of the input expression.",
+        "This is a meta logging tool; billing details aren’t a structured input here and don’t directly drive an operational action, so not treated as a neighbour.",
+        "Lookup-by-email is an entry-point function and requires an email not derived from billing details; these finders shouldn’t have incoming edges.",
+        "Lookup-by-phone is an entry-point function and requires a phone number not derived from billing details; these finders shouldn’t have incoming edges.",
+        "If billing info looks off, you may fetch broader account details; the billing output directly triggers calling GetCustomerDetails (decision influence).",
+        "Monthly charges often list service IDs; those IDs from billing details can be used to fetch that service’s details (output becomes input).",
+        "Billing may list device installment items by name; that device name can be used to retrieve device details (output becomes input).",
+        "No self-edge allowed; the target function cannot be its own neighbour.",
+        "High charges seen in billing details may trigger removing/suspending/listing services; the billing output directly influences calling ManageService.",
+        "Billing details don’t provide a device issue context or the required issue parameter, so they don’t directly lead to troubleshooting a device.",
+        "Detecting a billing anomaly from GetBillingDetails can prompt creating a billing ticket; the output influences the decision to execute CreateSupportTicket.",
+        "This requires a ticket_id, which billing details don’t provide; the billing output isn’t used as input to fetch a ticket.",
+        "Adding a device isn’t directly parameterized or triggered by billing details; no required input comes from that output.",
+        "Seeing balance/late payments or current cycle details can drive enabling auto-pay or changing billing cycle; billing output influences ManageBilling.",
+        "High monthly charges can lead to exploring available plans; billing output influences the decision to call GetServices.",
+        "A charge from billing details can be passed as original_price to compute a senior-discounted price (output becomes input).",
+        "After reviewing billing details you might resolve a billing ticket and update its status/priority; billing output influences ModifySupportTicket.",
+        "Current balance/payment history from billing details guides the amount to pay and prompts recording a payment; the output influences execution and inputs."
+      ]
+    ],
+    [
+      [
+        "No data from manage_service is used as a mathematical expression, and its result doesn’t control calculate’s execution.",
+        "The think tool just logs a thought string; manage_service’s output isn’t used as input nor does it govern its execution.",
+        "Entry-point lookup by email; manage_service output doesn’t feed into it and these lookups shouldn’t have incoming edges.",
+        "Entry-point lookup by phone; manage_service output doesn’t feed into it and these lookups shouldn’t have incoming edges.",
+        "After adding/removing services, the success result can trigger a refresh of customer details (criterion 3: output influences execution).",
+        "When a service is added/removed, the confirmed service_id from manage_service can be used to fetch that service’s details (criteria 1/2).",
+        "It requires a device_name, while manage_service deals in device_ids; no direct data flow or control relation.",
+        "Service changes impact billing; a successful manage_service operation can trigger fetching billing details using the same customer (criterion 3).",
+        "No self edge allowed.",
+        "Requires device_name and issue; manage_service output doesn’t provide these nor control this troubleshooting call.",
+        "If manage_service fails or flags an issue during service changes, it can directly trigger opening a support ticket (criterion 3).",
+        "Needs a ticket_id which manage_service does not produce; no direct data or control link.",
+        "If manage_service indicates a required device is missing for the service, that outcome can prompt adding a device (criterion 3).",
+        "Billing preference updates don’t consume manage_service outputs and aren’t directly triggered by its result.",
+        "Catalog retrieval has no inputs and is typically used before managing services; manage_service output doesn’t drive its execution.",
+        "Requires an original price string; manage_service doesn’t output a price suited for this nor directly trigger it.",
+        "Needs a ticket_id; manage_service does not produce one and doesn’t directly control modifying tickets.",
+        "Requires amount/method/date; manage_service doesn’t output these and doesn’t directly trigger recording a payment."
+      ]
+    ],
+    [
+      [
+        "Not related; math results don’t consume or depend on troubleshooting steps.",
+        "Meta reasoning tool; no input or control flow comes from troubleshooting output.",
+        "Entry-point lookup; cannot have incoming edges from other functions.",
+        "Entry-point lookup; cannot have incoming edges from other functions.",
+        "Troubleshooting output (steps/outcome) doesn’t provide customer_id nor directly trigger fetching customer details.",
+        "Troubleshooting output doesn’t provide or require a service_id; no direct dependency.",
+        "Troubleshooting returns steps, not inputs for device detail lookup; device_name is already known regardless.",
+        "Billing is unrelated to device troubleshooting outputs.",
+        "Service management actions aren’t directly driven by troubleshooting steps’ outputs as input; no parameter linkage.",
+        "Self-edge not allowed.",
+        "If troubleshooting fails or indicates escalation, its outcome directly triggers creating a support ticket (escalation).",
+        "Troubleshooting output doesn’t supply ticket_id nor directly necessitate fetching ticket details; typically used independently or beforehand.",
+        "Device replacement/adding isn’t a direct consequence nor input-driven by the troubleshooting result.",
+        "Billing preferences are unrelated to troubleshooting outputs.",
+        "Listing services is independent of any troubleshooting result.",
+        "Price discounting is unrelated to device troubleshooting outcomes.",
+        "If troubleshooting resolves or changes severity of an existing issue, its outcome directly drives modifying ticket status/priority.",
+        "Payments are unrelated to device troubleshooting outputs."
+      ]
+    ],
+    [
+      [
+        "No input accepts the ticket output (e.g., ticket_id); math calculation is unrelated to a created ticket.",
+        "The thinking/log tool does not consume ticket outputs nor is its execution decided by a created ticket.",
+        "Entry-point lookup by email; it doesn’t take a ticket_id and shouldn’t have incoming edges from ticket creation.",
+        "Entry-point lookup by phone; it doesn’t take a ticket_id and shouldn’t have incoming edges from ticket creation.",
+        "Requires customer_id (already known pre-ticket); create_support_ticket’s output (ticket_id) is not needed as input.",
+        "Needs a service_id; nothing produced by creating a ticket (like ticket_id) matches this input.",
+        "Needs a device_name; ticket creation output doesn’t supply it and doesn’t govern execution.",
+        "Needs customer_id; ticket creation’s output (ticket_id) is not used, and category/priority don’t serve as inputs here.",
+        "Manages services via customer_id/action; no dependency on the ticket_id or other ticket outputs.",
+        "Troubleshooting requires device_name/issue; not provided by ticket creation output nor determined by it.",
+        "Self-edge not allowed; a function is not considered its own neighbour.",
+        "Yes. Immediately after creating a ticket, the returned ticket_id is used to fetch its details via get_support_ticket_details.",
+        "Adding a device needs customer_id and device_name; it doesn’t use the ticket_id or other ticket outputs.",
+        "Billing configuration changes take customer_id/settings; unrelated to the ticket_id/result of ticket creation.",
+        "Lists services without inputs; not triggered by, nor consuming, the ticket output.",
+        "Applies a discount to a price; ticket output does not provide nor influence this input.",
+        "Yes. The ticket_id returned by create_support_ticket is required to modify the ticket’s status/priority.",
+        "Payments use customer_id/amount/method/date; not driven by nor consuming the ticket_id from ticket creation."
+      ]
+    ],
+    [
+      [
+        "No data from a ticket detail is a mathematical expression; the output isn’t used as input to Calculate.",
+        "Although you could think about the ticket, there’s no concrete input-output dependency; Think doesn’t require or consume ticket detail fields.",
+        "Entry-point lookup by email; it shouldn’t have incoming edges from another function like ticket details.",
+        "Entry-point lookup by phone; it shouldn’t have incoming edges from another function like ticket details.",
+        "Ticket details typically include customer_id, which can be fed to GetCustomerDetails to fetch the customer profile.",
+        "If the ticket references a service (service_id), those details can be used to fetch that service via GetServiceDetails.",
+        "If the ticket references a device (device_name), those details can be used to fetch device info via GetDeviceDetails.",
+        "For billing-related tickets, the customer_id from the ticket can be used to get billing details.",
+        "Using customer_id (and possibly service_id) from the ticket, you can manage services per the ticket’s request (add/remove/suspend/activate).",
+        "Device issue tickets provide device_name and issue, which can be passed directly to TroubleshootDevice.",
+        "If ticket details show it’s closed/misrouted or needs a new case, that output can directly drive creating a new support ticket (execution influenced by ticket status/category).",
+        "Self edge not allowed; the target function cannot be its own neighbour.",
+        "If the ticket requests adding hardware, use customer_id and device_name from the ticket to add the device.",
+        "For billing preference tickets, use customer_id from the ticket to set paperless/auto_pay/billing_cycle in ManageBilling.",
+        "If the ticket is about plan changes or service options, that output can trigger listing services (execution decision influenced by ticket content).",
+        "This function needs a price string; ticket details don’t provide a price directly, so there’s no direct data flow from the ticket.",
+        "After viewing ticket details (ticket_id, current status/priority), you may modify status/priority using ModifySupportTicket.",
+        "For payment-related tickets, the customer_id from the ticket can be used to record a payment along with provided amount/method/date."
+      ]
+    ],
+    [
+      [
+        "AddDevice's output (e.g., device ID/confirmation) is not used as a mathematical expression input; no dependency.",
+        "This logs thoughts and does not consume any output of AddDevice; no dependency.",
+        "Entry-point lookup by email; AddDevice does not output an email and entry functions should not have incoming edges.",
+        "Entry-point lookup by phone; AddDevice does not output a phone and entry functions should not have incoming edges.",
+        "It requires customer_id (same as AddDevice input), not AddDevice’s output; while state changes, no output is passed as input.",
+        "Requires a service_id; AddDevice does not produce a service_id.",
+        "Requires device_name, which is an input to AddDevice, not its output; no output linkage.",
+        "Requires customer_id; not produced by AddDevice—any effect is only indirect/state-based.",
+        "After adding a device, you often attach it to a service by passing the newly created device ID(s) to manage_service (devices_ids); AddDevice output feeds this.",
+        "Needs device_name and an issue; AddDevice does not provide an issue nor outputs used here.",
+        "Needs customer_id and category; AddDevice output doesn't supply these and does not directly drive execution.",
+        "Needs a ticket_id; AddDevice does not produce a ticket ID.",
+        "Self edge is not allowed.",
+        "Needs billing settings (paperless/auto_pay/billing_cycle); none come from AddDevice’s output.",
+        "Takes no input; does not consume AddDevice’s output.",
+        "Requires an original_price; AddDevice does not output a price.",
+        "Needs ticket_id/status/priority; none are produced by AddDevice.",
+        "Needs amount/method/date; AddDevice does not output payment details."
+      ]
+    ],
+    [
+      [
+        "No data or control link from updated billing settings to a generic math calculator.",
+        "Thought logging is unrelated to billing changes and takes no inputs from ManageBilling.",
+        "Entry-point lookup by email; it cannot have incoming edges and does not use ManageBilling output.",
+        "Entry-point lookup by phone; it cannot have incoming edges and does not use ManageBilling output.",
+        "After changing billing preferences, you may fetch customer details to verify updates; the ManageBilling result influences calling this with the same customer_id.",
+        "Service details require a service_id that ManageBilling does not produce or affect.",
+        "Device details require a device_name unrelated to billing settings.",
+        "After updating paperless/auto_pay/billing_cycle, you may pull billing details to confirm; ManageBilling’s outcome drives this call (same customer_id).",
+        "Service management (add/remove/etc.) is not directly affected by billing preferences and shares no outputs.",
+        "Device troubleshooting is unrelated to billing configuration.",
+        "If ManageBilling fails or reveals an issue, its outcome can trigger creating a billing ticket (category='billing') for that customer.",
+        "This requires a ticket_id that ManageBilling does not provide; it’s typically downstream of CreateSupportTicket, not ManageBilling.",
+        "Adding a device is unrelated to billing preferences and has no shared outputs.",
+        "Self-edge is not allowed; the target function cannot be its own neighbour.",
+        "Listing all services is independent of a customer’s billing settings and not influenced by ManageBilling.",
+        "Applying a fixed discount needs a price string that ManageBilling doesn’t output.",
+        "Changing a ticket needs a ticket_id and status context not produced by ManageBilling.",
+        "Enabling auto_pay or changing billing_cycle may prompt immediately applying a payment; ManageBilling’s outcome can drive recording a payment for the same customer_id."
+      ]
+    ],
+    [
+      [
+        "Service prices/details from GetServices can be inserted into the expression (part of input) to compute totals, taxes, or bundle costs.",
+        "Does not take service data as input; it only logs a thought and is not driven by GetServices output.",
+        "Entry-point lookup by email; independent of service catalog and not fed by GetServices output.",
+        "Entry-point lookup by phone; independent of service catalog and not fed by GetServices output.",
+        "Requires a customer_id, which is unrelated to the service catalog returned by GetServices.",
+        "Service IDs obtained from GetServices are used to request specific service details (output of GetServices becomes input service_id).",
+        "Needs a device_name; GetServices returns services, not devices, so no direct input flow.",
+        "Needs a customer_id; service catalog output is not used as input here.",
+        "When adding/removing a service, the service_id selected from the GetServices catalog is part of the input along with customer_id/action.",
+        "Needs device_name and issue; not driven by service catalog output.",
+        "Needs customer_id and category; category choice isn’t directly derived from GetServices output as an input.",
+        "Needs a ticket_id; unrelated to service catalog output.",
+        "Requires device_name and customer_id; not driven by service catalog output.",
+        "Requires customer_id and billing settings; not using service catalog output as input.",
+        "No self edge; the function cannot be a neighbour of itself.",
+        "Takes original_price; a service price from GetServices can be passed as original_price to apply the discount.",
+        "Requires ticket_id/status/priority; not using service catalog output as input.",
+        "Requires customer_id, amount, method, date; not driven by service catalog output."
+      ]
+    ],
+    [
+      [
+        "Discounted price can be embedded in a math expression (e.g., to compute tax/fees), so the target’s output becomes part of the Calculate input.",
+        "We might log a thought like “senior discount applied, new price X,” passing the discounted price as the thought text, making the target’s output part of the input.",
+        "Entry lookup by email; requires an email and doesn’t use a price value, and these functions shouldn’t have incoming edges.",
+        "Entry lookup by phone; requires a phone number and doesn’t use a price value, and these functions shouldn’t have incoming edges.",
+        "Needs customer_id; the discounted price doesn’t provide that and doesn’t affect execution.",
+        "Needs service_id; discounted price isn’t an input and doesn’t drive its execution.",
+        "Needs device_name; discounted price isn’t used here.",
+        "Needs customer_id; a price output isn’t used as input nor does it control this call.",
+        "Needs customer_id/action (and possibly service_id); discounted price isn’t an input nor control signal.",
+        "Needs device_name and issue; the price output is unrelated.",
+        "Needs customer_id and category; discounted price isn’t part of the input.",
+        "Needs ticket_id; discounted price isn’t an input here.",
+        "Needs customer_id and device_name; discounted price isn’t used.",
+        "Needs customer_id and billing preferences; discounted price isn’t part of inputs.",
+        "Has no inputs; the discounted price neither feeds into it nor directly controls its execution.",
+        "Self-edge is not allowed; the target function cannot be its own neighbor.",
+        "Needs ticket_id/status/priority; discounted price is irrelevant as input.",
+        "The discounted price can be used as the payment amount, feeding the 'amount' parameter when recording a payment."
+      ]
+    ],
+    [
+      [
+        "No; math expression evaluation does not use or depend on a ticket_id/status/priority from ModifySupportTicket.",
+        "No; a free-form thought log does not take ticket data as input nor is its execution dictated by the modified ticket.",
+        "No; this is an entry-point lookup by email and should not have incoming edges from a ticket modification.",
+        "No; this is an entry-point lookup by phone and should not have incoming edges from a ticket modification.",
+        "No; it requires a customer_id, which is not produced by ModifySupportTicket (which deals with ticket_id/status/priority).",
+        "No; it requires a service_id and is unrelated to a ticket’s status/priority.",
+        "No; it requires a device_name and does not consume ticket outputs.",
+        "No; it requires a customer_id and is unrelated to the modified ticket fields.",
+        "No; it requires customer_id/action and does not use the ticket modification result.",
+        "No; it requires device_name/issue and does not use ticket outputs.",
+        "No; creating a new ticket needs customer_id/category and does not use the modified ticket result.",
+        "Yes; after modifying a ticket, its ticket_id can be used to fetch updated details to confirm status/priority via GetSupportTicketDetails.",
+        "No; adding a device needs customer_id/device_name and does not consume the modified ticket’s output.",
+        "No; billing settings require customer_id and are not driven by ticket_id/status/priority.",
+        "No; this has no inputs and the ticket modification does not supply required input nor uniquely trigger it.",
+        "No; it needs an original_price and is unrelated to ticket data.",
+        "No; self-edge is not allowed (the target function cannot be its own neighbour).",
+        "No; recording a payment requires customer_id/amount/method/date, none of which come from modifying a ticket."
+      ]
+    ],
+    [
+      [
+        "RecordPayment’s output (updated balance/receipt) isn’t used by a generic math calculator; no execution link.",
+        "Thought logging doesn’t depend on payment results and takes no related inputs.",
+        "Entry-point lookup by email cannot have incoming edges; payment output isn’t an input here.",
+        "Entry-point lookup by phone cannot have incoming edges; payment output isn’t an input here.",
+        "It only needs customer_id; payment results don’t feed into or trigger fetching general customer details.",
+        "Service metadata lookup is unrelated to recording a payment.",
+        "Device details lookup is unrelated to payment processing.",
+        "After recording a payment, fetching billing details to confirm the new balance is a typical next step; payment outcome directly prompts this call (same customer context).",
+        "Managing add/remove/list services isn’t driven by the payment outcome and shares no inputs from it.",
+        "Device troubleshooting is unrelated to payment results.",
+        "If the payment fails or a discrepancy is detected, the payment result directly triggers creating a billing support ticket for the customer.",
+        "Payment outcome can prompt checking an existing billing ticket’s details (e.g., to verify resolution), so execution is directly influenced though no fields are passed.",
+        "Adding a device isn’t driven by payment results and shares no inputs from it.",
+        "Billing preferences (paperless/auto_pay/cycle) don’t take payment output as input; not directly triggered by recording a payment.",
+        "Listing service catalog isn’t related to recording payments.",
+        "Senior discount calculation on a price doesn’t use or depend on payment results.",
+        "A successful payment can directly trigger closing or reprioritizing an existing billing ticket; payment result influences status/priority updates.",
+        "Self-edge is not allowed; RecordPayment cannot be its own neighbour."
+      ]
+    ]
+  ]
+}

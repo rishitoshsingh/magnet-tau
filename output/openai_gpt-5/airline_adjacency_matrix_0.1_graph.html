@@ -1,0 +1,163 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 800px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#97c2fc", "id": "BookReservation", "label": "BookReservation", "shape": "dot"}, {"color": "#97c2fc", "id": "CancelReservation", "label": "CancelReservation", "shape": "dot"}, {"color": "#97c2fc", "id": "GetReservationDetails", "label": "GetReservationDetails", "shape": "dot"}, {"color": "#97c2fc", "id": "GetUserDetails", "label": "GetUserDetails", "shape": "dot"}, {"color": "#97c2fc", "id": "ListAllAirports", "label": "ListAllAirports", "shape": "dot"}, {"color": "#97c2fc", "id": "SearchDirectFlight", "label": "SearchDirectFlight", "shape": "dot"}, {"color": "#97c2fc", "id": "SearchOnestopFlight", "label": "SearchOnestopFlight", "shape": "dot"}, {"color": "#97c2fc", "id": "SendCertificate", "label": "SendCertificate", "shape": "dot"}, {"color": "#97c2fc", "id": "TransferToHumanAgents", "label": "TransferToHumanAgents", "shape": "dot"}, {"color": "#97c2fc", "id": "UpdateReservationBaggages", "label": "UpdateReservationBaggages", "shape": "dot"}, {"color": "#97c2fc", "id": "UpdateReservationFlights", "label": "UpdateReservationFlights", "shape": "dot"}, {"color": "#97c2fc", "id": "UpdateReservationPassengers", "label": "UpdateReservationPassengers", "shape": "dot"}]);
+                  edges = new vis.DataSet([{"arrows": "to", "from": "BookReservation", "label": "CancelReservation requires a reservation\u2026", "title": "CancelReservation requires a reservation_id, which is precisely what BookReservation would return upon success; thus the output of BookReservation feeds into CancelReservation.", "to": "CancelReservation"}, {"arrows": "to", "from": "BookReservation", "label": "GetReservationDetails requires a reserva\u2026", "title": "GetReservationDetails requires a reservation_id; the reservation_id produced by BookReservation is used to fetch those details, making it a direct neighbour.", "to": "GetReservationDetails"}, {"arrows": "to", "from": "BookReservation", "label": "UpdateReservationBaggages needs reservat\u2026", "title": "UpdateReservationBaggages needs reservation_id to identify which booking to modify; that reservation_id comes from BookReservation, so it\u2019s a neighbour.", "to": "UpdateReservationBaggages"}, {"arrows": "to", "from": "BookReservation", "label": "UpdateReservationFlights needs reservati\u2026", "title": "UpdateReservationFlights needs reservation_id to modify the booked itinerary; that id is produced by BookReservation, so it\u2019s a neighbour.", "to": "UpdateReservationFlights"}, {"arrows": "to", "from": "BookReservation", "label": "UpdateReservationPassengers needs reserv\u2026", "title": "UpdateReservationPassengers needs reservation_id to update passengers in the booked record; that id is produced by BookReservation, so it\u2019s a neighbour.", "to": "UpdateReservationPassengers"}, {"arrows": "to", "from": "CancelReservation", "label": "After cancelling, an agent may fetch the\u2026", "title": "After cancelling, an agent may fetch the reservation to confirm its status. The cancel operation\u2019s result (e.g., cancellation confirmation/status along with the same reservation_id) can be used to call GetReservationDetails, so the cancel output influences and can supply part of the input.", "to": "GetReservationDetails"}, {"arrows": "to", "from": "CancelReservation", "label": "If cancellation results suggest compensa\u2026", "title": "If cancellation results suggest compensation (e.g., fees or service issues), the cancel outcome directly influences whether to send a certificate and potentially the amount. Thus, CancelReservation\u2019s output can drive execution of SendCertificate.", "to": "SendCertificate"}, {"arrows": "to", "from": "CancelReservation", "label": "If the cancellation fails or yields issu\u2026", "title": "If the cancellation fails or yields issues (fees, partial refunds), the result can trigger escalation. TransferToHumanAgents is a terminal/sink action and its execution can be directly influenced by the cancellation outcome.", "to": "TransferToHumanAgents"}, {"arrows": "to", "from": "GetReservationDetails", "label": "CancelReservation requires a reservation\u2026", "title": "CancelReservation requires a reservation_id, which is part of the reservation details just retrieved; users often review details before deciding to cancel, so the target\u2019s output directly supplies the input.", "to": "CancelReservation"}, {"arrows": "to", "from": "GetReservationDetails", "label": "SearchDirectFlight can use origin/destin\u2026", "title": "SearchDirectFlight can use origin/destination/date extracted from the reservation details to find alternative direct options for a change or rebooking scenario.", "to": "SearchDirectFlight"}, {"arrows": "to", "from": "GetReservationDetails", "label": "SearchOnestopFlight similarly can use or\u2026", "title": "SearchOnestopFlight similarly can use origin/destination/date from the reservation details to search one-stop alternatives after reviewing the current itinerary.", "to": "SearchOnestopFlight"}, {"arrows": "to", "from": "GetReservationDetails", "label": "SendCertificate can use the user_id asso\u2026", "title": "SendCertificate can use the user_id associated with the reservation details, and the findings from those details (e.g., disruption) can drive the decision to issue compensation, satisfying the \u201coutput influences execution/part of input\u201d criteria.", "to": "SendCertificate"}, {"arrows": "to", "from": "GetReservationDetails", "label": "TransferToHumanAgents may be triggered a\u2026", "title": "TransferToHumanAgents may be triggered after examining the reservation details and realizing the issue can\u2019t be resolved; the summary is composed using those details, so the target\u2019s output influences this call (and this function only has incoming edges).", "to": "TransferToHumanAgents"}, {"arrows": "to", "from": "GetReservationDetails", "label": "UpdateReservationBaggages requires the r\u2026", "title": "UpdateReservationBaggages requires the reservation_id, which comes from the reservation details; reviewing current bag info often precedes updating it.", "to": "UpdateReservationBaggages"}, {"arrows": "to", "from": "GetReservationDetails", "label": "UpdateReservationFlights requires the re\u2026", "title": "UpdateReservationFlights requires the reservation_id and uses current flight info from the details to construct the new flights array; the target\u2019s output directly informs this update.", "to": "UpdateReservationFlights"}, {"arrows": "to", "from": "GetReservationDetails", "label": "UpdateReservationPassengers requires the\u2026", "title": "UpdateReservationPassengers requires the reservation_id and is naturally performed after reviewing the current passenger list in the reservation details.", "to": "UpdateReservationPassengers"}, {"arrows": "to", "from": "GetUserDetails", "label": "Neighbour: After retrieving user details\u2026", "title": "Neighbour: After retrieving user details, the returned user_id and stored payment methods can be directly used to book a reservation (inputs include user_id and payment_methods).", "to": "BookReservation"}, {"arrows": "to", "from": "GetUserDetails", "label": "Neighbour: GetUserDetails returns the us\u2026", "title": "Neighbour: GetUserDetails returns the user\u2019s existing reservations (including reservation_id), which can be passed to CancelReservation.", "to": "CancelReservation"}, {"arrows": "to", "from": "GetUserDetails", "label": "Neighbour: The reservation_id obtained f\u2026", "title": "Neighbour: The reservation_id obtained from the user\u2019s reservations in GetUserDetails output is used to fetch reservation details.", "to": "GetReservationDetails"}, {"arrows": "to", "from": "GetUserDetails", "label": "Neighbour: While it has no explicit inpu\u2026", "title": "Neighbour: While it has no explicit inputs, this function is typically invoked only after the user is authenticated via GetUserDetails; the authentication result directly controls whether we proceed to list airports (execution influence).", "to": "ListAllAirports"}, {"arrows": "to", "from": "GetUserDetails", "label": "Neighbour: After authenticating and veri\u2026", "title": "Neighbour: After authenticating and verifying the user via GetUserDetails, the system can proceed to search flights; the authentication output governs whether the search is allowed (execution influence).", "to": "SearchDirectFlight"}, {"arrows": "to", "from": "GetUserDetails", "label": "Neighbour: Same as direct flight search\u2014\u2026", "title": "Neighbour: Same as direct flight search\u2014after obtaining user details (authentication), we proceed to search one-stop options; the GetUserDetails result controls execution.", "to": "SearchOnestopFlight"}, {"arrows": "to", "from": "GetUserDetails", "label": "Neighbour: Requires a user_id, which is \u2026", "title": "Neighbour: Requires a user_id, which is obtained from GetUserDetails output; the returned user profile provides the exact user_id needed.", "to": "SendCertificate"}, {"arrows": "to", "from": "GetUserDetails", "label": "Neighbour: If, after verifying the user \u2026", "title": "Neighbour: If, after verifying the user via GetUserDetails, the issue cannot be resolved, we transfer to a human agent; the decision to transfer is influenced by the prior authenticated context (execution influence).", "to": "TransferToHumanAgents"}, {"arrows": "to", "from": "GetUserDetails", "label": "Neighbour: Updating baggages needs reser\u2026", "title": "Neighbour: Updating baggages needs reservation_id and a payment_id; both are discoverable from GetUserDetails (user\u2019s reservations and stored payment methods).", "to": "UpdateReservationBaggages"}, {"arrows": "to", "from": "GetUserDetails", "label": "Neighbour: Updating flights needs reserv\u2026", "title": "Neighbour: Updating flights needs reservation_id and payment_id; both can be sourced from the user\u2019s details/reservations returned by GetUserDetails.", "to": "UpdateReservationFlights"}, {"arrows": "to", "from": "GetUserDetails", "label": "Neighbour: Updating passengers needs res\u2026", "title": "Neighbour: Updating passengers needs reservation_id, which comes from the reservations listed in GetUserDetails output.", "to": "UpdateReservationPassengers"}, {"arrows": "to", "from": "ListAllAirports", "label": "ListAllAirports provides the IATA codes \u2026", "title": "ListAllAirports provides the IATA codes users need to supply as origin and destination when booking; its output becomes part of BookReservation\u2019s required inputs (origin/destination). Scenario: user browses the airport list to choose SFO -\u003e JFK, then books.", "to": "BookReservation"}, {"arrows": "to", "from": "ListAllAirports", "label": "SearchDirectFlight requires origin and d\u2026", "title": "SearchDirectFlight requires origin and destination IATA codes; those can be selected from the airport list output, making it a downstream consumer of that data.", "to": "SearchDirectFlight"}, {"arrows": "to", "from": "ListAllAirports", "label": "SearchOnestopFlight also requires origin\u2026", "title": "SearchOnestopFlight also requires origin and destination IATA codes; users can pick these from the airport list output before searching.", "to": "SearchOnestopFlight"}, {"arrows": "to", "from": "SearchDirectFlight", "label": "Neighbor: The direct-flight search retur\u2026", "title": "Neighbor: The direct-flight search returns specific flight options (flight_number/date) and confirms origin/destination; these are selected and passed into BookReservation.flights (and related fields) to create the booking.", "to": "BookReservation"}, {"arrows": "to", "from": "SearchDirectFlight", "label": "Neighbor: If the direct-flight search re\u2026", "title": "Neighbor: If the direct-flight search returns no suitable options, that result directly triggers a one-stop search using the same origin/destination/date (criterion 3).", "to": "SearchOnestopFlight"}, {"arrows": "to", "from": "SearchDirectFlight", "label": "Neighbor: If the direct-flight search ca\u2026", "title": "Neighbor: If the direct-flight search cannot satisfy the user (no availability, constraints), that output can directly lead to escalation to a human agent (TransferToHumanAgents has only incoming edges).", "to": "TransferToHumanAgents"}, {"arrows": "to", "from": "SearchDirectFlight", "label": "Neighbor: Users often search direct flig\u2026", "title": "Neighbor: Users often search direct flights to choose replacement segments; the chosen flight_number/date from the search feed into UpdateReservationFlights.flights to change an existing booking.", "to": "UpdateReservationFlights"}, {"arrows": "to", "from": "SearchOnestopFlight", "label": "True: The selected flight_number(s) and \u2026", "title": "True: The selected flight_number(s) and date(s) from one\u2011stop search results are used to populate the flights[] input (and align with origin/destination/date) when booking a reservation.", "to": "BookReservation"}, {"arrows": "to", "from": "SearchOnestopFlight", "label": "True: If the one\u2011stop search returns no/\u2026", "title": "True: If the one\u2011stop search returns no/invalid results (e.g., invalid IATA code or zero availability), the system may list airports to help the user choose valid origin/destination; the search outcome directly triggers this call.", "to": "ListAllAirports"}, {"arrows": "to", "from": "SearchOnestopFlight", "label": "True: If one\u2011stop search yields poor or \u2026", "title": "True: If one\u2011stop search yields poor or no options, the system may also run a direct\u2011flight search for the same O/D/date to present alternatives; the decision to call it is driven by the one\u2011stop search outcome.", "to": "SearchDirectFlight"}, {"arrows": "to", "from": "SearchOnestopFlight", "label": "True: If the one\u2011stop search fails to re\u2026", "title": "True: If the one\u2011stop search fails to resolve the user\u2019s need (no suitable flights found), the search outcome can directly trigger escalation to a human agent; Transfer functions only have incoming edges.", "to": "TransferToHumanAgents"}, {"arrows": "to", "from": "SearchOnestopFlight", "label": "True: To change flights on an existing r\u2026", "title": "True: To change flights on an existing reservation, you first search; the chosen flight_number(s) and date(s) from the one\u2011stop search populate the flights[] input for updating reservation flights.", "to": "UpdateReservationFlights"}, {"arrows": "to", "from": "SendCertificate", "label": "BookReservation is a neighbour: sending \u2026", "title": "BookReservation is a neighbour: sending a certificate likely creates/credits a certificate payment method (e.g., certificate_123) with a balance (amount). That certificate ID and amount can then be included in BookReservation.payment_methods to pay for part/all of the booking.", "to": "BookReservation"}, {"arrows": "to", "from": "SendCertificate", "label": "UpdateReservationBaggages is a neighbour\u2026", "title": "UpdateReservationBaggages is a neighbour: paying updated baggage fees requires a payment_id; the certificate created by SendCertificate can be used as that payment method.", "to": "UpdateReservationBaggages"}, {"arrows": "to", "from": "SendCertificate", "label": "UpdateReservationFlights is a neighbour:\u2026", "title": "UpdateReservationFlights is a neighbour: rebooking often requires payment; the certificate created by SendCertificate can be passed as the payment_id for the additional charges.", "to": "UpdateReservationFlights"}, {"arrows": "to", "from": "UpdateReservationBaggages", "label": "Neighbour. After updating baggage, a use\u2026", "title": "Neighbour. After updating baggage, a user may decide to cancel the booking; CancelReservation requires reservation_id, which is contained/confirmed in the result of UpdateReservationBaggages and thus can be passed directly.", "to": "CancelReservation"}, {"arrows": "to", "from": "UpdateReservationBaggages", "label": "Neighbour. A common next step is to fetc\u2026", "title": "Neighbour. A common next step is to fetch the updated booking to verify baggage counts/charges; GetReservationDetails takes reservation_id, which comes from the update\u2019s output.", "to": "GetReservationDetails"}, {"arrows": "to", "from": "UpdateReservationBaggages", "label": "Neighbour. If the baggage update fails o\u2026", "title": "Neighbour. If the baggage update fails or the user remains unsatisfied, that outcome directly triggers a transfer; although the input is a summary string, the update\u2019s result influences the decision to execute this function (criterion 3).", "to": "TransferToHumanAgents"}, {"arrows": "to", "from": "UpdateReservationBaggages", "label": "Neighbour. After a baggage update, the u\u2026", "title": "Neighbour. After a baggage update, the user may change flights on the same booking; UpdateReservationFlights requires reservation_id (and payment_id), where reservation_id comes from the update result.", "to": "UpdateReservationFlights"}, {"arrows": "to", "from": "UpdateReservationBaggages", "label": "Neighbour. After a baggage update, the u\u2026", "title": "Neighbour. After a baggage update, the user may edit passenger information on the same booking; UpdateReservationPassengers requires reservation_id, which is provided/confirmed by the update result.", "to": "UpdateReservationPassengers"}, {"arrows": "to", "from": "UpdateReservationFlights", "label": "CancelReservation can immediately follow\u2026", "title": "CancelReservation can immediately follow a flight-change; it uses the same reservation_id (available from the update result/context), and the outcome of the update (e.g., fees, schedule) can directly drive the decision to cancel.", "to": "CancelReservation"}, {"arrows": "to", "from": "UpdateReservationFlights", "label": "GetReservationDetails is typically calle\u2026", "title": "GetReservationDetails is typically called right after an update to verify the new itinerary; it consumes the reservation_id from the update result/context to fetch the latest details.", "to": "GetReservationDetails"}, {"arrows": "to", "from": "UpdateReservationFlights", "label": "TransferToHumanAgents can be triggered i\u2026", "title": "TransferToHumanAgents can be triggered if the update fails or the result is unsatisfactory; the update outcome directly influences escalation. Transfer functions have only incoming edges, which fits this relationship.", "to": "TransferToHumanAgents"}, {"arrows": "to", "from": "UpdateReservationFlights", "label": "UpdateReservationBaggages can logically \u2026", "title": "UpdateReservationBaggages can logically follow a flight change because new flights/cabin can alter baggage allowances/fees; it uses the same reservation_id (from the update context) and the update\u2019s outcome directly influences whether/how baggage is updated.", "to": "UpdateReservationBaggages"}, {"arrows": "to", "from": "UpdateReservationFlights", "label": "UpdateReservationPassengers can follow a\u2026", "title": "UpdateReservationPassengers can follow a flight change to adjust traveler details; it uses the same reservation_id from the update context, and the updated reservation data guides what passenger changes are needed.", "to": "UpdateReservationPassengers"}, {"arrows": "to", "from": "UpdateReservationPassengers", "label": "CancelReservation can follow an update i\u2026", "title": "CancelReservation can follow an update if the user decides to cancel the same reservation; it takes reservation_id, which comes from the updated reservation/context of UpdateReservationPassengers, and the update outcome can influence the decision to cancel.", "to": "CancelReservation"}, {"arrows": "to", "from": "UpdateReservationPassengers", "label": "GetReservationDetails is often called ri\u2026", "title": "GetReservationDetails is often called right after updating passengers to verify changes; it requires reservation_id, which is available from the updated reservation/result of UpdateReservationPassengers.", "to": "GetReservationDetails"}, {"arrows": "to", "from": "UpdateReservationPassengers", "label": "TransferToHumanAgents can be triggered i\u2026", "title": "TransferToHumanAgents can be triggered if updating passengers fails or cannot proceed; the update response/error directly influences escalation, and its details can be included in the required summary.", "to": "TransferToHumanAgents"}, {"arrows": "to", "from": "UpdateReservationPassengers", "label": "UpdateReservationBaggages commonly follo\u2026", "title": "UpdateReservationBaggages commonly follows a passenger update to align baggage counts; it requires reservation_id, which is available from the updated reservation, and the passenger changes can drive this action.", "to": "UpdateReservationBaggages"}, {"arrows": "to", "from": "UpdateReservationPassengers", "label": "UpdateReservationFlights can follow pass\u2026", "title": "UpdateReservationFlights can follow passenger updates (e.g., to rebook for changed passengers); it consumes the same reservation_id from the updated reservation/context.", "to": "UpdateReservationFlights"}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "barnesHut": {
+            "avoidOverlap": 0,
+            "centralGravity": 0.3,
+            "damping": 0.09,
+            "gravitationalConstant": -80000,
+            "springConstant": 0.001,
+            "springLength": 250
+        },
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>

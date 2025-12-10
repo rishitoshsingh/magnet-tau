@@ -1,0 +1,820 @@
+{
+  "tools": [
+    {
+      "name": "BookReservation",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "book_reservation",
+          "description": "Book a reservation.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "user_id": {
+                "type": "string",
+                "description": "The ID of the user to book the reservation, such as 'sara_doe_496'."
+              },
+              "origin": {
+                "type": "string",
+                "description": "The IATA code for the origin city, such as 'SFO'."
+              },
+              "destination": {
+                "type": "string",
+                "description": "The IATA code for the destination city, such as 'JFK'."
+              },
+              "flight_type": {
+                "type": "string",
+                "enum": [
+                  "one_way",
+                  "round_trip"
+                ]
+              },
+              "cabin": {
+                "type": "string",
+                "enum": [
+                  "basic_economy",
+                  "economy",
+                  "business"
+                ]
+              },
+              "flights": {
+                "type": "array",
+                "description": "An array of objects containing details about each piece of flight.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "flight_number": {
+                      "type": "string",
+                      "description": "Flight number, such as 'HAT001'."
+                    },
+                    "date": {
+                      "type": "string",
+                      "description": "The date for the flight in the format 'YYYY-MM-DD', such as '2024-05-01'."
+                    }
+                  },
+                  "required": [
+                    "flight_number",
+                    "date"
+                  ]
+                }
+              },
+              "passengers": {
+                "type": "array",
+                "description": "An array of objects containing details about each passenger.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "first_name": {
+                      "type": "string",
+                      "description": "The first name of the passenger, such as 'Noah'."
+                    },
+                    "last_name": {
+                      "type": "string",
+                      "description": "The last name of the passenger, such as 'Brown'."
+                    },
+                    "dob": {
+                      "type": "string",
+                      "description": "The date of birth of the passenger in the format 'YYYY-MM-DD', such as '1990-01-01'."
+                    }
+                  },
+                  "required": [
+                    "first_name",
+                    "last_name",
+                    "dob"
+                  ]
+                }
+              },
+              "payment_methods": {
+                "type": "array",
+                "description": "An array of objects containing details about each payment method.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "payment_id": {
+                      "type": "string",
+                      "description": "The payment id stored in user profile, such as 'credit_card_7815826', 'gift_card_7815826', 'certificate_7815826'."
+                    },
+                    "amount": {
+                      "type": "number",
+                      "description": "The amount to be paid."
+                    }
+                  },
+                  "required": [
+                    "payment_id",
+                    "amount"
+                  ]
+                }
+              },
+              "total_baggages": {
+                "type": "integer",
+                "description": "The total number of baggage items included in the reservation."
+              },
+              "nonfree_baggages": {
+                "type": "integer",
+                "description": "The number of non-free baggage items included in the reservation."
+              },
+              "insurance": {
+                "type": "string",
+                "enum": [
+                  "yes",
+                  "no"
+                ]
+              }
+            },
+            "required": [
+              "user_id",
+              "origin",
+              "destination",
+              "flight_type",
+              "cabin",
+              "flights",
+              "passengers",
+              "payment_methods",
+              "total_baggages",
+              "nonfree_baggages",
+              "insurance"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "CancelReservation",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "cancel_reservation",
+          "description": "Cancel the whole reservation.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "reservation_id": {
+                "type": "string",
+                "description": "The reservation ID, such as 'ZFA04Y'."
+              }
+            },
+            "required": [
+              "reservation_id"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "GetReservationDetails",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "get_reservation_details",
+          "description": "Get the details of a reservation.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "reservation_id": {
+                "type": "string",
+                "description": "The reservation id, such as '8JX2WO'."
+              }
+            },
+            "required": [
+              "reservation_id"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "GetUserDetails",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "get_user_details",
+          "description": "Get the details of an user, including their reservations.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "user_id": {
+                "type": "string",
+                "description": "The user id, such as 'sara_doe_496'."
+              }
+            },
+            "required": [
+              "user_id"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "ListAllAirports",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "list_all_airports",
+          "description": "List all airports and their cities.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": []
+          }
+        }
+      }
+    },
+    {
+      "name": "SearchDirectFlight",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "search_direct_flight",
+          "description": "Search direct flights between two cities on a specific date.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "origin": {
+                "type": "string",
+                "description": "The origin city airport in three letters, such as 'JFK'."
+              },
+              "destination": {
+                "type": "string",
+                "description": "The destination city airport in three letters, such as 'LAX'."
+              },
+              "date": {
+                "type": "string",
+                "description": "The date of the flight in the format 'YYYY-MM-DD', such as '2024-01-01'."
+              }
+            },
+            "required": [
+              "origin",
+              "destination",
+              "date"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "SearchOnestopFlight",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "search_onestop_flight",
+          "description": "Search direct flights between two cities on a specific date.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "origin": {
+                "type": "string",
+                "description": "The origin city airport in three letters, such as 'JFK'."
+              },
+              "destination": {
+                "type": "string",
+                "description": "The destination city airport in three letters, such as 'LAX'."
+              },
+              "date": {
+                "type": "string",
+                "description": "The date of the flight in the format 'YYYY-MM-DD', such as '2024-05-01'."
+              }
+            },
+            "required": [
+              "origin",
+              "destination",
+              "date"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "SendCertificate",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "send_certificate",
+          "description": "Send a certificate to a user. Be careful!",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "user_id": {
+                "type": "string",
+                "description": "The ID of the user to book the reservation, such as 'sara_doe_496'."
+              },
+              "amount": {
+                "type": "number",
+                "description": "Certificate amount to send."
+              }
+            },
+            "required": [
+              "user_id",
+              "amount"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "TransferToHumanAgents",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "transfer_to_human_agents",
+          "description": "Transfer the user to a human agent, with a summary of the user's issue. Only transfer if the user explicitly asks for a human agent, or if the user's issue cannot be resolved by the agent with the available tools.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "summary": {
+                "type": "string",
+                "description": "A summary of the user's issue."
+              }
+            },
+            "required": [
+              "summary"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "UpdateReservationBaggages",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "update_reservation_baggages",
+          "description": "Update the baggage information of a reservation.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "reservation_id": {
+                "type": "string",
+                "description": "The reservation ID, such as 'ZFA04Y'."
+              },
+              "total_baggages": {
+                "type": "integer",
+                "description": "The updated total number of baggage items included in the reservation."
+              },
+              "nonfree_baggages": {
+                "type": "integer",
+                "description": "The updated number of non-free baggage items included in the reservation."
+              },
+              "payment_id": {
+                "type": "string",
+                "description": "The payment id stored in user profile, such as 'credit_card_7815826', 'gift_card_7815826', 'certificate_7815826'."
+              }
+            },
+            "required": [
+              "reservation_id",
+              "total_baggages",
+              "nonfree_baggages",
+              "payment_id"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "UpdateReservationFlights",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "update_reservation_flights",
+          "description": "Update the flight information of a reservation.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "reservation_id": {
+                "type": "string",
+                "description": "The reservation ID, such as 'ZFA04Y'."
+              },
+              "cabin": {
+                "type": "string",
+                "enum": [
+                  "basic_economy",
+                  "economy",
+                  "business"
+                ]
+              },
+              "flights": {
+                "type": "array",
+                "description": "An array of objects containing details about each piece of flight in the ENTIRE new reservation. Even if the a flight segment is not changed, it should still be included in the array.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "flight_number": {
+                      "type": "string",
+                      "description": "Flight number, such as 'HAT001'."
+                    },
+                    "date": {
+                      "type": "string",
+                      "description": "The date for the flight in the format 'YYYY-MM-DD', such as '2024-05-01'."
+                    }
+                  },
+                  "required": [
+                    "flight_number",
+                    "date"
+                  ]
+                }
+              },
+              "payment_id": {
+                "type": "string",
+                "description": "The payment id stored in user profile, such as 'credit_card_7815826', 'gift_card_7815826', 'certificate_7815826'."
+              }
+            },
+            "required": [
+              "reservation_id",
+              "cabin",
+              "flights",
+              "payment_id"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "UpdateReservationPassengers",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "update_reservation_passengers",
+          "description": "Update the passenger information of a reservation.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "reservation_id": {
+                "type": "string",
+                "description": "The reservation ID, such as 'ZFA04Y'."
+              },
+              "passengers": {
+                "type": "array",
+                "description": "An array of objects containing details about each passenger.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "first_name": {
+                      "type": "string",
+                      "description": "The first name of the passenger, such as 'Noah'."
+                    },
+                    "last_name": {
+                      "type": "string",
+                      "description": "The last name of the passenger, such as 'Brown'."
+                    },
+                    "dob": {
+                      "type": "string",
+                      "description": "The date of birth of the passenger in the format 'YYYY-MM-DD', such as '1990-01-01'."
+                    }
+                  },
+                  "required": [
+                    "first_name",
+                    "last_name",
+                    "dob"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "reservation_id",
+              "passengers"
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "adjacency_matrix": [
+    [
+      false,
+      true,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      true,
+      true
+    ],
+    [
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      true,
+      true,
+      false,
+      false,
+      false
+    ],
+    [
+      false,
+      true,
+      false,
+      false,
+      false,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    [
+      true,
+      true,
+      true,
+      false,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    [
+      true,
+      false,
+      false,
+      false,
+      false,
+      true,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    [
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false
+    ],
+    [
+      true,
+      false,
+      false,
+      false,
+      true,
+      true,
+      false,
+      false,
+      true,
+      false,
+      true,
+      false
+    ],
+    [
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      true,
+      false
+    ],
+    [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    [
+      false,
+      true,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      true,
+      true
+    ],
+    [
+      false,
+      true,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      true,
+      false,
+      true
+    ],
+    [
+      false,
+      true,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      true,
+      true,
+      false
+    ]
+  ],
+  "reason_matrix": [
+    [
+      "BookReservation cannot be its own neighbour; no self-edges are allowed.",
+      "CancelReservation requires a reservation_id, which is precisely what BookReservation would return upon success; thus the output of BookReservation feeds into CancelReservation.",
+      "GetReservationDetails requires a reservation_id; the reservation_id produced by BookReservation is used to fetch those details, making it a direct neighbour.",
+      "GetUserDetails is an entry/auth function (no incoming edges) and takes user_id, which is an input to BookReservation, not an output; therefore, not a neighbour.",
+      "ListAllAirports is independent of any specific booking and does not consume any output from BookReservation; it’s typically used pre-booking for discovery.",
+      "SearchDirectFlight is a pre-booking discovery step taking origin/destination/date; it does not use the output of BookReservation (which would be a reservation_id).",
+      "SearchOnestopFlight is also a pre-booking discovery step and does not depend on Booking output like reservation_id; no direct linkage.",
+      "SendCertificate expects user_id and amount; BookReservation’s salient output (reservation_id/confirmation) does not serve as required input here. While both involve the same user, that linkage comes from prior auth, not from BookReservation’s output.",
+      "TransferToHumanAgents accepts only a free-text summary and is a terminal step with only incoming edges by design. Its execution does not depend on BookReservation’s output; hence not a neighbour.",
+      "UpdateReservationBaggages needs reservation_id to identify which booking to modify; that reservation_id comes from BookReservation, so it’s a neighbour.",
+      "UpdateReservationFlights needs reservation_id to modify the booked itinerary; that id is produced by BookReservation, so it’s a neighbour.",
+      "UpdateReservationPassengers needs reservation_id to update passengers in the booked record; that id is produced by BookReservation, so it’s a neighbour."
+    ],
+    [
+      "BookReservation does not consume any output from CancelReservation; booking requires user_id, flights, etc., and while a rebooking might happen after a cancellation, there’s no direct input/output dependency or required influence from the cancel result.",
+      "Self-edge is not allowed; the target function cannot be its own neighbour.",
+      "After cancelling, an agent may fetch the reservation to confirm its status. The cancel operation’s result (e.g., cancellation confirmation/status along with the same reservation_id) can be used to call GetReservationDetails, so the cancel output influences and can supply part of the input.",
+      "GetUserDetails is an authentication/entry-point function and, per rules, should have no incoming edges. The cancellation result does not feed into it as an input.",
+      "Listing airports is independent of any reservation state. The output of CancelReservation is not used as input and does not meaningfully influence this call.",
+      "Searching direct flights requires origin/destination/date and does not use the cancellation output. Any search after a cancel is a separate flow without direct data dependency.",
+      "Searching one-stop flights similarly does not depend on cancel output and does not take any output from CancelReservation as input.",
+      "If cancellation results suggest compensation (e.g., fees or service issues), the cancel outcome directly influences whether to send a certificate and potentially the amount. Thus, CancelReservation’s output can drive execution of SendCertificate.",
+      "If the cancellation fails or yields issues (fees, partial refunds), the result can trigger escalation. TransferToHumanAgents is a terminal/sink action and its execution can be directly influenced by the cancellation outcome.",
+      "Once a reservation is cancelled, updating baggages is invalid/irrelevant; the cancel output (status=cancelled) would prevent calling this, so there is no scenario where its input is derived from the cancel output.",
+      "Similarly, updating flights after a full cancellation is not applicable; the cancellation result would block this rather than feed it.",
+      "Updating passengers after a full cancellation is not applicable; the cancellation result prevents this and does not provide inputs for it."
+    ],
+    [
+      "BookReservation is typically a separate flow and does not take reservation_id or otherwise depend on reservation details; while some fields may coincidentally overlap, the target’s output is not required nor clearly used to form the mandatory booking inputs (e.g., payment methods).",
+      "CancelReservation requires a reservation_id, which is part of the reservation details just retrieved; users often review details before deciding to cancel, so the target’s output directly supplies the input.",
+      "Self-edge is not allowed; GetReservationDetails cannot be a neighbour of itself.",
+      "GetUserDetails is an entry/authentication function and, per guidelines, should not have incoming edges; it’s not called based on reservation details.",
+      "ListAllAirports has no inputs, so nothing from the reservation details can be passed to it; it’s not directly influenced by the target’s output.",
+      "SearchDirectFlight can use origin/destination/date extracted from the reservation details to find alternative direct options for a change or rebooking scenario.",
+      "SearchOnestopFlight similarly can use origin/destination/date from the reservation details to search one-stop alternatives after reviewing the current itinerary.",
+      "SendCertificate can use the user_id associated with the reservation details, and the findings from those details (e.g., disruption) can drive the decision to issue compensation, satisfying the “output influences execution/part of input” criteria.",
+      "TransferToHumanAgents may be triggered after examining the reservation details and realizing the issue can’t be resolved; the summary is composed using those details, so the target’s output influences this call (and this function only has incoming edges).",
+      "UpdateReservationBaggages requires the reservation_id, which comes from the reservation details; reviewing current bag info often precedes updating it.",
+      "UpdateReservationFlights requires the reservation_id and uses current flight info from the details to construct the new flights array; the target’s output directly informs this update.",
+      "UpdateReservationPassengers requires the reservation_id and is naturally performed after reviewing the current passenger list in the reservation details."
+    ],
+    [
+      "Neighbour: After retrieving user details, the returned user_id and stored payment methods can be directly used to book a reservation (inputs include user_id and payment_methods).",
+      "Neighbour: GetUserDetails returns the user’s existing reservations (including reservation_id), which can be passed to CancelReservation.",
+      "Neighbour: The reservation_id obtained from the user’s reservations in GetUserDetails output is used to fetch reservation details.",
+      "Not a neighbour: No self edge is allowed; the target function cannot be its own neighbour.",
+      "Neighbour: While it has no explicit inputs, this function is typically invoked only after the user is authenticated via GetUserDetails; the authentication result directly controls whether we proceed to list airports (execution influence).",
+      "Neighbour: After authenticating and verifying the user via GetUserDetails, the system can proceed to search flights; the authentication output governs whether the search is allowed (execution influence).",
+      "Neighbour: Same as direct flight search—after obtaining user details (authentication), we proceed to search one-stop options; the GetUserDetails result controls execution.",
+      "Neighbour: Requires a user_id, which is obtained from GetUserDetails output; the returned user profile provides the exact user_id needed.",
+      "Neighbour: If, after verifying the user via GetUserDetails, the issue cannot be resolved, we transfer to a human agent; the decision to transfer is influenced by the prior authenticated context (execution influence).",
+      "Neighbour: Updating baggages needs reservation_id and a payment_id; both are discoverable from GetUserDetails (user’s reservations and stored payment methods).",
+      "Neighbour: Updating flights needs reservation_id and payment_id; both can be sourced from the user’s details/reservations returned by GetUserDetails.",
+      "Neighbour: Updating passengers needs reservation_id, which comes from the reservations listed in GetUserDetails output."
+    ],
+    [
+      "ListAllAirports provides the IATA codes users need to supply as origin and destination when booking; its output becomes part of BookReservation’s required inputs (origin/destination). Scenario: user browses the airport list to choose SFO -> JFK, then books.",
+      "CancelReservation only needs a reservation_id and does not use airport data; the airport list does not feed into this call.",
+      "GetReservationDetails requires only a reservation_id; airport listings are irrelevant to its inputs.",
+      "GetUserDetails is an entry-point/auth function and should not have incoming edges; additionally, it does not take airport info as input.",
+      "Self-edge is not allowed; ListAllAirports cannot be a neighbor of itself.",
+      "SearchDirectFlight requires origin and destination IATA codes; those can be selected from the airport list output, making it a downstream consumer of that data.",
+      "SearchOnestopFlight also requires origin and destination IATA codes; users can pick these from the airport list output before searching.",
+      "SendCertificate needs a user_id and amount; airport data is not involved.",
+      "TransferToHumanAgents is triggered by user dissatisfaction/irreconcilable issues, not by airport data; the airport list output doesn’t determine or feed its inputs.",
+      "UpdateReservationBaggages needs reservation_id and baggage/payment info; airport listings do not contribute to its inputs.",
+      "UpdateReservationFlights needs reservation_id, cabin, flight segments, and payment; the airport list does not provide any of these required inputs.",
+      "UpdateReservationPassengers needs reservation_id and passenger details; the airport list is unrelated."
+    ],
+    [
+      "Neighbor: The direct-flight search returns specific flight options (flight_number/date) and confirms origin/destination; these are selected and passed into BookReservation.flights (and related fields) to create the booking.",
+      "Not a neighbor: CancelReservation needs a reservation_id, which the flight search does not produce; cancellation does not depend on search results.",
+      "Not a neighbor: GetReservationDetails requires a reservation_id and is unrelated to the flight search output.",
+      "Not a neighbor: GetUserDetails is an entry-point/auth function and per guidelines should not have incoming edges; it also does not consume flight search results.",
+      "Not a neighbor: ListAllAirports takes no input from the flight search and is typically used before searching to discover codes, not triggered by search output.",
+      "Not a neighbor: No self-edge allowed; the target function cannot be its own neighbor.",
+      "Neighbor: If the direct-flight search returns no suitable options, that result directly triggers a one-stop search using the same origin/destination/date (criterion 3).",
+      "Not a neighbor: Sending certificates is unrelated to flight search outcomes and does not consume any data from it.",
+      "Neighbor: If the direct-flight search cannot satisfy the user (no availability, constraints), that output can directly lead to escalation to a human agent (TransferToHumanAgents has only incoming edges).",
+      "Not a neighbor: Updating baggages depends on reservation_id and baggage/payment info, not on flight search results.",
+      "Neighbor: Users often search direct flights to choose replacement segments; the chosen flight_number/date from the search feed into UpdateReservationFlights.flights to change an existing booking.",
+      "Not a neighbor: Updating passenger details depends on reservation_id and passenger data, not on flight search results."
+    ],
+    [
+      "True: The selected flight_number(s) and date(s) from one‑stop search results are used to populate the flights[] input (and align with origin/destination/date) when booking a reservation.",
+      "False: Cancel requires only a reservation_id; the search output provides no reservation_id and is not needed to execute cancellation, so there is no direct input/output link.",
+      "False: Getting reservation details needs a reservation_id, which the flight search does not produce; search results do not feed into this call.",
+      "False: This is an entry/auth function and takes user_id (not produced by flight search), and per guidelines should not have incoming edges.",
+      "True: If the one‑stop search returns no/invalid results (e.g., invalid IATA code or zero availability), the system may list airports to help the user choose valid origin/destination; the search outcome directly triggers this call.",
+      "True: If one‑stop search yields poor or no options, the system may also run a direct‑flight search for the same O/D/date to present alternatives; the decision to call it is driven by the one‑stop search outcome.",
+      "False: No self edge; the target function cannot be its own neighbour.",
+      "False: Sending a certificate requires user_id and amount; flight search results neither supply these nor typically trigger this action in normal flow.",
+      "True: If the one‑stop search fails to resolve the user’s need (no suitable flights found), the search outcome can directly trigger escalation to a human agent; Transfer functions only have incoming edges.",
+      "False: Updating baggages needs a reservation_id and payment_id; search results do not provide these and are not used by this function.",
+      "True: To change flights on an existing reservation, you first search; the chosen flight_number(s) and date(s) from the one‑stop search populate the flights[] input for updating reservation flights.",
+      "False: Passenger updates require reservation_id and passenger data; these are unrelated to flight search output."
+    ],
+    [
+      "BookReservation is a neighbour: sending a certificate likely creates/credits a certificate payment method (e.g., certificate_123) with a balance (amount). That certificate ID and amount can then be included in BookReservation.payment_methods to pay for part/all of the booking.",
+      "CancelReservation is not a neighbour: it only needs a reservation_id and does not consume or depend on a certificate created by SendCertificate.",
+      "GetReservationDetails is not a neighbour: it requires a reservation_id and does not take or depend on any output from SendCertificate.",
+      "GetUserDetails is not a neighbour: it’s an entry/auth function (no incoming edges) and does not consume the output of SendCertificate.",
+      "ListAllAirports is not a neighbour: it’s a static lookup and does not use any certificate information.",
+      "SearchDirectFlight is not a neighbour: flight search depends on origin/destination/date, not on any certificate output.",
+      "SearchOnestopFlight is not a neighbour: same as direct search; no dependency on certificates.",
+      "SendCertificate is not a neighbour of itself: self-edges are disallowed.",
+      "TransferToHumanAgents is not a neighbour: transfer is triggered by user request/unresolvable issues; it doesn’t take or depend on the certificate output (summary is unrelated).",
+      "UpdateReservationBaggages is a neighbour: paying updated baggage fees requires a payment_id; the certificate created by SendCertificate can be used as that payment method.",
+      "UpdateReservationFlights is a neighbour: rebooking often requires payment; the certificate created by SendCertificate can be passed as the payment_id for the additional charges.",
+      "UpdateReservationPassengers is not a neighbour: it only updates passenger data and takes no payment fields; no use of certificate output."
+    ],
+    [
+      "Not a neighbour: after transferring to a human agent, the bot workflow ends and no automated booking occurs; the transfer’s output (handoff/summary) is not an input to BookReservation.",
+      "Not a neighbour: escalation to a human ends automated actions; the transfer’s output does not provide a reservation_id for CancelReservation.",
+      "Not a neighbour: once handed off, the bot doesn’t proceed to fetch details; the transfer output is not a reservation_id required by GetReservationDetails.",
+      "Not a neighbour: this is an entry/auth function and is not triggered after a human handoff; the transfer output isn’t a user_id input for GetUserDetails.",
+      "Not a neighbour: listing airports is a discovery step and won’t be invoked after escalation; no output from transfer feeds ListAllAirports.",
+      "Not a neighbour: flight search would precede booking, not follow a human transfer; transfer output is not used by SearchDirectFlight.",
+      "Not a neighbour: similar to direct search; no automated search occurs post-handoff and the transfer output isn’t an input for SearchOnestopFlight.",
+      "Not a neighbour: sending certificates is an automated action that should not happen after escalation; the transfer output doesn’t supply user_id/amount for SendCertificate.",
+      "Not a neighbour: self-edges are not allowed; TransferToHumanAgents cannot be its own neighbour.",
+      "Not a neighbour: updating baggages is an automated post-reservation action; after transfer, no further automated updates occur and the transfer output isn’t the required reservation_id/payment_id.",
+      "Not a neighbour: updating flights would not occur after a human handoff; the transfer output doesn’t provide the reservation_id or other required inputs.",
+      "Not a neighbour: passenger updates are not performed after escalation; the transfer output does not supply the reservation_id/passenger data required."
+    ],
+    [
+      "Not a neighbour. BookReservation creates a new reservation and takes user_id, flights, payments, etc., not the reservation_id or baggage data from an existing reservation update. The output of UpdateReservationBaggages is not used here.",
+      "Neighbour. After updating baggage, a user may decide to cancel the booking; CancelReservation requires reservation_id, which is contained/confirmed in the result of UpdateReservationBaggages and thus can be passed directly.",
+      "Neighbour. A common next step is to fetch the updated booking to verify baggage counts/charges; GetReservationDetails takes reservation_id, which comes from the update’s output.",
+      "Not a neighbour. GetUserDetails is an entry-point/auth function with no incoming edges and takes only user_id; it doesn’t consume the reservation_id/baggage info produced by the update.",
+      "Not a neighbour. Listing airports is unrelated and does not consume reservation_id or baggage outputs from the update.",
+      "Not a neighbour. Searching direct flights needs origin/destination/date and does not use the reservation_id/baggage update output.",
+      "Not a neighbour. Searching one-stop flights needs origin/destination/date and does not use the reservation_id/baggage update output.",
+      "Not a neighbour. Sending a certificate requires user_id and amount; it does not take reservation_id or baggage info from the update, nor is its execution directly determined by the update result.",
+      "Neighbour. If the baggage update fails or the user remains unsatisfied, that outcome directly triggers a transfer; although the input is a summary string, the update’s result influences the decision to execute this function (criterion 3).",
+      "Not a neighbour. Self-edges are not allowed; UpdateReservationBaggages cannot be its own neighbour.",
+      "Neighbour. After a baggage update, the user may change flights on the same booking; UpdateReservationFlights requires reservation_id (and payment_id), where reservation_id comes from the update result.",
+      "Neighbour. After a baggage update, the user may edit passenger information on the same booking; UpdateReservationPassengers requires reservation_id, which is provided/confirmed by the update result."
+    ],
+    [
+      "BookReservation is for creating a new booking and does not consume the updated reservation produced by UpdateReservationFlights; it neither needs nor is directly influenced by that output.",
+      "CancelReservation can immediately follow a flight-change; it uses the same reservation_id (available from the update result/context), and the outcome of the update (e.g., fees, schedule) can directly drive the decision to cancel.",
+      "GetReservationDetails is typically called right after an update to verify the new itinerary; it consumes the reservation_id from the update result/context to fetch the latest details.",
+      "GetUserDetails is an entry/auth function and per guidelines should not have incoming edges; it does not consume the output of the update.",
+      "ListAllAirports is a standalone lookup and does not take anything from the update output; no direct dependency.",
+      "SearchDirectFlight is generally used before changing flights to find options; it doesn’t consume the update’s output (origin/destination/date are inputs unrelated to the update result).",
+      "SearchOnestopFlight similarly precedes a change and doesn’t use the update’s output; no direct dependency.",
+      "SendCertificate requires user_id and amount, which are not outputs of the flight update; any compensation decision is not a direct consequence requiring this function as a next step.",
+      "TransferToHumanAgents can be triggered if the update fails or the result is unsatisfactory; the update outcome directly influences escalation. Transfer functions have only incoming edges, which fits this relationship.",
+      "UpdateReservationBaggages can logically follow a flight change because new flights/cabin can alter baggage allowances/fees; it uses the same reservation_id (from the update context) and the update’s outcome directly influences whether/how baggage is updated.",
+      "UpdateReservationFlights is the target itself; no self edge allowed.",
+      "UpdateReservationPassengers can follow a flight change to adjust traveler details; it uses the same reservation_id from the update context, and the updated reservation data guides what passenger changes are needed."
+    ],
+    [
+      "BookReservation creates a new reservation and does not consume the updated passenger data or reservation_id from an existing reservation update, so there is no direct data or control-flow dependency.",
+      "CancelReservation can follow an update if the user decides to cancel the same reservation; it takes reservation_id, which comes from the updated reservation/context of UpdateReservationPassengers, and the update outcome can influence the decision to cancel.",
+      "GetReservationDetails is often called right after updating passengers to verify changes; it requires reservation_id, which is available from the updated reservation/result of UpdateReservationPassengers.",
+      "GetUserDetails is an entry-point authentication/user lookup function and, per guideline, should not have incoming edges; it also requires user_id, not produced by the passenger update.",
+      "ListAllAirports is a standalone listing that does not depend on reservation passenger updates or their outputs.",
+      "SearchDirectFlight requires origin/destination/date and does not use or depend on the output of a passenger update.",
+      "SearchOnestopFlight similarly requires origin/destination/date and is unrelated to updated passenger information.",
+      "SendCertificate needs user_id and amount; the passenger update output does not provide or drive these inputs, so there is no dependency.",
+      "TransferToHumanAgents can be triggered if updating passengers fails or cannot proceed; the update response/error directly influences escalation, and its details can be included in the required summary.",
+      "UpdateReservationBaggages commonly follows a passenger update to align baggage counts; it requires reservation_id, which is available from the updated reservation, and the passenger changes can drive this action.",
+      "UpdateReservationFlights can follow passenger updates (e.g., to rebook for changed passengers); it consumes the same reservation_id from the updated reservation/context.",
+      "UpdateReservationPassengers cannot be its own neighbour; self-edges are disallowed."
+    ]
+  ]
+}

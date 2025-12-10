@@ -1,0 +1,163 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 800px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#97c2fc", "id": "BookReservation", "label": "BookReservation", "shape": "dot"}, {"color": "#97c2fc", "id": "Calculate", "label": "Calculate", "shape": "dot"}, {"color": "#97c2fc", "id": "CancelReservation", "label": "CancelReservation", "shape": "dot"}, {"color": "#97c2fc", "id": "GetReservationDetails", "label": "GetReservationDetails", "shape": "dot"}, {"color": "#97c2fc", "id": "GetUserDetails", "label": "GetUserDetails", "shape": "dot"}, {"color": "#97c2fc", "id": "ListAllAirports", "label": "ListAllAirports", "shape": "dot"}, {"color": "#97c2fc", "id": "SearchDirectFlight", "label": "SearchDirectFlight", "shape": "dot"}, {"color": "#97c2fc", "id": "SearchOnestopFlight", "label": "SearchOnestopFlight", "shape": "dot"}, {"color": "#97c2fc", "id": "SendCertificate", "label": "SendCertificate", "shape": "dot"}, {"color": "#97c2fc", "id": "TransferToHumanAgents", "label": "TransferToHumanAgents", "shape": "dot"}, {"color": "#97c2fc", "id": "UpdateReservationBaggages", "label": "UpdateReservationBaggages", "shape": "dot"}, {"color": "#97c2fc", "id": "UpdateReservationFlights", "label": "UpdateReservationFlights", "shape": "dot"}, {"color": "#97c2fc", "id": "UpdateReservationPassengers", "label": "UpdateReservationPassengers", "shape": "dot"}]);
+                  edges = new vis.DataSet([{"arrows": "to", "from": "BookReservation", "label": "After a reservation is booked (output of\u2026", "title": "After a reservation is booked (output of \u0027BookReservation\u0027 is a \u0027reservation_id\u0027), it can be cancelled using that \u0027reservation_id\u0027 as input to \u0027CancelReservation\u0027.", "to": "CancelReservation"}, {"arrows": "to", "from": "BookReservation", "label": "Once a reservation is booked (output of \u2026", "title": "Once a reservation is booked (output of \u0027BookReservation\u0027 is a \u0027reservation_id\u0027), its details can be retrieved using that \u0027reservation_id\u0027 as input to \u0027GetReservationDetails\u0027.", "to": "GetReservationDetails"}, {"arrows": "to", "from": "BookReservation", "label": "If there\u0027s an issue with booking a reser\u2026", "title": "If there\u0027s an issue with booking a reservation (e.g., \u0027BookReservation\u0027 fails or the user has questions about a newly booked reservation), the details of that reservation or the booking attempt could be part of the \u0027summary\u0027 provided to \u0027TransferToHumanAgents\u0027. This represents a scenario where the execution of \u0027BookReservation\u0027 directly influences the need for and content of \u0027TransferToHumanAgents\u0027.", "to": "TransferToHumanAgents"}, {"arrows": "to", "from": "BookReservation", "label": "After a reservation is booked (output of\u2026", "title": "After a reservation is booked (output of \u0027BookReservation\u0027 is a \u0027reservation_id\u0027), the baggage information for that reservation can be updated using \u0027UpdateReservationBaggages\u0027 with the \u0027reservation_id\u0027.", "to": "UpdateReservationBaggages"}, {"arrows": "to", "from": "BookReservation", "label": "After a reservation is booked (output of\u2026", "title": "After a reservation is booked (output of \u0027BookReservation\u0027 is a \u0027reservation_id\u0027), the flight details for that reservation can be updated using \u0027UpdateReservationFlights\u0027 with the \u0027reservation_id\u0027.", "to": "UpdateReservationFlights"}, {"arrows": "to", "from": "BookReservation", "label": "After a reservation is booked (output of\u2026", "title": "After a reservation is booked (output of \u0027BookReservation\u0027 is a \u0027reservation_id\u0027), the passenger information for that reservation can be updated using \u0027UpdateReservationPassengers\u0027 with the \u0027reservation_id\u0027.", "to": "UpdateReservationPassengers"}, {"arrows": "to", "from": "CancelReservation", "label": "The act of cancelling a reservation (out\u2026", "title": "The act of cancelling a reservation (output/effect of CancelReservation) can directly influence a user\u0027s decision to book a new reservation. For example, a user cancels an old reservation and then books a new one with different details.", "to": "BookReservation"}, {"arrows": "to", "from": "CancelReservation", "label": "The reservation_id that was just cancell\u2026", "title": "The reservation_id that was just cancelled by CancelReservation can be used as an input to GetReservationDetails to verify the cancellation status or retrieve details of the now-cancelled reservation.", "to": "GetReservationDetails"}, {"arrows": "to", "from": "CancelReservation", "label": "The act of cancelling a reservation can \u2026", "title": "The act of cancelling a reservation can directly influence a user\u0027s decision to search for new direct flights. For example, a user cancels an old reservation and then searches for new direct flights for different dates or destinations.", "to": "SearchDirectFlight"}, {"arrows": "to", "from": "CancelReservation", "label": "The act of cancelling a reservation can \u2026", "title": "The act of cancelling a reservation can directly influence a user\u0027s decision to search for new one-stop flights. For example, a user cancels an old reservation and then searches for new one-stop flights for different dates or destinations.", "to": "SearchOnestopFlight"}, {"arrows": "to", "from": "CancelReservation", "label": "In some customer service policies, cance\u2026", "title": "In some customer service policies, cancelling a reservation might result in a refund in the form of a certificate. In such a case, the cancellation directly influences the execution of SendCertificate.", "to": "SendCertificate"}, {"arrows": "to", "from": "CancelReservation", "label": "If the cancellation process encounters a\u2026", "title": "If the cancellation process encounters an error, or if the user has complex questions or issues arising directly from the cancellation (e.g., refund disputes, policy clarification), the system might need to TransferToHumanAgents. The outcome or complications of CancelReservation directly influence this.", "to": "TransferToHumanAgents"}, {"arrows": "to", "from": "GetReservationDetails", "label": "\u0027CancelReservation\u0027 is a neighbour becau\u2026", "title": "\u0027CancelReservation\u0027 is a neighbour because the \u0027reservation_id\u0027 obtained from \u0027GetReservationDetails\u0027 can be directly used as input to cancel that specific reservation.", "to": "CancelReservation"}, {"arrows": "to", "from": "GetReservationDetails", "label": "\u0027GetUserDetails\u0027 is a neighbour because \u2026", "title": "\u0027GetUserDetails\u0027 is a neighbour because the output of \u0027GetReservationDetails\u0027 (reservation details) would likely include a \u0027user_id\u0027, which can then be used as input to retrieve the user\u0027s details.", "to": "GetUserDetails"}, {"arrows": "to", "from": "GetReservationDetails", "label": "\u0027SearchDirectFlight\u0027 is a neighbour beca\u2026", "title": "\u0027SearchDirectFlight\u0027 is a neighbour because the flight details (origin, destination, date) obtained from \u0027GetReservationDetails\u0027 can be used to search for alternative or new direct flights.", "to": "SearchDirectFlight"}, {"arrows": "to", "from": "GetReservationDetails", "label": "\u0027SearchOnestopFlight\u0027 is a neighbour bec\u2026", "title": "\u0027SearchOnestopFlight\u0027 is a neighbour because the flight details (origin, destination, date) obtained from \u0027GetReservationDetails\u0027 can be used to search for alternative or new one-stop flights.", "to": "SearchOnestopFlight"}, {"arrows": "to", "from": "GetReservationDetails", "label": "\u0027SendCertificate\u0027 is a neighbour because\u2026", "title": "\u0027SendCertificate\u0027 is a neighbour because if a reservation is modified or cancelled, a certificate might be issued to the \u0027user_id\u0027 associated with the reservation, which can be obtained from \u0027GetReservationDetails\u0027.", "to": "SendCertificate"}, {"arrows": "to", "from": "GetReservationDetails", "label": "\u0027TransferToHumanAgents\u0027 is a neighbour b\u2026", "title": "\u0027TransferToHumanAgents\u0027 is a neighbour because the details of the reservation obtained from \u0027GetReservationDetails\u0027 can be used to formulate a comprehensive summary for the human agent.", "to": "TransferToHumanAgents"}, {"arrows": "to", "from": "GetReservationDetails", "label": "\u0027UpdateReservationBaggages\u0027 is a neighbo\u2026", "title": "\u0027UpdateReservationBaggages\u0027 is a neighbour because the \u0027reservation_id\u0027 from \u0027GetReservationDetails\u0027 is required, and the current baggage information would be used to inform the update.", "to": "UpdateReservationBaggages"}, {"arrows": "to", "from": "GetReservationDetails", "label": "\u0027UpdateReservationFlights\u0027 is a neighbou\u2026", "title": "\u0027UpdateReservationFlights\u0027 is a neighbour because the \u0027reservation_id\u0027 from \u0027GetReservationDetails\u0027 is required, and the current flight and cabin details would be used to inform the update.", "to": "UpdateReservationFlights"}, {"arrows": "to", "from": "GetReservationDetails", "label": "\u0027UpdateReservationPassengers\u0027 is a neigh\u2026", "title": "\u0027UpdateReservationPassengers\u0027 is a neighbour because the \u0027reservation_id\u0027 from \u0027GetReservationDetails\u0027 is required, and the current passenger details would be used to inform the update.", "to": "UpdateReservationPassengers"}, {"arrows": "to", "from": "GetUserDetails", "label": "The output of GetUserDetails includes th\u2026", "title": "The output of GetUserDetails includes the \u0027user_id\u0027, which is a required input for BookReservation. A scenario could be getting a user\u0027s details and then booking a new reservation for them.", "to": "BookReservation"}, {"arrows": "to", "from": "GetUserDetails", "label": "The output of GetUserDetails includes us\u2026", "title": "The output of GetUserDetails includes user reservations, which means it will contain \u0027reservation_id\u0027s. This \u0027reservation_id\u0027 can then be used as input to CancelReservation. A scenario could be a user viewing their reservations and then deciding to cancel one.", "to": "CancelReservation"}, {"arrows": "to", "from": "GetUserDetails", "label": "The output of GetUserDetails includes us\u2026", "title": "The output of GetUserDetails includes user reservations, which means it will contain \u0027reservation_id\u0027s. This \u0027reservation_id\u0027 can then be used as input to GetReservationDetails to get more specific information about a particular reservation. A scenario could be a user viewing their reservations and then wanting to see more details about one of them.", "to": "GetReservationDetails"}, {"arrows": "to", "from": "GetUserDetails", "label": "The output of GetUserDetails includes th\u2026", "title": "The output of GetUserDetails includes the \u0027user_id\u0027, which is a required input for SendCertificate. A scenario could be retrieving user details and then sending a certificate to that user.", "to": "SendCertificate"}, {"arrows": "to", "from": "GetUserDetails", "label": "The output of GetUserDetails, which incl\u2026", "title": "The output of GetUserDetails, which includes user details and reservations, can directly influence the \u0027summary\u0027 parameter of TransferToHumanAgents. If an issue related to the user\u0027s details or reservations cannot be resolved, the information from GetUserDetails would be crucial for the summary provided to a human agent.", "to": "TransferToHumanAgents"}, {"arrows": "to", "from": "GetUserDetails", "label": "The output of GetUserDetails includes us\u2026", "title": "The output of GetUserDetails includes user reservations, which means it will contain \u0027reservation_id\u0027s. This \u0027reservation_id\u0027 can then be used as input to UpdateReservationBaggages. A scenario could be a user viewing their reservations and then updating the baggage for one of them.", "to": "UpdateReservationBaggages"}, {"arrows": "to", "from": "GetUserDetails", "label": "The output of GetUserDetails includes us\u2026", "title": "The output of GetUserDetails includes user reservations, which means it will contain \u0027reservation_id\u0027s. This \u0027reservation_id\u0027 can then be used as input to UpdateReservationFlights. A scenario could be a user viewing their reservations and then updating the flight details for one of them.", "to": "UpdateReservationFlights"}, {"arrows": "to", "from": "GetUserDetails", "label": "The output of GetUserDetails includes us\u2026", "title": "The output of GetUserDetails includes user reservations, which means it will contain \u0027reservation_id\u0027s. This \u0027reservation_id\u0027 can then be used as input to UpdateReservationPassengers. A scenario could be a user viewing their reservations and then updating passenger information for one of them.", "to": "UpdateReservationPassengers"}, {"arrows": "to", "from": "ListAllAirports", "label": "The output of \u0027ListAllAirports\u0027 (a list \u2026", "title": "The output of \u0027ListAllAirports\u0027 (a list of airports and their IATA codes) can be used to inform the user about available origin and destination airports, which are required inputs for \u0027BookReservation\u0027. For example, a user might ask \u0027What airports are available?\u0027 before booking a flight.", "to": "BookReservation"}, {"arrows": "to", "from": "ListAllAirports", "label": "The output of \u0027ListAllAirports\u0027 (a list \u2026", "title": "The output of \u0027ListAllAirports\u0027 (a list of airports and their IATA codes) can be used to inform the user about available origin and destination airports, which are required inputs for \u0027SearchDirectFlight\u0027. For example, a user might ask \u0027Show me all airports\u0027 before searching for a direct flight from a specific origin.", "to": "SearchDirectFlight"}, {"arrows": "to", "from": "ListAllAirports", "label": "The output of \u0027ListAllAirports\u0027 (a list \u2026", "title": "The output of \u0027ListAllAirports\u0027 (a list of airports and their IATA codes) can be used to inform the user about available origin and destination airports, which are required inputs for \u0027SearchOnestopFlight\u0027. For example, a user might ask \u0027Which airports can I fly from?\u0027 before searching for a one-stop flight.", "to": "SearchOnestopFlight"}, {"arrows": "to", "from": "SearchDirectFlight", "label": "The output of \u0027SearchDirectFlight\u0027 (avai\u2026", "title": "The output of \u0027SearchDirectFlight\u0027 (available flights, including origin, destination, and date) is directly used as input for \u0027BookReservation\u0027. Specifically, the \u0027origin\u0027, \u0027destination\u0027, and the \u0027flights\u0027 array (containing \u0027flight_number\u0027 and \u0027date\u0027) parameters of \u0027BookReservation\u0027 would be populated by the results of a flight search. A common scenario is a user searching for a flight and then proceeding to book it.", "to": "BookReservation"}, {"arrows": "to", "from": "SearchOnestopFlight", "label": "The output of \u0027SearchOnestopFlight\u0027 (fli\u2026", "title": "The output of \u0027SearchOnestopFlight\u0027 (flight details such as origin, destination, flight numbers, and dates) is directly used as input for \u0027BookReservation\u0027 to specify which flights to book. Scenario: A user searches for a one-stop flight and then decides to book one of the found flights.", "to": "BookReservation"}, {"arrows": "to", "from": "SearchOnestopFlight", "label": "The outcome (output) of \u0027SearchOnestopFl\u2026", "title": "The outcome (output) of \u0027SearchOnestopFlight\u0027 directly influences the execution of \u0027TransferToHumanAgents\u0027. For example, if \u0027SearchOnestopFlight\u0027 fails to find any suitable flights, or if the user is not satisfied with the search results, this directly leads to the need to transfer to a human agent. The \u0027summary\u0027 parameter would then describe the issue based on the flight search outcome. Scenario: A user searches for a one-stop flight, no suitable flights are found, and the user requests to speak to a human agent to explore other options.", "to": "TransferToHumanAgents"}, {"arrows": "to", "from": "SendCertificate", "label": "The output of \u0027SendCertificate\u0027 is the c\u2026", "title": "The output of \u0027SendCertificate\u0027 is the creation of a certificate. This certificate can then be used as a \u0027payment_id\u0027 in the \u0027payment_methods\u0027 array when booking a reservation with \u0027BookReservation\u0027. Thus, the output of the target function is part of the input to the candidate function.", "to": "BookReservation"}, {"arrows": "to", "from": "SendCertificate", "label": "The output of \u0027SendCertificate\u0027 is the c\u2026", "title": "The output of \u0027SendCertificate\u0027 is the creation of a certificate. This certificate can then be used as a \u0027payment_id\u0027 when updating reservation baggages with \u0027UpdateReservationBaggages\u0027. Thus, the output of the target function is part of the input to the candidate function.", "to": "UpdateReservationBaggages"}, {"arrows": "to", "from": "SendCertificate", "label": "The output of \u0027SendCertificate\u0027 is the c\u2026", "title": "The output of \u0027SendCertificate\u0027 is the creation of a certificate. This certificate can then be used as a \u0027payment_id\u0027 when updating reservation flights with \u0027UpdateReservationFlights\u0027. Thus, the output of the target function is part of the input to the candidate function.", "to": "UpdateReservationFlights"}, {"arrows": "to", "from": "UpdateReservationBaggages", "label": "After successfully updating reservation \u2026", "title": "After successfully updating reservation baggages using \u0027UpdateReservationBaggages\u0027, a user would likely want to confirm the changes. The successful execution of \u0027UpdateReservationBaggages\u0027 directly influences the decision to call \u0027GetReservationDetails\u0027 to verify the updated state of the reservation using the same \u0027reservation_id\u0027.", "to": "GetReservationDetails"}, {"arrows": "to", "from": "UpdateReservationBaggages", "label": "If the \u0027UpdateReservationBaggages\u0027 opera\u2026", "title": "If the \u0027UpdateReservationBaggages\u0027 operation fails, or if the user has a complex issue regarding baggage that cannot be resolved by the system, the outcome (failure or inability to resolve) of \u0027UpdateReservationBaggages\u0027 directly influences the decision to call \u0027TransferToHumanAgents\u0027.", "to": "TransferToHumanAgents"}, {"arrows": "to", "from": "UpdateReservationFlights", "label": "After updating the flights of a reservat\u2026", "title": "After updating the flights of a reservation, a user might decide to cancel the entire reservation. The \u0027reservation_id\u0027 from UpdateReservationFlights can be used as input to CancelReservation.", "to": "CancelReservation"}, {"arrows": "to", "from": "UpdateReservationFlights", "label": "After updating the flights of a reservat\u2026", "title": "After updating the flights of a reservation, a user might want to verify the changes by getting the reservation details. The \u0027reservation_id\u0027 from UpdateReservationFlights can be used as input to GetReservationDetails.", "to": "GetReservationDetails"}, {"arrows": "to", "from": "UpdateReservationFlights", "label": "If the update of reservation flights fai\u2026", "title": "If the update of reservation flights fails or if the user has further issues after the update, they might need to be transferred to a human agent. The outcome of UpdateReservationFlights directly influences the need for TransferToHumanAgents.", "to": "TransferToHumanAgents"}, {"arrows": "to", "from": "UpdateReservationFlights", "label": "After updating the flights for a reserva\u2026", "title": "After updating the flights for a reservation, a user might also want to update the baggage information for the same reservation. The \u0027reservation_id\u0027 from UpdateReservationFlights can be used as input to UpdateReservationBaggages.", "to": "UpdateReservationBaggages"}, {"arrows": "to", "from": "UpdateReservationFlights", "label": "After updating the flights for a reserva\u2026", "title": "After updating the flights for a reservation, a user might also want to update the passenger information for the same reservation. The \u0027reservation_id\u0027 from UpdateReservationFlights can be used as input to UpdateReservationPassengers.", "to": "UpdateReservationPassengers"}, {"arrows": "to", "from": "UpdateReservationPassengers", "label": "After updating the passenger information\u2026", "title": "After updating the passenger information for a reservation using \u0027UpdateReservationPassengers\u0027, the \u0027reservation_id\u0027 of that updated reservation can be used to cancel it. The updated state of the reservation (the conceptual output of the target function) directly influences the ability to cancel it, making \u0027CancelReservation\u0027 a neighbour.", "to": "CancelReservation"}, {"arrows": "to", "from": "UpdateReservationPassengers", "label": "After updating the passenger information\u2026", "title": "After updating the passenger information for a reservation using \u0027UpdateReservationPassengers\u0027, the \u0027reservation_id\u0027 of that updated reservation can be used to retrieve its details. The updated state of the reservation (the conceptual output of the target function) directly influences what \u0027GetReservationDetails\u0027 will return, making it a neighbour.", "to": "GetReservationDetails"}, {"arrows": "to", "from": "UpdateReservationPassengers", "label": "If the \u0027UpdateReservationPassengers\u0027 ope\u2026", "title": "If the \u0027UpdateReservationPassengers\u0027 operation encounters an unresolvable issue or if the user has further complex requests related to the updated passenger information, the outcome (success/failure) of \u0027UpdateReservationPassengers\u0027 directly influences the decision to \u0027TransferToHumanAgents\u0027.", "to": "TransferToHumanAgents"}, {"arrows": "to", "from": "UpdateReservationPassengers", "label": "After updating the passenger information\u2026", "title": "After updating the passenger information for a reservation using \u0027UpdateReservationPassengers\u0027, a user might want to update the baggage information for the same reservation. The \u0027reservation_id\u0027 of the updated reservation (the conceptual output of the target function) is a direct input to \u0027UpdateReservationBaggages\u0027, making it a neighbour.", "to": "UpdateReservationBaggages"}, {"arrows": "to", "from": "UpdateReservationPassengers", "label": "After updating the passenger information\u2026", "title": "After updating the passenger information for a reservation using \u0027UpdateReservationPassengers\u0027, a user might want to update the flight details (e.g., cabin) for the same reservation. The \u0027reservation_id\u0027 of the updated reservation (the conceptual output of the target function) is a direct input to \u0027UpdateReservationFlights\u0027, making it a neighbour.", "to": "UpdateReservationFlights"}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "barnesHut": {
+            "avoidOverlap": 0,
+            "centralGravity": 0.3,
+            "damping": 0.09,
+            "gravitationalConstant": -80000,
+            "springConstant": 0.001,
+            "springLength": 250
+        },
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>

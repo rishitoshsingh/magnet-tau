@@ -1,0 +1,163 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 800px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#97c2fc", "id": "BookReservation", "label": "BookReservation", "shape": "dot"}, {"color": "#97c2fc", "id": "Calculate", "label": "Calculate", "shape": "dot"}, {"color": "#97c2fc", "id": "CancelReservation", "label": "CancelReservation", "shape": "dot"}, {"color": "#97c2fc", "id": "GetReservationDetails", "label": "GetReservationDetails", "shape": "dot"}, {"color": "#97c2fc", "id": "GetUserDetails", "label": "GetUserDetails", "shape": "dot"}, {"color": "#97c2fc", "id": "ListAllAirports", "label": "ListAllAirports", "shape": "dot"}, {"color": "#97c2fc", "id": "SearchDirectFlight", "label": "SearchDirectFlight", "shape": "dot"}, {"color": "#97c2fc", "id": "SearchOnestopFlight", "label": "SearchOnestopFlight", "shape": "dot"}, {"color": "#97c2fc", "id": "SendCertificate", "label": "SendCertificate", "shape": "dot"}, {"color": "#97c2fc", "id": "TransferToHumanAgents", "label": "TransferToHumanAgents", "shape": "dot"}, {"color": "#97c2fc", "id": "UpdateReservationBaggages", "label": "UpdateReservationBaggages", "shape": "dot"}, {"color": "#97c2fc", "id": "UpdateReservationFlights", "label": "UpdateReservationFlights", "shape": "dot"}, {"color": "#97c2fc", "id": "UpdateReservationPassengers", "label": "UpdateReservationPassengers", "shape": "dot"}]);
+                  edges = new vis.DataSet([{"arrows": "to", "from": "BookReservation", "label": "\u0027Calculate\u0027 can be considered a neighbou\u2026", "title": "\u0027Calculate\u0027 can be considered a neighbour because after booking a reservation, the total cost might need to be calculated to finalize the transaction or for record-keeping purposes.", "to": "Calculate"}, {"arrows": "to", "from": "BookReservation", "label": "\u0027CancelReservation\u0027 can be a neighbour b\u2026", "title": "\u0027CancelReservation\u0027 can be a neighbour because after booking a reservation, a user might want to cancel it if there are changes in plans.", "to": "CancelReservation"}, {"arrows": "to", "from": "BookReservation", "label": "\u0027GetReservationDetails\u0027 can be a neighbo\u2026", "title": "\u0027GetReservationDetails\u0027 can be a neighbour because after booking a reservation, a user might want to retrieve the details of the reservation for confirmation or record.", "to": "GetReservationDetails"}, {"arrows": "to", "from": "BookReservation", "label": "\u0027UpdateReservationBaggages\u0027 can be a nei\u2026", "title": "\u0027UpdateReservationBaggages\u0027 can be a neighbour because after booking a reservation, a user might want to update baggage information.", "to": "UpdateReservationBaggages"}, {"arrows": "to", "from": "BookReservation", "label": "\u0027UpdateReservationFlights\u0027 can be a neig\u2026", "title": "\u0027UpdateReservationFlights\u0027 can be a neighbour because after booking a reservation, a user might want to update flight details.", "to": "UpdateReservationFlights"}, {"arrows": "to", "from": "BookReservation", "label": "\u0027UpdateReservationPassengers\u0027 can be a n\u2026", "title": "\u0027UpdateReservationPassengers\u0027 can be a neighbour because after booking a reservation, a user might want to update passenger information.", "to": "UpdateReservationPassengers"}, {"arrows": "to", "from": "Calculate", "label": "The \u0027BookReservation\u0027 function includes \u2026", "title": "The \u0027BookReservation\u0027 function includes \u0027payment_methods\u0027 with an \u0027amount\u0027 field, which could be calculated using the \u0027Calculate\u0027 function. Therefore, \u0027Calculate\u0027 can be used to determine the total amount due before booking a reservation.", "to": "BookReservation"}, {"arrows": "to", "from": "Calculate", "label": "The \u0027TransferToHumanAgents\u0027 function is \u2026", "title": "The \u0027TransferToHumanAgents\u0027 function is an end node and does not require any input from the \u0027Calculate\u0027 function, but it could be used after calculations are done to transfer unresolved issues to a human agent.", "to": "TransferToHumanAgents"}, {"arrows": "to", "from": "Calculate", "label": "The \u0027UpdateReservationBaggages\u0027 function\u2026", "title": "The \u0027UpdateReservationBaggages\u0027 function includes \u0027payment_id\u0027 and baggage details, which might require calculation of additional costs, making \u0027Calculate\u0027 a potential neighbour.", "to": "UpdateReservationBaggages"}, {"arrows": "to", "from": "Calculate", "label": "The \u0027UpdateReservationFlights\u0027 function \u2026", "title": "The \u0027UpdateReservationFlights\u0027 function includes \u0027payment_id\u0027 and flight details, which might require calculation of additional costs, making \u0027Calculate\u0027 a potential neighbour.", "to": "UpdateReservationFlights"}, {"arrows": "to", "from": "CancelReservation", "label": "GetReservationDetails is a neighbour bec\u2026", "title": "GetReservationDetails is a neighbour because it uses the reservation_id, which is the output of CancelReservation, to fetch details about the reservation that might be cancelled.", "to": "GetReservationDetails"}, {"arrows": "to", "from": "GetReservationDetails", "label": "CancelReservation is a neighbour because\u2026", "title": "CancelReservation is a neighbour because it requires the reservation_id as input, which can be obtained from GetReservationDetails.", "to": "CancelReservation"}, {"arrows": "to", "from": "GetReservationDetails", "label": "UpdateReservationBaggages is a neighbour\u2026", "title": "UpdateReservationBaggages is a neighbour because it requires reservation_id as input, which can be obtained from GetReservationDetails.", "to": "UpdateReservationBaggages"}, {"arrows": "to", "from": "GetReservationDetails", "label": "UpdateReservationFlights is a neighbour \u2026", "title": "UpdateReservationFlights is a neighbour because it requires reservation_id as input, which can be obtained from GetReservationDetails.", "to": "UpdateReservationFlights"}, {"arrows": "to", "from": "GetReservationDetails", "label": "UpdateReservationPassengers is a neighbo\u2026", "title": "UpdateReservationPassengers is a neighbour because it requires reservation_id as input, which can be obtained from GetReservationDetails.", "to": "UpdateReservationPassengers"}, {"arrows": "to", "from": "GetUserDetails", "label": "BookReservation is a neighbour because i\u2026", "title": "BookReservation is a neighbour because it requires the user_id as input, which is the output of GetUserDetails. This allows a scenario where after retrieving user details, a reservation can be booked for that user.", "to": "BookReservation"}, {"arrows": "to", "from": "GetUserDetails", "label": "SendCertificate is a neighbour because i\u2026", "title": "SendCertificate is a neighbour because it requires the user_id as input, which is the output of GetUserDetails. This allows a scenario where after retrieving user details, a certificate can be sent to the user.", "to": "SearchOnestopFlight"}, {"arrows": "to", "from": "SearchDirectFlight", "label": "BookReservation is a neighbour because i\u2026", "title": "BookReservation is a neighbour because it requires flight details (origin, destination, date) which can be obtained from the output of SearchDirectFlight. After searching for a flight, a user might proceed to book a reservation using the flight details.", "to": "BookReservation"}, {"arrows": "to", "from": "SearchDirectFlight", "label": "SearchOnestopFlight is a neighbour becau\u2026", "title": "SearchOnestopFlight is a neighbour because it performs a similar function to SearchDirectFlight and might be used in conjunction to compare direct and one-stop flights for the same origin, destination, and date.", "to": "SearchOnestopFlight"}, {"arrows": "to", "from": "SearchOnestopFlight", "label": "The \u0027BookReservation\u0027 function requires \u2026", "title": "The \u0027BookReservation\u0027 function requires \u0027origin\u0027, \u0027destination\u0027, and \u0027date\u0027 as part of its input parameters, which are the outputs of the \u0027SearchOnestopFlight\u0027 function. After searching for flights, a user would typically proceed to book a reservation using these details.", "to": "BookReservation"}, {"arrows": "to", "from": "SendCertificate", "label": "Calculate is a neighbour because it can \u2026", "title": "Calculate is a neighbour because it can be used to determine the amount to be sent in the SendCertificate function. For example, if the certificate amount needs to be calculated based on some criteria, Calculate would be used before sending the certificate.", "to": "Calculate"}, {"arrows": "to", "from": "UpdateReservationBaggages", "label": "CancelReservation is a neighbour because\u2026", "title": "CancelReservation is a neighbour because it requires a reservation_id, which is an output of UpdateReservationBaggages, to cancel the reservation after baggage updates.", "to": "CancelReservation"}, {"arrows": "to", "from": "UpdateReservationBaggages", "label": "GetReservationDetails is a neighbour bec\u2026", "title": "GetReservationDetails is a neighbour because it requires a reservation_id, which is an output of UpdateReservationBaggages, to fetch updated reservation details.", "to": "GetReservationDetails"}, {"arrows": "to", "from": "UpdateReservationBaggages", "label": "UpdateReservationFlights is a neighbour \u2026", "title": "UpdateReservationFlights is a neighbour because it requires a reservation_id and payment_id, which are outputs of UpdateReservationBaggages, to update flight information after baggage updates.", "to": "UpdateReservationFlights"}, {"arrows": "to", "from": "UpdateReservationBaggages", "label": "UpdateReservationPassengers is a neighbo\u2026", "title": "UpdateReservationPassengers is a neighbour because it requires a reservation_id, which is an output of UpdateReservationBaggages, to update passenger information after baggage updates.", "to": "UpdateReservationPassengers"}, {"arrows": "to", "from": "UpdateReservationFlights", "label": "\u0027Calculate\u0027 can be considered a neighbou\u2026", "title": "\u0027Calculate\u0027 can be considered a neighbour because after updating a reservation, a calculation might be needed to determine the new total cost or any additional charges due to changes in flights.", "to": "Calculate"}, {"arrows": "to", "from": "UpdateReservationFlights", "label": "\u0027CancelReservation\u0027 is a neighbour becau\u2026", "title": "\u0027CancelReservation\u0027 is a neighbour because it uses the \u0027reservation_id\u0027, which is an output of \u0027UpdateReservationFlights\u0027, to cancel the reservation if needed after an update.", "to": "CancelReservation"}, {"arrows": "to", "from": "UpdateReservationFlights", "label": "\u0027GetReservationDetails\u0027 is a neighbour b\u2026", "title": "\u0027GetReservationDetails\u0027 is a neighbour because it can use the \u0027reservation_id\u0027 from \u0027UpdateReservationFlights\u0027 to fetch updated details of the reservation.", "to": "GetReservationDetails"}, {"arrows": "to", "from": "UpdateReservationPassengers", "label": "Calculate is considered a neighbour beca\u2026", "title": "Calculate is considered a neighbour because after updating passenger information, a calculation might be needed to determine any additional costs or adjustments related to the reservation.", "to": "Calculate"}, {"arrows": "to", "from": "UpdateReservationPassengers", "label": "CancelReservation is a neighbour because\u2026", "title": "CancelReservation is a neighbour because after updating passenger information, a user might decide to cancel the reservation. The reservation_id from UpdateReservationPassengers can be used here.", "to": "CancelReservation"}, {"arrows": "to", "from": "UpdateReservationPassengers", "label": "GetReservationDetails is a neighbour bec\u2026", "title": "GetReservationDetails is a neighbour because after updating passenger information, a user might want to verify the changes. The reservation_id from UpdateReservationPassengers can be used here.", "to": "GetReservationDetails"}, {"arrows": "to", "from": "UpdateReservationPassengers", "label": "UpdateReservationBaggages is a neighbour\u2026", "title": "UpdateReservationBaggages is a neighbour because after updating passenger information, a user might want to update baggage information. The reservation_id from UpdateReservationPassengers can be used here.", "to": "UpdateReservationBaggages"}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "barnesHut": {
+            "avoidOverlap": 0,
+            "centralGravity": 0.3,
+            "damping": 0.09,
+            "gravitationalConstant": -80000,
+            "springConstant": 0.001,
+            "springLength": 250
+        },
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
