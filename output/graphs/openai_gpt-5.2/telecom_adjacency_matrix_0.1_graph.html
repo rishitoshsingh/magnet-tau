@@ -1,0 +1,156 @@
+<html>
+
+<head>
+    <meta charset="utf-8">
+
+    <script src="lib/bindings/utils.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css"
+        integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js"
+        integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
+    <center>
+        <h1></h1>
+    </center>
+
+    <!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+        crossorigin="anonymous"></script>
+
+
+    <center>
+        <h1></h1>
+    </center>
+    <style type="text/css">
+        #mynetwork {
+            width: 100%;
+            height: 1200px;
+            background-color: #ffffff;
+            border: 1px solid lightgray;
+            position: relative;
+            float: left;
+        }
+    </style>
+</head>
+
+
+<body>
+    <div class="card" style="width: 100%">
+
+
+        <div id="mynetwork" class="card-body"></div>
+    </div>
+
+
+
+
+    <script type="text/javascript">
+
+        // initialize global variables.
+        var edges;
+        var nodes;
+        var allNodes;
+        var allEdges;
+        var nodeColors;
+        var originalNodes;
+        var network;
+        var container;
+        var options, data;
+        var filter = {
+            item: '',
+            property: '',
+            value: []
+        };
+
+
+
+
+
+        // This method is responsible for drawing the graph, returns the drawn network
+        function drawGraph() {
+            var container = document.getElementById('mynetwork');
+
+
+
+            // parsing and collecting nodes and edges from the python
+            nodes = new vis.DataSet([{ "color": "green", "id": "GetServiceDetails", "label": "GetServiceDetails", "shape": "dot", "title": "Customers commonly start with \u201cHow much is plan X / what does service_id X include?\u201d and can provide a service identifier like \u0027mobile_unlimited\u0027 directly. The function needs only service_id and does not require multi-step prerequisites beyond that single user-provided input." }, { "color": "green", "id": "GetDeviceDetails", "label": "GetDeviceDetails", "shape": "dot", "title": "A customer can initiate contact by asking \u201cWhat are the specs/details for [device name]?\u201d and provide the device_name directly. No internal-only identifiers or multi-step prerequisites are required." }, { "color": "green", "id": "GetBillingDetails", "label": "GetBillingDetails", "shape": "dot", "title": "A customer can reasonably start with \u201cWhat\u2019s my current balance / last payment / next bill date / is auto-pay on?\u201d, and the agent\u2019s first meaningful action would be to fetch billing data. The only required input is customer_id, which is typically available from authentication or can be provided by the user." }, { "color": "green", "id": "ManageService", "label": "ManageService", "shape": "dot", "title": "A customer can directly ask to list/add/remove a plan on their account, and the agent can call this with customer_id plus the user\u2019s requested action; service_id (and optionally device_ids) can be provided by the user or clarified in the same turn." }, { "color": "green", "id": "TroubleshootDevice", "label": "TroubleshootDevice", "shape": "dot", "title": "A customer can start a support interaction by describing a device model and a common issue (no_service/slow_speeds/battery_drain), and the agent\u2019s first meaningful action can be to fetch standardized troubleshooting steps. Inputs are user-facing (device_name and issue) and can be obtained with a single clarifying question if needed." }, { "color": "green", "id": "CreateSupportTicket", "label": "CreateSupportTicket", "shape": "dot", "title": "A customer can reasonably initiate contact with \u201cplease open a ticket for my issue,\u201d and the agent\u2019s first meaningful action can be to create the ticket once they have (or can ask for) customer_id plus a user-described category (and optionally priority) in the same turn." }, { "color": "green", "id": "GetSupportTicketDetails", "label": "GetSupportTicketDetails", "shape": "dot", "title": "A customer can start by asking \u201cWhat\u2019s the status of ticket TICKET001?\u201d and provide the human-facing ticket_id directly, so the agent\u2019s first meaningful action can be get_support_ticket_details without needing additional discovery steps." }, { "color": "green", "id": "AddDevice", "label": "AddDevice", "shape": "dot", "title": "A customer can directly ask to add a specific device to their account (e.g., \u201cPlease add an iPhone 15 to my profile\u201d), and the agent can act immediately with customer_id and device_name (both are user-provided or obtainable with a single clarifying question). Per policy, the agent would first list the intended change and get explicit confirmation before calling add_device." }, { "color": "#97c2fc", "id": "ManageBilling", "label": "ManageBilling", "shape": "dot" }, { "color": "green", "id": "GetServices", "label": "GetServices", "shape": "dot", "title": "A customer can reasonably start by asking \u201cWhat plans/services do you offer?\u201d and the agent can call get_services immediately because it requires no inputs and is purely informational (no account changes or internal IDs needed)." }, { "color": "green", "id": "GetSeniorDiscount", "label": "GetSeniorDiscount", "shape": "dot", "title": "A customer can ask \u201cWhat would my price be with the senior discount?\u201d and provide the needed human-facing input directly as the current monthly price (original_price) in the same turn. No internal identifiers are required to run the calculation." }, { "color": "green", "id": "ModifySupportTicket", "label": "ModifySupportTicket", "shape": "dot", "title": "A customer can initiate contact asking to escalate/de-escalate or close an existing ticket (\u201cplease mark my ticket as resolved/urgent\u201d). The required inputs (ticket_id and requested status/priority) are user-facing and can be provided directly or via a single clarifying question." }, { "color": "green", "id": "RecordPayment", "label": "RecordPayment", "shape": "dot", "title": "A customer can directly ask to make a payment on their account, making record_payment a plausible first meaningful action. Required inputs are customer_id (available after standard authentication/lookup), plus user-provided amount, payment method (credit_card/bank_transfer), and payment date." }]);
+            edges = new vis.DataSet([{ "arrows": "to", "from": "GetServiceDetails", "label": "After confirming a plan, customers often\u2026", "title": "After confirming a plan, customers often ask whether their phone/router/TV box is compatible or what device options exist; agent can pull catalog details next using device_name.", "to": "GetDeviceDetails" }, { "arrows": "to", "from": "GetServiceDetails", "label": "After giving service pricing/metadata, a\u2026", "title": "After giving service pricing/metadata, a common follow-up is \u201chow will this affect my bill/total monthly charges?\u201d; agent can check billing with customer_id.", "to": "GetBillingDetails" }, { "arrows": "to", "from": "GetServiceDetails", "label": "If the customer wants to add/remove/swit\u2026", "title": "If the customer wants to add/remove/switch services after reviewing details, the next step is to manage the account\u2019s services (list/add/remove) using customer_id plus action and (if add/remove) service_id; may also need devices_ids.", "to": "ManageService" }, { "arrows": "to", "from": "GetServiceDetails", "label": "If service details reveal an outage/issu\u2026", "title": "If service details reveal an outage/issue or the customer wants to report a problem with that service category, creating a ticket is a plausible next step using customer_id plus category and (optionally) priority.", "to": "CreateSupportTicket" }, { "arrows": "to", "from": "GetServiceDetails", "label": "If the customer wants to start new servi\u2026", "title": "If the customer wants to start new service activation and needs to add a device to their account first, adding a device can follow; requires customer_id and device_name.", "to": "AddDevice" }, { "arrows": "to", "from": "GetServiceDetails", "label": "If the customer asked broadly \u201cwhat plan\u2026", "title": "If the customer asked broadly \u201cwhat plans do you have?\u201d or the service_id they provided isn\u2019t known, the agent may next pull the full catalog using no inputs.", "to": "GetServices" }, { "arrows": "to", "from": "GetServiceDetails", "label": "After retrieving the service\u2019s price, a \u2026", "title": "After retrieving the service\u2019s price, a common follow-up is \u201cwhat\u2019s the senior price?\u201d; agent can apply the discount using original_price (from the service price) provided/confirmed.", "to": "GetSeniorDiscount" }, { "arrows": "to", "from": "GetDeviceDetails", "label": "After confirming a device model/category\u2026", "title": "After confirming a device model/category, the next step is often checking which plan/service it can be paired with or priced under; agent may fetch service metadata. Inputs: service_id.", "to": "GetServiceDetails" }, { "arrows": "to", "from": "GetDeviceDetails", "label": "If the user wants to add/replace a servi\u2026", "title": "If the user wants to add/replace a service after confirming device compatibility, the agent may list/add/remove services (with confirmation per policy). Inputs: customer_id, action, plus service_id (for add/remove) and possibly devices_ids.", "to": "ManageService" }, { "arrows": "to", "from": "GetDeviceDetails", "label": "A common flow is: confirm device model/c\u2026", "title": "A common flow is: confirm device model/category, then user reports an issue (\u201cno service/slow speeds/battery drain\u201d) and wants steps. Inputs: device_name, issue.", "to": "TroubleshootDevice" }, { "arrows": "to", "from": "GetDeviceDetails", "label": "If device details don\u2019t resolve the issu\u2026", "title": "If device details don\u2019t resolve the issue (e.g., unsupported device/ongoing outage), creating a ticket is a typical next step. Inputs: customer_id, category (likely device/mobile/internet), and optionally priority.", "to": "CreateSupportTicket" }, { "arrows": "to", "from": "GetDeviceDetails", "label": "If the customer confirms they want to re\u2026", "title": "If the customer confirms they want to register/add that device to their account after verifying it\u2019s in the catalog, adding the device is a direct follow-up (requires explicit confirmation). Inputs: customer_id, device_name.", "to": "AddDevice" }, { "arrows": "to", "from": "GetDeviceDetails", "label": "After confirming device details, the use\u2026", "title": "After confirming device details, the user may ask \u201cwhat plans are available for this?\u201d\u2014agent can list the full services catalog for selection. Inputs: none.", "to": "GetServices" }, { "arrows": "to", "from": "GetBillingDetails", "label": "After reviewing billing line items/charg\u2026", "title": "After reviewing billing line items/charges, the agent may need to explain what a specific service charge is by fetching its catalog price/name. Inputs: service_id (often matches a key in monthly_charges like \u0027internet_fiber_1gb\u0027).", "to": "GetServiceDetails" }, { "arrows": "to", "from": "GetBillingDetails", "label": "A common next step after seeing high cha\u2026", "title": "A common next step after seeing high charges is the user asks to add/remove a service to change future billing; agent would proceed (after explicit confirmation). Inputs: customer_id, action (add/remove/list), and if add/remove then service_id (and possibly devices_ids when adding).", "to": "ManageService" }, { "arrows": "to", "from": "GetBillingDetails", "label": "If the customer disputes a bill, can\u2019t p\u2026", "title": "If the customer disputes a bill, can\u2019t pay, or reports missing/incorrect billing settings shown in the record, the agent may open a billing support case. Inputs: customer_id, category=\u0027billing\u0027, and optionally priority (low/medium/high/urgent).", "to": "CreateSupportTicket" }, { "arrows": "to", "from": "GetBillingDetails", "label": "If the user asks to change auto-pay/pape\u2026", "title": "If the user asks to change auto-pay/paperless/billing cycle after seeing current settings in the billing record, the agent would update preferences (after explicit confirmation). Inputs: customer_id, paperless, auto_pay, billing_cycle.", "to": "ManageBilling" }, { "arrows": "to", "from": "GetBillingDetails", "label": "If the customer wants to make a payment \u2026", "title": "If the customer wants to make a payment after seeing their current_balance, the agent can record the payment (after explicit confirmation). Inputs: customer_id, amount, method (credit_card/bank_transfer), date.", "to": "RecordPayment" }, { "arrows": "to", "from": "ManageService", "label": "After listing/removing/adding a service,\u2026", "title": "After listing/removing/adding a service, the customer may ask what that plan includes or costs; agent fetches exact plan metadata. Inputs: service_id.", "to": "GetServiceDetails" }, { "arrows": "to", "from": "ManageService", "label": "Service changes often trigger \u201cwhat will\u2026", "title": "Service changes often trigger \u201cwhat will my bill be / what\u2019s my current balance\u201d questions; agent pulls billing to explain charges. Inputs: customer_id.", "to": "GetBillingDetails" }, { "arrows": "to", "from": "ManageService", "label": "If a user removed/added a service due to\u2026", "title": "If a user removed/added a service due to problems (e.g., no service/slow speeds on a line), troubleshooting is a common next step once the service state is confirmed. Inputs: device_name, issue.", "to": "TroubleshootDevice" }, { "arrows": "to", "from": "ManageService", "label": "If manage_service fails (unknown service\u2026", "title": "If manage_service fails (unknown service, device association confusion) or the request is complex/urgent, creating a ticket is a common escalation. Inputs: customer_id, category (e.g., mobile/internet/tv), priority (optional).", "to": "CreateSupportTicket" }, { "arrows": "to", "from": "ManageService", "label": "After a service change, customers common\u2026", "title": "After a service change, customers commonly ask to adjust billing preferences (paperless/autopay/billing cycle) for the updated account. Inputs: customer_id, paperless, auto_pay, billing_cycle.", "to": "ManageBilling" }, { "arrows": "to", "from": "ManageService", "label": "If the customer is deciding what to add/\u2026", "title": "If the customer is deciding what to add/switch to, the agent may need to show the catalog right after listing current services. Inputs: none.", "to": "GetServices" }, { "arrows": "to", "from": "TroubleshootDevice", "label": "If troubleshooting returns \u0027Error: Devic\u2026", "title": "If troubleshooting returns \u0027Error: Device not found\u0027 or the user\u2019s device model is unclear, the agent may immediately look up the device in the catalog to confirm the correct device and category. Requires user-provided device_name.", "to": "GetDeviceDetails" }, { "arrows": "to", "from": "TroubleshootDevice", "label": "If troubleshooting steps don\u2019t resolve t\u2026", "title": "If troubleshooting steps don\u2019t resolve the issue, the next common step is to open a support ticket for escalation/field follow-up. Requires customer_id plus user-confirmed category (e.g., device/internet/mobile) and optionally priority based on urgency.", "to": "CreateSupportTicket" }, { "arrows": "to", "from": "CreateSupportTicket", "label": "If the ticket was created for a billing \u2026", "title": "If the ticket was created for a billing issue, a common next step is to pull the customer\u2019s billing record to review the problem and read details back. Needs customer_id.", "to": "GetBillingDetails" }, { "arrows": "to", "from": "CreateSupportTicket", "label": "If the ticket was created because the cu\u2026", "title": "If the ticket was created because the customer wants a fix (e.g., add/remove/list services) as part of the same contact, the agent may proceed to perform the service action after opening the ticket (with explicit confirmation). Needs customer_id plus action (and service_id/devices_ids as applicable).", "to": "ManageService" }, { "arrows": "to", "from": "CreateSupportTicket", "label": "If the customer needs a device added as \u2026", "title": "If the customer needs a device added as part of resolving the issue that triggered the ticket (e.g., provisioning/association), the agent could add it next with explicit confirmation. Needs customer_id and device_name.", "to": "AddDevice" }, { "arrows": "to", "from": "CreateSupportTicket", "label": "It\u2019s common to update the ticket right a\u2026", "title": "It\u2019s common to update the ticket right after creation (e.g., set status to in_progress/pending or adjust priority after reassessing urgency) or after confirming details with the user. Needs ticket_id, status, and priority.", "to": "ModifySupportTicket" }, { "arrows": "to", "from": "GetSupportTicketDetails", "label": "If the user checked a ticket and it\u2019s mi\u2026", "title": "If the user checked a ticket and it\u2019s missing/not found or they need a separate ticket for a new issue, creating a new ticket is a plausible next action; inputs needed: customer_id (from ticket or user), category, priority (if specified).", "to": "CreateSupportTicket" }, { "arrows": "to", "from": "GetSupportTicketDetails", "label": "After retrieving ticket details, a very \u2026", "title": "After retrieving ticket details, a very common next step is updating the ticket (e.g., mark resolved/closed, set in_progress, adjust priority) based on the user\u2019s update request; inputs needed: ticket_id, new status, new priority (with user confirmation to proceed).", "to": "ModifySupportTicket" }, { "arrows": "to", "from": "AddDevice", "label": "After adding a device, the user may want\u2026", "title": "After adding a device, the user may want to attach it to a plan or confirm compatible plan details; the agent could fetch the plan\u2019s metadata/price. Inputs: service_id.", "to": "GetServiceDetails" }, { "arrows": "to", "from": "AddDevice", "label": "Immediately after adding the device, the\u2026", "title": "Immediately after adding the device, the agent may verify the device\u2019s catalog metadata (category/manufacturer/model) to confirm the correct item was added. Inputs: device_name.", "to": "GetDeviceDetails" }, { "arrows": "to", "from": "AddDevice", "label": "A very common follow-up is the customer \u2026", "title": "A very common follow-up is the customer asking to associate the newly added device to an existing/new service (e.g., add mobile plan, attach router to internet). Inputs: customer_id, action (\u0027add\u0027/\u0027list\u0027), plus service_id and possibly devices_ids (device_id(s)).", "to": "ManageService" }, { "arrows": "to", "from": "ManageBilling", "label": "Common follow-up is to verify the change\u2026", "title": "Common follow-up is to verify the change took effect by fetching the updated bill settings and balances. Inputs: customer_id.", "to": "GetBillingDetails" }, { "arrows": "to", "from": "ManageBilling", "label": "If the billing change fails (e.g., user \u2026", "title": "If the billing change fails (e.g., user reports auto-pay still not working) or needs escalation/audit trail, creating a billing ticket is a plausible next step. Inputs: customer_id, category=billing, priority (or default).", "to": "CreateSupportTicket" }, { "arrows": "to", "from": "ManageBilling", "label": "If the user asks about available plans/c\u2026", "title": "If the user asks about available plans/costs in context of billing-cycle changes, agent may list the service catalog. Inputs: none.", "to": "GetServices" }, { "arrows": "to", "from": "ManageBilling", "label": "A common next step is taking a payment r\u2026", "title": "A common next step is taking a payment right after adjusting billing settings (e.g., enable auto-pay then pay current balance now). Inputs: customer_id, amount, method, date.", "to": "RecordPayment" }, { "arrows": "to", "from": "GetServices", "label": "After listing all available services, a \u2026", "title": "After listing all available services, a customer often asks about one specific plan; the agent can fetch its exact metadata/price with get_service_details using user-selected service_id.", "to": "GetServiceDetails" }, { "arrows": "to", "from": "GetServices", "label": "Common next step is the customer choosin\u2026", "title": "Common next step is the customer choosing a plan to add/remove after viewing the catalog; agent would then manage_service using customer_id plus action (\u0027add\u0027/\u0027remove\u0027) and service_id (and possibly devices_ids).", "to": "ManageService" }, { "arrows": "to", "from": "GetServices", "label": "If the customer can\u2019t decide or has a sp\u2026", "title": "If the customer can\u2019t decide or has a special request/problem while reviewing available services, creating a ticket is a plausible follow-up; requires customer_id, category (e.g., internet/mobile), and optionally priority.", "to": "CreateSupportTicket" }, { "arrows": "to", "from": "GetServices", "label": "If the user asks \u201cwhat would this cost w\u2026", "title": "If the user asks \u201cwhat would this cost with the senior discount?\u201d right after seeing service prices, applying the discount is a plausible immediate follow-up; requires original_price (from the shown service price or user-provided).", "to": "GetSeniorDiscount" }, { "arrows": "to", "from": "GetSeniorDiscount", "label": "After computing the discounted monthly p\u2026", "title": "After computing the discounted monthly price, the next common step is to fetch/confirm the plan\u2019s official price and details (or re-verify them) to explain the discount. Inputs: service_id.", "to": "GetServiceDetails" }, { "arrows": "to", "from": "ModifySupportTicket", "label": "Plausible when, after updating an existi\u2026", "title": "Plausible when, after updating an existing ticket, it becomes clear there is an additional distinct issue that warrants a separate ticket (or the prior ticket was wrong scope). Inputs: customer_id, category, priority.", "to": "CreateSupportTicket" }, { "arrows": "to", "from": "ModifySupportTicket", "label": "Common immediate follow-up: after modify\u2026", "title": "Common immediate follow-up: after modifying status/priority, the agent verifies the ticket now reflects the intended state. Inputs: ticket_id.", "to": "GetSupportTicketDetails" }, { "arrows": "to", "from": "RecordPayment", "label": "Common follow-up is to verify the paymen\u2026", "title": "Common follow-up is to verify the payment posted and confirm the updated balance and history. Agent would use customer_id to pull updated billing details for confirmation.", "to": "GetBillingDetails" }, { "arrows": "to", "from": "RecordPayment", "label": "If record_payment fails (e.g., no billin\u2026", "title": "If record_payment fails (e.g., no billing info) or the customer disputes/needs documentation, creating a billing support ticket is a plausible follow-up. Inputs needed: customer_id, category=\u0027billing\u0027, and (optionally) priority based on urgency the user states.", "to": "CreateSupportTicket" }, { "arrows": "to", "from": "RecordPayment", "label": "Customers often ask to turn on/off auto-\u2026", "title": "Customers often ask to turn on/off auto-pay or paperless right after making a payment (e.g., \u201cset this up so it\u2019s automatic next month\u201d). Inputs needed: customer_id, paperless, auto_pay, billing_cycle.", "to": "ManageBilling" }]);
+
+            nodeColors = {};
+            allNodes = nodes.get({ returnType: "Object" });
+            for (nodeId in allNodes) {
+                nodeColors[nodeId] = allNodes[nodeId].color;
+            }
+            allEdges = edges.get({ returnType: "Object" });
+            // adding nodes and edges to the graph
+            data = { nodes: nodes, edges: edges };
+
+            var options = {
+                "configure": {
+                    "enabled": false
+                },
+                "edges": {
+                    "color": {
+                        "inherit": true
+                    },
+                    "smooth": {
+                        "enabled": true,
+                        "type": "dynamic"
+                    }
+                },
+                "interaction": {
+                    "dragNodes": true,
+                    "hideEdgesOnDrag": false,
+                    "hideNodesOnDrag": false
+                },
+                "physics": {
+                    "barnesHut": {
+                        "avoidOverlap": 0,
+                        "centralGravity": 0.3,
+                        "damping": 0.09,
+                        "gravitationalConstant": -80000,
+                        "springConstant": 0.001,
+                        "springLength": 250
+                    },
+                    "enabled": true,
+                    "stabilization": {
+                        "enabled": true,
+                        "fit": true,
+                        "iterations": 1000,
+                        "onlyDynamicEdges": false,
+                        "updateInterval": 50
+                    }
+                }
+            };
+
+
+
+
+
+
+            network = new vis.Network(container, data, options);
+
+
+
+
+
+
+
+
+
+
+            return network;
+
+        }
+        drawGraph();
+    </script>
+</body>
+
+</html>

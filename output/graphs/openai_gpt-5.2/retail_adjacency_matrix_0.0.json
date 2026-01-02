@@ -1,0 +1,2167 @@
+{
+  "tools": [
+    {
+      "name": "CancelPendingOrder",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "cancel_pending_order",
+          "description": "Cancel a pending order. If the order is already processed or delivered, it cannot be cancelled. The agent needs to explain the cancellation detail and ask for explicit user confirmation (yes/no) to proceed. If the user confirms, the order status will be changed to 'cancelled' and the payment will be refunded. The refund will be added to the user's gift card balance immediately if the payment was made using a gift card, otherwise the refund would take 5-7 business days to process. The function returns the order details after the cancellation.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "order_id": {
+                "type": "string",
+                "description": "The order id, such as '#W0000000'. Be careful there is a '#' symbol at the beginning of the order id."
+              },
+              "reason": {
+                "type": "string",
+                "enum": [
+                  "no longer needed",
+                  "ordered by mistake"
+                ],
+                "description": "The reason for cancellation, which should be either 'no longer needed' or 'ordered by mistake'."
+              }
+            },
+            "required": [
+              "order_id",
+              "reason"
+            ]
+          },
+          "response": {
+            "type": "object",
+            "description": "The order record after a successful cancellation, including updated status, cancel reason, and appended refund entries in payment_history.",
+            "properties": {
+              "order_id": {
+                "type": "string",
+                "description": "The unique ID of the order, such as '#W2611340'."
+              },
+              "user_id": {
+                "type": "string",
+                "description": "The ID of the user who placed the order."
+              },
+              "address": {
+                "type": "object",
+                "description": "Shipping address for the order.",
+                "properties": {
+                  "address1": {
+                    "type": "string"
+                  },
+                  "address2": {
+                    "type": "string"
+                  },
+                  "city": {
+                    "type": "string"
+                  },
+                  "country": {
+                    "type": "string"
+                  },
+                  "state": {
+                    "type": "string"
+                  },
+                  "zip": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "address1",
+                  "city",
+                  "country",
+                  "state",
+                  "zip"
+                ]
+              },
+              "items": {
+                "type": "array",
+                "description": "List of items included in the order.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "description": "Display name of the item, such as 'Water Bottle'."
+                    },
+                    "product_id": {
+                      "type": "string",
+                      "description": "Product identifier."
+                    },
+                    "item_id": {
+                      "type": "string",
+                      "description": "Line-item identifier within the order."
+                    },
+                    "price": {
+                      "type": "number",
+                      "description": "Price of the item."
+                    },
+                    "options": {
+                      "type": "object",
+                      "description": "Item options such as color, size, material, etc.",
+                      "additionalProperties": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "product_id",
+                    "item_id",
+                    "price"
+                  ]
+                }
+              },
+              "fulfillments": {
+                "type": "array",
+                "description": "Fulfillment information including shipping tracking and which items are covered.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "tracking_id": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "description": "List of tracking IDs associated with this fulfillment."
+                    },
+                    "item_ids": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "description": "List of item IDs included in this fulfillment."
+                    }
+                  },
+                  "required": [
+                    "tracking_id",
+                    "item_ids"
+                  ]
+                }
+              },
+              "status": {
+                "type": "string",
+                "description": "The current status of the order. After successful cancellation this will be 'cancelled'."
+              },
+              "cancel_reason": {
+                "type": "string",
+                "description": "The reason used for cancellation, such as 'no longer needed' or 'ordered by mistake'."
+              },
+              "payment_history": {
+                "type": "array",
+                "description": "History of payment-related transactions for the order. Includes original 'payment' entries and appended 'refund' entries after cancellation.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "transaction_type": {
+                      "type": "string",
+                      "description": "Type of transaction, e.g., 'payment' or 'refund'."
+                    },
+                    "amount": {
+                      "type": "number",
+                      "description": "Amount of the transaction. Refund amounts are positive here but semantically represent funds returned."
+                    },
+                    "payment_method_id": {
+                      "type": "string",
+                      "description": "Identifier of the payment method used for this transaction (e.g., 'gift_card_1725971')."
+                    }
+                  },
+                  "required": [
+                    "transaction_type",
+                    "amount",
+                    "payment_method_id"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "order_id",
+              "user_id",
+              "address",
+              "items",
+              "fulfillments",
+              "status",
+              "payment_history",
+              "cancel_reason"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "ExchangeDeliveredOrderItems",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "exchange_delivered_order_items",
+          "description": "Exchange items in a delivered order to new items of the same product type. For a delivered order, return or exchange can be only done once by the agent. The agent needs to explain the exchange detail and ask for explicit user confirmation (yes/no) to proceed.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "order_id": {
+                "type": "string",
+                "description": "The order id, such as '#W0000000'. Be careful there is a '#' symbol at the beginning of the order id."
+              },
+              "item_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "The item ids to be exchanged, each such as '1008292230'. There could be duplicate items in the list."
+              },
+              "new_item_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "The item ids to be exchanged for, each such as '1008292230'. There could be duplicate items in the list. Each new item id should match the item id in the same position and be of the same product."
+              },
+              "payment_method_id": {
+                "type": "string",
+                "description": "The payment method id to pay or receive refund for the item price difference, such as 'gift_card_0000000' or 'credit_card_0000000'. These can be looked up from the user or order details."
+              }
+            },
+            "required": [
+              "order_id",
+              "item_ids",
+              "new_item_ids",
+              "payment_method_id"
+            ]
+          },
+          "response": {
+            "type": "object",
+            "description": "The updated order record after requesting an exchange. Includes new status, exchange item mappings, and the price difference.",
+            "properties": {
+              "order_id": {
+                "type": "string",
+                "description": "The unique ID of the order, such as '#W2611340'."
+              },
+              "user_id": {
+                "type": "string",
+                "description": "The ID of the user who placed the order."
+              },
+              "address": {
+                "type": "object",
+                "description": "Shipping address for the order.",
+                "properties": {
+                  "address1": {
+                    "type": "string"
+                  },
+                  "address2": {
+                    "type": "string"
+                  },
+                  "city": {
+                    "type": "string"
+                  },
+                  "country": {
+                    "type": "string"
+                  },
+                  "state": {
+                    "type": "string"
+                  },
+                  "zip": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "address1",
+                  "city",
+                  "country",
+                  "state",
+                  "zip"
+                ]
+              },
+              "items": {
+                "type": "array",
+                "description": "List of items included in the order.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "description": "Display name of the item, such as 'Water Bottle'."
+                    },
+                    "product_id": {
+                      "type": "string",
+                      "description": "Product identifier."
+                    },
+                    "item_id": {
+                      "type": "string",
+                      "description": "Line-item identifier within the order."
+                    },
+                    "price": {
+                      "type": "number",
+                      "description": "Price of the item."
+                    },
+                    "options": {
+                      "type": "object",
+                      "description": "Item options such as color, size, material, etc.",
+                      "additionalProperties": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "product_id",
+                    "item_id",
+                    "price"
+                  ]
+                }
+              },
+              "fulfillments": {
+                "type": "array",
+                "description": "Fulfillment information including shipping tracking and which items are covered.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "tracking_id": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "description": "List of tracking IDs associated with this fulfillment."
+                    },
+                    "item_ids": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "description": "List of item IDs included in this fulfillment."
+                    }
+                  },
+                  "required": [
+                    "tracking_id",
+                    "item_ids"
+                  ]
+                }
+              },
+              "status": {
+                "type": "string",
+                "description": "The current status of the order. After a successful exchange request this will be 'exchange requested'."
+              },
+              "payment_history": {
+                "type": "array",
+                "description": "History of payment-related transactions for the order.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "transaction_type": {
+                      "type": "string",
+                      "description": "Type of transaction, e.g., 'payment' or 'refund'."
+                    },
+                    "amount": {
+                      "type": "number",
+                      "description": "Amount of the transaction."
+                    },
+                    "payment_method_id": {
+                      "type": "string",
+                      "description": "Identifier of the payment method used for this transaction."
+                    }
+                  },
+                  "required": [
+                    "transaction_type",
+                    "amount",
+                    "payment_method_id"
+                  ]
+                }
+              },
+              "exchange_items": {
+                "type": "array",
+                "description": "Sorted list of original item_ids that the user requested to exchange.",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "exchange_new_items": {
+                "type": "array",
+                "description": "Sorted list of new item_ids that will replace the original items.",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "exchange_payment_method_id": {
+                "type": "string",
+                "description": "The payment method ID that will be charged or refunded for the price difference of the exchange."
+              },
+              "exchange_price_difference": {
+                "type": "number",
+                "description": "Total price difference between new items and original items for the exchange, rounded to two decimals. Can be positive (user pays more), negative (user is refunded), or zero."
+              }
+            },
+            "required": [
+              "order_id",
+              "user_id",
+              "address",
+              "items",
+              "fulfillments",
+              "status",
+              "payment_history",
+              "exchange_items",
+              "exchange_new_items",
+              "exchange_payment_method_id",
+              "exchange_price_difference"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "GetOrderDetails",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "get_order_details",
+          "description": "Get the status and details of an order.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "order_id": {
+                "type": "string",
+                "description": "The order id, such as '#W0000000'. Be careful there is a '#' symbol at the beginning of the order id."
+              }
+            },
+            "required": [
+              "order_id"
+            ]
+          },
+          "response": {
+            "type": "object",
+            "description": "The full order record if found. Includes address, items, fulfillments, status, and payment history.",
+            "properties": {
+              "order_id": {
+                "type": "string",
+                "description": "The unique ID of the order, such as '#W2611340'."
+              },
+              "user_id": {
+                "type": "string",
+                "description": "The ID of the user who placed the order."
+              },
+              "address": {
+                "type": "object",
+                "description": "Shipping address for the order.",
+                "properties": {
+                  "address1": {
+                    "type": "string"
+                  },
+                  "address2": {
+                    "type": "string"
+                  },
+                  "city": {
+                    "type": "string"
+                  },
+                  "country": {
+                    "type": "string"
+                  },
+                  "state": {
+                    "type": "string"
+                  },
+                  "zip": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "address1",
+                  "city",
+                  "country",
+                  "state",
+                  "zip"
+                ]
+              },
+              "items": {
+                "type": "array",
+                "description": "List of items included in the order.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "description": "Display name of the item, such as 'Water Bottle'."
+                    },
+                    "product_id": {
+                      "type": "string",
+                      "description": "Product identifier."
+                    },
+                    "item_id": {
+                      "type": "string",
+                      "description": "Line-item identifier within the order."
+                    },
+                    "price": {
+                      "type": "number",
+                      "description": "Price of the item."
+                    },
+                    "options": {
+                      "type": "object",
+                      "description": "Item options such as size, color, material, etc.",
+                      "additionalProperties": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "product_id",
+                    "item_id",
+                    "price"
+                  ]
+                }
+              },
+              "fulfillments": {
+                "type": "array",
+                "description": "Fulfillment information including tracking and which items were shipped.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "tracking_id": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "description": "List of tracking IDs associated with this fulfillment."
+                    },
+                    "item_ids": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "description": "List of item IDs included in this fulfillment."
+                    }
+                  },
+                  "required": [
+                    "tracking_id",
+                    "item_ids"
+                  ]
+                }
+              },
+              "status": {
+                "type": "string",
+                "description": "The current status of the order, such as 'pending', 'processed', 'delivered', or 'cancelled'."
+              },
+              "payment_history": {
+                "type": "array",
+                "description": "History of payment-related transactions for the order.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "transaction_type": {
+                      "type": "string",
+                      "description": "Type of transaction, e.g., 'payment' or 'refund'."
+                    },
+                    "amount": {
+                      "type": "number",
+                      "description": "Amount of the transaction."
+                    },
+                    "payment_method_id": {
+                      "type": "string",
+                      "description": "Identifier of the payment method used for this transaction."
+                    }
+                  },
+                  "required": [
+                    "transaction_type",
+                    "amount",
+                    "payment_method_id"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "order_id",
+              "user_id",
+              "address",
+              "items",
+              "fulfillments",
+              "status",
+              "payment_history"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "GetProductDetails",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "get_product_details",
+          "description": "Get the inventory details (variants, availability, and pricing) of a product.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "product_id": {
+                "type": "string",
+                "description": "The product id, such as '9523456873'. Be careful: product id is different from item id."
+              }
+            },
+            "required": [
+              "product_id"
+            ]
+          },
+          "response": {
+            "type": "object",
+            "description": "The full product record, including all variant item_ids, options, availability, and pricing. Returns 'Error: product not found' if the product_id does not exist.",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Human-readable product name such as 'T-Shirt'."
+              },
+              "product_id": {
+                "type": "string",
+                "description": "The product identifier, matching the input product_id."
+              },
+              "variants": {
+                "type": "object",
+                "description": "A mapping of variant item_id → variant details. Each variant represents a specific purchasable SKU.",
+                "additionalProperties": {
+                  "type": "object",
+                  "properties": {
+                    "item_id": {
+                      "type": "string",
+                      "description": "Unique ID of this purchasable item/SKU."
+                    },
+                    "options": {
+                      "type": "object",
+                      "description": "Option attributes such as color, size, material, style, etc.",
+                      "additionalProperties": {
+                        "type": "string"
+                      }
+                    },
+                    "available": {
+                      "type": "boolean",
+                      "description": "Whether this specific variant is currently in stock."
+                    },
+                    "price": {
+                      "type": "number",
+                      "description": "The price of this specific product variant."
+                    }
+                  },
+                  "required": [
+                    "item_id",
+                    "options",
+                    "available",
+                    "price"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "name",
+              "product_id",
+              "variants"
+            ],
+            "examples": [
+              {
+                "name": "T-Shirt",
+                "product_id": "9523456873",
+                "variants": {
+                  "9612497925": {
+                    "item_id": "9612497925",
+                    "options": {
+                      "color": "blue",
+                      "size": "M",
+                      "material": "cotton",
+                      "style": "crew neck"
+                    },
+                    "available": true,
+                    "price": 50.88
+                  }
+                }
+              },
+              "Error: product not found"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "ListAllProductTypes",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "list_all_product_types",
+          "description": "List the name and product id of all product types. Each product type has a variety of different items with unique item ids and options. There are only 50 product types in the store.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": []
+          },
+          "response": {
+            "type": "object",
+            "description": "A mapping from product name to product_id for all product types in the catalog. Keys are human-readable product names (e.g. 'T-Shirt'), and values are product IDs (e.g. '9523456873').",
+            "additionalProperties": {
+              "type": "string",
+              "description": "The product_id corresponding to the product name key."
+            },
+            "examples": [
+              {
+                "T-Shirt": "9523456873",
+                "Laptop": "4760268021",
+                "Running Shoes": "6938111410"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "ModifyPendingOrderAddress",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "modify_pending_order_address",
+          "description": "Modify the shipping address of a pending order. The agent must explain the modification details and ask for explicit user confirmation (yes/no) before proceeding. Only orders with status 'pending' may be modified.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "order_id": {
+                "type": "string",
+                "description": "The order id, such as '#W5918442'."
+              },
+              "address1": {
+                "type": "string",
+                "description": "The first line of the new address, such as '123 Main St'."
+              },
+              "address2": {
+                "type": "string",
+                "description": "The second line of the address, such as 'Apt 1' or ''."
+              },
+              "city": {
+                "type": "string",
+                "description": "The city name, such as 'Austin'."
+              },
+              "state": {
+                "type": "string",
+                "description": "The state code, such as 'TX'."
+              },
+              "country": {
+                "type": "string",
+                "description": "The country name, such as 'USA'."
+              },
+              "zip": {
+                "type": "string",
+                "description": "The zip code, such as '78784'."
+              }
+            },
+            "required": [
+              "order_id",
+              "address1",
+              "address2",
+              "city",
+              "state",
+              "country",
+              "zip"
+            ]
+          },
+          "response": {
+            "type": "object",
+            "description": "The updated order object after the address has been modified. If the order does not exist or is not pending, the function instead returns a string error message such as 'Error: order not found' or 'Error: non-pending order cannot be modified'.",
+            "properties": {
+              "order_id": {
+                "type": "string"
+              },
+              "user_id": {
+                "type": "string"
+              },
+              "address": {
+                "type": "object",
+                "properties": {
+                  "address1": {
+                    "type": "string"
+                  },
+                  "address2": {
+                    "type": "string"
+                  },
+                  "city": {
+                    "type": "string"
+                  },
+                  "state": {
+                    "type": "string"
+                  },
+                  "country": {
+                    "type": "string"
+                  },
+                  "zip": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "address1",
+                  "address2",
+                  "city",
+                  "state",
+                  "country",
+                  "zip"
+                ]
+              },
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "product_id": {
+                      "type": "string"
+                    },
+                    "item_id": {
+                      "type": "string"
+                    },
+                    "price": {
+                      "type": "number"
+                    },
+                    "options": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "product_id",
+                    "item_id",
+                    "price"
+                  ]
+                }
+              },
+              "fulfillments": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "tracking_id": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "item_ids": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "required": [
+                    "tracking_id",
+                    "item_ids"
+                  ]
+                }
+              },
+              "status": {
+                "type": "string"
+              },
+              "payment_history": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "transaction_type": {
+                      "type": "string"
+                    },
+                    "amount": {
+                      "type": "number"
+                    },
+                    "payment_method_id": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "transaction_type",
+                    "amount",
+                    "payment_method_id"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "order_id",
+              "user_id",
+              "address",
+              "items",
+              "fulfillments",
+              "status",
+              "payment_history"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "ModifyPendingOrderItems",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "modify_pending_order_items",
+          "description": "Modify items in a pending order to new items of the same product type. For a pending order, this function can only be called once. The agent needs to explain the modification details and ask for explicit user confirmation (yes/no) to proceed.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "order_id": {
+                "type": "string",
+                "description": "The order id, such as '#W5918442'. Be careful there is a '#' symbol at the beginning of the order id."
+              },
+              "item_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "The item ids to be modified, each such as '1725100896'. There can be duplicate item ids in the list."
+              },
+              "new_item_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "The new item ids to replace the original ones, each such as '1586641416'. There can be duplicates. Each new item id must correspond to the same product as the old item in the same position."
+              },
+              "payment_method_id": {
+                "type": "string",
+                "description": "The payment method id to pay or receive refund for the item price difference, such as 'gift_card_0000000' or 'credit_card_0000000'. These can be looked up from the user or order details."
+              }
+            },
+            "required": [
+              "order_id",
+              "item_ids",
+              "new_item_ids",
+              "payment_method_id"
+            ]
+          },
+          "response": {
+            "type": "object",
+            "description": "The updated order object after modifying items. The items list, payment history, and status may change. If the order does not exist, is not pending, items are invalid, or payment fails, the function instead returns an error string such as 'Error: order not found', 'Error: non-pending order cannot be modified', or 'Error: insufficient gift card balance to pay for the new item'.",
+            "properties": {
+              "order_id": {
+                "type": "string",
+                "description": "The unique ID of the order, such as '#W5918442'."
+              },
+              "user_id": {
+                "type": "string",
+                "description": "The ID of the user who placed the order."
+              },
+              "address": {
+                "type": "object",
+                "description": "Shipping address for the order.",
+                "properties": {
+                  "address1": {
+                    "type": "string"
+                  },
+                  "address2": {
+                    "type": "string"
+                  },
+                  "city": {
+                    "type": "string"
+                  },
+                  "country": {
+                    "type": "string"
+                  },
+                  "state": {
+                    "type": "string"
+                  },
+                  "zip": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "address1",
+                  "city",
+                  "country",
+                  "state",
+                  "zip"
+                ]
+              },
+              "items": {
+                "type": "array",
+                "description": "List of items included in the order after modification. Some item_ids, prices, and options may have changed.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "description": "Display name of the item, such as 'Action Camera'."
+                    },
+                    "product_id": {
+                      "type": "string",
+                      "description": "Product identifier associated with the item."
+                    },
+                    "item_id": {
+                      "type": "string",
+                      "description": "Line-item identifier within the order (variant id)."
+                    },
+                    "price": {
+                      "type": "number",
+                      "description": "Price of this item after modification."
+                    },
+                    "options": {
+                      "type": "object",
+                      "description": "Item options such as color, size, material, etc.",
+                      "additionalProperties": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "product_id",
+                    "item_id",
+                    "price"
+                  ]
+                }
+              },
+              "fulfillments": {
+                "type": "array",
+                "description": "Fulfillment information, including tracking and which items are covered. For pending orders this is usually an empty list.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "tracking_id": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "description": "List of tracking IDs associated with this fulfillment."
+                    },
+                    "item_ids": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "description": "List of item IDs included in this fulfillment."
+                    }
+                  },
+                  "required": [
+                    "tracking_id",
+                    "item_ids"
+                  ]
+                }
+              },
+              "status": {
+                "type": "string",
+                "description": "The current status of the order. After a successful modification this will be 'pending (item modified)'."
+              },
+              "payment_history": {
+                "type": "array",
+                "description": "History of payment-related transactions for the order, including the original payment and any additional payment or refund created by this modification.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "transaction_type": {
+                      "type": "string",
+                      "description": "Type of transaction, e.g., 'payment' or 'refund'."
+                    },
+                    "amount": {
+                      "type": "number",
+                      "description": "Amount of the transaction."
+                    },
+                    "payment_method_id": {
+                      "type": "string",
+                      "description": "Identifier of the payment method used."
+                    }
+                  },
+                  "required": [
+                    "transaction_type",
+                    "amount",
+                    "payment_method_id"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "order_id",
+              "user_id",
+              "address",
+              "items",
+              "fulfillments",
+              "status",
+              "payment_history"
+            ],
+            "examples": [
+              {
+                "order_id": "#W5918442",
+                "user_id": "sofia_rossi_8776",
+                "address": {
+                  "address1": "291 River Road",
+                  "address2": "Suite 271",
+                  "city": "Austin",
+                  "country": "USA",
+                  "state": "TX",
+                  "zip": "78784"
+                },
+                "items": [
+                  {
+                    "name": "Perfume",
+                    "product_id": "6858788497",
+                    "item_id": "1725100896",
+                    "price": 289.66,
+                    "options": {
+                      "scent family": "oriental",
+                      "size": "30ml",
+                      "gender": "unisex"
+                    }
+                  },
+                  {
+                    "name": "Skateboard",
+                    "product_id": "1968349452",
+                    "item_id": "5312063289",
+                    "price": 195.15,
+                    "options": {
+                      "deck material": "bamboo",
+                      "length": "31 inch",
+                      "design": "graphic"
+                    }
+                  },
+                  {
+                    "name": "Action Camera",
+                    "product_id": "3377618313",
+                    "item_id": "1586641416",
+                    "price": 497.39,
+                    "options": {
+                      "resolution": "5K",
+                      "waterproof": "yes",
+                      "color": "silver"
+                    }
+                  },
+                  {
+                    "name": "Action Camera",
+                    "product_id": "3377618313",
+                    "item_id": "6117189161",
+                    "price": 481.5,
+                    "options": {
+                      "resolution": "4K",
+                      "waterproof": "yes",
+                      "color": "silver"
+                    }
+                  }
+                ],
+                "fulfillments": [],
+                "status": "pending (item modified)",
+                "payment_history": [
+                  {
+                    "transaction_type": "payment",
+                    "amount": 1463.7,
+                    "payment_method_id": "credit_card_5051208"
+                  },
+                  {
+                    "transaction_type": "payment",
+                    "amount": 10.0,
+                    "payment_method_id": "gift_card_1234567"
+                  }
+                ]
+              },
+              "Error: order not found",
+              "Error: non-pending order cannot be modified",
+              "Error: payment method not found",
+              "Error: insufficient gift card balance to pay for the new item"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "ModifyPendingOrderPayment",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "modify_pending_order_payment",
+          "description": "Modify the payment method of a pending order. The agent needs to explain the modification detail and ask for explicit user confirmation (yes/no) to proceed. Only orders with status 'pending' and exactly one original \"payment\" transaction can be modified.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "order_id": {
+                "type": "string",
+                "description": "The order id, such as '#W5918442'. Be careful there is a '#' symbol at the beginning of the order id."
+              },
+              "payment_method_id": {
+                "type": "string",
+                "description": "The new payment method id for the order, such as 'gift_card_0000000' or 'credit_card_0000000'. These can be looked up from the user details."
+              }
+            },
+            "required": [
+              "order_id",
+              "payment_method_id"
+            ]
+          },
+          "response": {
+            "type": "object",
+            "description": "The updated order object after changing the payment method. Includes full order details: address, items, fulfillments, status, and payment history (including the original payment and the new payment + refund added by this operation). If the order or payment method is invalid or cannot be modified, the function instead returns an error string such as 'Error: order not found', 'Error: non-pending order cannot be modified', 'Error: payment method not found', or 'Error: insufficient gift card balance to pay for the order'.",
+            "properties": {
+              "order_id": {
+                "type": "string",
+                "description": "The unique ID of the order, such as '#W5918442'."
+              },
+              "user_id": {
+                "type": "string",
+                "description": "The ID of the user who placed the order."
+              },
+              "address": {
+                "type": "object",
+                "description": "Shipping address for the order.",
+                "properties": {
+                  "address1": {
+                    "type": "string"
+                  },
+                  "address2": {
+                    "type": "string"
+                  },
+                  "city": {
+                    "type": "string"
+                  },
+                  "country": {
+                    "type": "string"
+                  },
+                  "state": {
+                    "type": "string"
+                  },
+                  "zip": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "address1",
+                  "city",
+                  "country",
+                  "state",
+                  "zip"
+                ]
+              },
+              "items": {
+                "type": "array",
+                "description": "List of items included in the order.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "description": "Display name of the item, such as 'Perfume'."
+                    },
+                    "product_id": {
+                      "type": "string",
+                      "description": "Product identifier."
+                    },
+                    "item_id": {
+                      "type": "string",
+                      "description": "Line-item identifier within the order."
+                    },
+                    "price": {
+                      "type": "number",
+                      "description": "Price of the item."
+                    },
+                    "options": {
+                      "type": "object",
+                      "description": "Item options such as size, color, material, etc.",
+                      "additionalProperties": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "product_id",
+                    "item_id",
+                    "price"
+                  ]
+                }
+              },
+              "fulfillments": {
+                "type": "array",
+                "description": "Fulfillment information including tracking and which items were shipped. For pending orders this is usually empty.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "tracking_id": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "description": "List of tracking IDs for this fulfillment."
+                    },
+                    "item_ids": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "description": "List of item IDs in this fulfillment."
+                    }
+                  },
+                  "required": [
+                    "tracking_id",
+                    "item_ids"
+                  ]
+                }
+              },
+              "status": {
+                "type": "string",
+                "description": "The current status of the order, e.g. 'pending'."
+              },
+              "payment_history": {
+                "type": "array",
+                "description": "History of payment-related transactions for the order. After modification this will include the original payment, a new payment on the new method, and a refund on the old method.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "transaction_type": {
+                      "type": "string",
+                      "description": "Type of transaction, e.g., 'payment' or 'refund'."
+                    },
+                    "amount": {
+                      "type": "number",
+                      "description": "Amount of the transaction."
+                    },
+                    "payment_method_id": {
+                      "type": "string",
+                      "description": "Identifier of the payment method used."
+                    }
+                  },
+                  "required": [
+                    "transaction_type",
+                    "amount",
+                    "payment_method_id"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "order_id",
+              "user_id",
+              "address",
+              "items",
+              "fulfillments",
+              "status",
+              "payment_history"
+            ],
+            "examples": [
+              {
+                "order_id": "#W5918442",
+                "user_id": "sofia_rossi_8776",
+                "address": {
+                  "address1": "291 River Road",
+                  "address2": "Suite 271",
+                  "city": "Austin",
+                  "country": "USA",
+                  "state": "TX",
+                  "zip": "78784"
+                },
+                "items": [
+                  {
+                    "name": "Perfume",
+                    "product_id": "6858788497",
+                    "item_id": "1725100896",
+                    "price": 289.66,
+                    "options": {
+                      "scent family": "oriental",
+                      "size": "30ml",
+                      "gender": "unisex"
+                    }
+                  },
+                  {
+                    "name": "Skateboard",
+                    "product_id": "1968349452",
+                    "item_id": "5312063289",
+                    "price": 195.15,
+                    "options": {
+                      "deck material": "bamboo",
+                      "length": "31 inch",
+                      "design": "graphic"
+                    }
+                  },
+                  {
+                    "name": "Action Camera",
+                    "product_id": "3377618313",
+                    "item_id": "1586641416",
+                    "price": 497.39,
+                    "options": {
+                      "resolution": "5K",
+                      "waterproof": "yes",
+                      "color": "silver"
+                    }
+                  },
+                  {
+                    "name": "Action Camera",
+                    "product_id": "3377618313",
+                    "item_id": "6117189161",
+                    "price": 481.5,
+                    "options": {
+                      "resolution": "4K",
+                      "waterproof": "yes",
+                      "color": "silver"
+                    }
+                  }
+                ],
+                "fulfillments": [],
+                "status": "pending",
+                "payment_history": [
+                  {
+                    "transaction_type": "payment",
+                    "amount": 1463.7,
+                    "payment_method_id": "credit_card_5051208"
+                  },
+                  {
+                    "transaction_type": "payment",
+                    "amount": 1463.7,
+                    "payment_method_id": "gift_card_1234567"
+                  },
+                  {
+                    "transaction_type": "refund",
+                    "amount": 1463.7,
+                    "payment_method_id": "credit_card_5051208"
+                  }
+                ]
+              },
+              "Error: order not found",
+              "Error: non-pending order cannot be modified",
+              "Error: payment method not found",
+              "Error: insufficient gift card balance to pay for the order"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "ModifyUserAddress",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "modify_user_address",
+          "description": "Modify the default address of a user. The agent must explain what will be changed and ask for explicit user confirmation (yes/no) before calling this function. On success, it returns the full updated user profile; on failure, it returns an error string such as 'Error: user not found'.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "user_id": {
+                "type": "string",
+                "description": "The user id, such as 'noah_brown_6181' or 'ivan_santos_6635'."
+              },
+              "address1": {
+                "type": "string",
+                "description": "The first line of the address, such as '123 Main St'."
+              },
+              "address2": {
+                "type": "string",
+                "description": "The second line of the address, such as 'Apt 1' or ''."
+              },
+              "city": {
+                "type": "string",
+                "description": "The city, such as 'San Francisco'."
+              },
+              "state": {
+                "type": "string",
+                "description": "The state, such as 'CA'."
+              },
+              "country": {
+                "type": "string",
+                "description": "The country, such as 'USA'."
+              },
+              "zip": {
+                "type": "string",
+                "description": "The zip code, such as '12345'."
+              }
+            },
+            "required": [
+              "user_id",
+              "address1",
+              "address2",
+              "city",
+              "state",
+              "country",
+              "zip"
+            ]
+          },
+          "response": {
+            "type": "object",
+            "description": "The updated user profile after modifying the default address. If the user id does not exist, the function instead returns the string 'Error: user not found'.",
+            "properties": {
+              "name": {
+                "type": "object",
+                "description": "User's name.",
+                "properties": {
+                  "first_name": {
+                    "type": "string",
+                    "description": "First name of the user."
+                  },
+                  "last_name": {
+                    "type": "string",
+                    "description": "Last name of the user."
+                  }
+                },
+                "required": [
+                  "first_name",
+                  "last_name"
+                ]
+              },
+              "address": {
+                "type": "object",
+                "description": "User's default shipping address after the update.",
+                "properties": {
+                  "address1": {
+                    "type": "string"
+                  },
+                  "address2": {
+                    "type": "string"
+                  },
+                  "city": {
+                    "type": "string"
+                  },
+                  "country": {
+                    "type": "string"
+                  },
+                  "state": {
+                    "type": "string"
+                  },
+                  "zip": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "address1",
+                  "city",
+                  "country",
+                  "state",
+                  "zip"
+                ]
+              },
+              "email": {
+                "type": "string",
+                "description": "The user's email address."
+              },
+              "payment_methods": {
+                "type": "object",
+                "description": "Stored payment methods keyed by payment method id.",
+                "additionalProperties": {
+                  "type": "object",
+                  "properties": {
+                    "source": {
+                      "type": "string",
+                      "description": "Type of payment method, e.g. 'paypal', 'credit_card', 'gift_card'."
+                    },
+                    "id": {
+                      "type": "string",
+                      "description": "Payment method id, such as 'credit_card_7815826'."
+                    },
+                    "brand": {
+                      "type": "string",
+                      "description": "Card brand for credit cards, such as 'visa' or 'mastercard'."
+                    },
+                    "last_four": {
+                      "type": "string",
+                      "description": "Last four digits of the card number."
+                    },
+                    "balance": {
+                      "type": "number",
+                      "description": "Remaining balance for gift cards, if applicable."
+                    }
+                  },
+                  "required": [
+                    "source",
+                    "id"
+                  ]
+                }
+              },
+              "orders": {
+                "type": "array",
+                "description": "List of order ids associated with the user.",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "name",
+              "address",
+              "email",
+              "payment_methods",
+              "orders"
+            ],
+            "examples": [
+              {
+                "name": {
+                  "first_name": "Noah",
+                  "last_name": "Brown"
+                },
+                "address": {
+                  "address1": "123 Main St",
+                  "address2": "Apt 4B",
+                  "city": "San Francisco",
+                  "country": "USA",
+                  "state": "CA",
+                  "zip": "94105"
+                },
+                "email": "noah.brown7922@example.com",
+                "payment_methods": {
+                  "paypal_5727330": {
+                    "source": "paypal",
+                    "id": "paypal_5727330"
+                  },
+                  "credit_card_7815826": {
+                    "source": "credit_card",
+                    "brand": "mastercard",
+                    "last_four": "9212",
+                    "id": "credit_card_7815826"
+                  }
+                },
+                "orders": [
+                  "#W7678072"
+                ]
+              },
+              {
+                "name": {
+                  "first_name": "Ivan",
+                  "last_name": "Santos"
+                },
+                "address": {
+                  "address1": "100 New Street",
+                  "address2": "Suite 100",
+                  "city": "Austin",
+                  "country": "USA",
+                  "state": "TX",
+                  "zip": "78701"
+                },
+                "email": "ivan.santos3158@example.com",
+                "payment_methods": {
+                  "paypal_6151711": {
+                    "source": "paypal",
+                    "id": "paypal_6151711"
+                  }
+                },
+                "orders": [
+                  "#W6893533",
+                  "#W8770097",
+                  "#W5183325",
+                  "#W3913498"
+                ]
+              },
+              "Error: user not found"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "ReturnDeliveredOrderItems",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "return_delivered_order_items",
+          "description": "Return some items of a delivered order. The order status will be changed to 'return requested'. The agent needs to explain the return detail and ask for explicit user confirmation (yes/no) to proceed. The user will receive follow-up email for how and where to return the item. Only orders with status 'delivered' can be returned.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "order_id": {
+                "type": "string",
+                "description": "The order id, such as '#W2611340'. Be careful there is a '#' symbol at the beginning of the order id."
+              },
+              "item_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "The item ids to be returned, each such as '6469567736'. There could be duplicate items in the list if multiple quantities of the same item are being returned."
+              },
+              "payment_method_id": {
+                "type": "string",
+                "description": "The payment method id that should receive the refund, such as 'gift_card_0000000' or 'credit_card_0000000'. It must be either the original payment method used for the order or a gift card stored in the user's profile."
+              }
+            },
+            "required": [
+              "order_id",
+              "item_ids",
+              "payment_method_id"
+            ]
+          },
+          "response": {
+            "type": "object",
+            "description": "The updated order object after marking items for return. On success, the order status will be 'return requested' and the fields 'return_items' and 'return_payment_method_id' will be added. If the order or payment method is invalid, or the order is not 'delivered', the function instead returns an error string such as 'Error: order not found', 'Error: non-delivered order cannot be returned', 'Error: payment method not found', 'Error: payment method should be either the original payment method or a gift card', or 'Error: some item not found'.",
+            "properties": {
+              "order_id": {
+                "type": "string",
+                "description": "The unique ID of the order, such as '#W2611340'."
+              },
+              "user_id": {
+                "type": "string",
+                "description": "The ID of the user who placed the order."
+              },
+              "address": {
+                "type": "object",
+                "description": "Shipping address for the order.",
+                "properties": {
+                  "address1": {
+                    "type": "string"
+                  },
+                  "address2": {
+                    "type": "string"
+                  },
+                  "city": {
+                    "type": "string"
+                  },
+                  "country": {
+                    "type": "string"
+                  },
+                  "state": {
+                    "type": "string"
+                  },
+                  "zip": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "address1",
+                  "city",
+                  "country",
+                  "state",
+                  "zip"
+                ]
+              },
+              "items": {
+                "type": "array",
+                "description": "List of items included in the order.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "description": "Display name of the item, such as 'Water Bottle'."
+                    },
+                    "product_id": {
+                      "type": "string",
+                      "description": "Product identifier."
+                    },
+                    "item_id": {
+                      "type": "string",
+                      "description": "Line-item identifier within the order."
+                    },
+                    "price": {
+                      "type": "number",
+                      "description": "Price of the item."
+                    },
+                    "options": {
+                      "type": "object",
+                      "description": "Item options such as size, color, material, etc.",
+                      "additionalProperties": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "product_id",
+                    "item_id",
+                    "price"
+                  ]
+                }
+              },
+              "fulfillments": {
+                "type": "array",
+                "description": "Fulfillment information including tracking and which items were shipped.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "tracking_id": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "description": "List of tracking IDs for this fulfillment."
+                    },
+                    "item_ids": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "description": "List of item IDs in this fulfillment."
+                    }
+                  },
+                  "required": [
+                    "tracking_id",
+                    "item_ids"
+                  ]
+                }
+              },
+              "status": {
+                "type": "string",
+                "description": "The current status of the order, e.g. 'delivered', 'return requested', etc."
+              },
+              "payment_history": {
+                "type": "array",
+                "description": "History of payment-related transactions for the order. For this function, it is not modified, but is returned as-is.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "transaction_type": {
+                      "type": "string",
+                      "description": "Type of transaction, e.g., 'payment' or 'refund'."
+                    },
+                    "amount": {
+                      "type": "number",
+                      "description": "Amount of the transaction."
+                    },
+                    "payment_method_id": {
+                      "type": "string",
+                      "description": "Identifier of the payment method used."
+                    }
+                  },
+                  "required": [
+                    "transaction_type",
+                    "amount",
+                    "payment_method_id"
+                  ]
+                }
+              },
+              "return_items": {
+                "type": "array",
+                "description": "Sorted list of item ids that the user has requested to return.",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "return_payment_method_id": {
+                "type": "string",
+                "description": "Payment method id that should receive the refund for the returned items."
+              }
+            },
+            "required": [
+              "order_id",
+              "user_id",
+              "address",
+              "items",
+              "fulfillments",
+              "status",
+              "payment_history",
+              "return_items",
+              "return_payment_method_id"
+            ],
+            "examples": [
+              {
+                "order_id": "#W2611340",
+                "user_id": "james_li_5688",
+                "address": {
+                  "address1": "215 River Road",
+                  "address2": "Suite 991",
+                  "city": "New York",
+                  "country": "USA",
+                  "state": "NY",
+                  "zip": "10083"
+                },
+                "items": [
+                  {
+                    "name": "Water Bottle",
+                    "product_id": "8310926033",
+                    "item_id": "6469567736",
+                    "price": 47.84,
+                    "options": {
+                      "capacity": "1000ml",
+                      "material": "glass",
+                      "color": "blue"
+                    }
+                  },
+                  {
+                    "name": "Office Chair",
+                    "product_id": "4794339885",
+                    "item_id": "8426249116",
+                    "price": 488.81,
+                    "options": {
+                      "material": "fabric",
+                      "color": "black",
+                      "armrest": "fixed",
+                      "backrest height": "standard"
+                    }
+                  }
+                ],
+                "fulfillments": [
+                  {
+                    "tracking_id": [
+                      "357962501027"
+                    ],
+                    "item_ids": [
+                      "6469567736",
+                      "8426249116"
+                    ]
+                  }
+                ],
+                "status": "return requested",
+                "payment_history": [
+                  {
+                    "transaction_type": "payment",
+                    "amount": 536.65,
+                    "payment_method_id": "gift_card_1725971"
+                  }
+                ],
+                "return_items": [
+                  "6469567736"
+                ],
+                "return_payment_method_id": "gift_card_1725971"
+              },
+              "Error: order not found",
+              "Error: non-delivered order cannot be returned",
+              "Error: payment method not found",
+              "Error: payment method should be either the original payment method or a gift card",
+              "Error: some item not found"
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "adjacency_matrix": [
+    [
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    [
+      false,
+      false,
+      true,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      true
+    ],
+    [
+      true,
+      true,
+      false,
+      true,
+      false,
+      true,
+      true,
+      true,
+      false,
+      true
+    ],
+    [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    [
+      false,
+      false,
+      false,
+      true,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false
+    ],
+    [
+      true,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      true,
+      true,
+      false
+    ],
+    [
+      true,
+      false,
+      true,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      false
+    ],
+    [
+      true,
+      false,
+      true,
+      false,
+      false,
+      true,
+      true,
+      false,
+      false,
+      false
+    ],
+    [
+      true,
+      true,
+      true,
+      false,
+      true,
+      true,
+      true,
+      false,
+      false,
+      true
+    ],
+    [
+      false,
+      true,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  ],
+  "reason_matrix": [
+    [
+      "self — ignored",
+      "After a successful pending-order cancellation, the order is no longer delivered, so an exchange flow doesn’t apply; this would only make sense if cancellation failed, not immediately after a success.",
+      "Common follow-up is the customer asking to verify the cancellation/refund status; the agent can re-fetch the order to confirm it shows status 'cancelled' and the refund entry. Inputs: order_id.",
+      "Once the order is cancelled, there’s no need to browse product inventory as an immediate operational follow-up; product lookup is a separate shopping/browsing intent.",
+      "Listing all product types is unrelated to confirming/completing a cancellation; it’s a catalog discovery step, not a typical post-cancellation support action.",
+      "Address modification is only for pending orders; immediately after cancellation the order is no longer pending, so this tool would fail and isn’t a sensible next step.",
+      "Item modification is only for pending orders and is moot after cancellation; also it’s a consequential one-time action not justified as a routine post-cancel follow-up.",
+      "Payment modification is only for pending orders and isn’t applicable after cancellation; post-cancel questions are typically about refund timing, not changing payment on a cancelled order.",
+      "Changing the user’s default address isn’t a typical immediate follow-up to cancelling a specific pending order unless explicitly requested; it’s a separate profile-maintenance intent.",
+      "Returning items applies to delivered orders; after cancelling a pending order there’s nothing to return, so this is not a plausible immediate next step."
+    ],
+    [
+      "After an exchange request, the order is no longer pending (it becomes 'exchange requested'), so cancelling a pending order is not a plausible immediate next step. Also it’s a high-friction action that would be a different intent.",
+      "self — ignored",
+      "After requesting an exchange, the customer often asks to confirm the new status, exchanged items, or payment difference; the agent would fetch the latest record. Needs user input: order_id.",
+      "If the customer wants a different size/color and isn’t sure which variants exist or are in stock, the agent may look up the product’s variants to guide selection after the exchange request (or if the exchange failed). Needs user input: product_id (from the order’s items).",
+      "Listing all product types is a broad browsing step and not a typical immediate follow-up to completing an exchange request; it’s unnecessary unless the customer is shopping for new items.",
+      "Changing a pending-order shipping address doesn’t apply because this workflow is for delivered orders and the order is not pending after an exchange request. Not a sensible immediate next action.",
+      "Modifying pending order items is not applicable after an exchange request on a delivered order, and the order would not be in 'pending' status. Also it’s a separate high-impact workflow.",
+      "Modifying payment for a pending order doesn’t fit a delivered-order exchange flow; exchange uses a payment_method_id for the price difference rather than changing the original order payment method.",
+      "Updating the user’s default address is unrelated to an exchange request in most cases; exchanges for delivered orders don’t modify the shipping address, so this is not a common immediate follow-up unless separately requested.",
+      "If the user changes their mind right after requesting an exchange (or asks to return instead), the agent may proceed to a return request for the same delivered order (assuming policy allows one action; otherwise it may error). Needs user inputs: order_id, item_ids to return, payment_method_id for refund."
+    ],
+    [
+      "After viewing order status/details, the customer may ask to cancel if it’s still pending; the agent uses the same order context to proceed. Inputs needed from user: order_id, cancellation reason ('no longer needed'/'ordered by mistake'), and explicit confirmation yes/no.",
+      "After checking the order is delivered and reviewing items, a common next step is processing an exchange request. Inputs needed from user: order_id, item_ids to exchange, new_item_ids (matching products), payment_method_id, and explicit confirmation yes/no.",
+      "self — ignored",
+      "If the order is delivered and the user wants a refund for some items, the agent would check details then start a return. Inputs needed from user: order_id, item_ids to return, payment_method_id for refund (original or existing gift card), and explicit confirmation yes/no.",
+      "Product inventory lookup isn’t a typical immediate follow-up to simply viewing an order unless the customer is shopping variants; it’s more of a separate flow. Would only be needed if user asks about available replacements/variants, which is not guaranteed immediately.",
+      "If the customer is looking up an order in order to change where it ships (and the order is pending), the next step is modifying the address. Inputs needed from user: order_id and full new address fields (address1, address2, city, state, country, zip) plus explicit confirmation yes/no.",
+      "If the order is pending and the customer wants a different size/color/etc., the agent would review the current items then modify them. Inputs needed from user: order_id, item_ids to change, new_item_ids, payment_method_id for price difference, and explicit confirmation yes/no.",
+      "After viewing payment history and confirming the order is eligible (pending with one original payment), the customer may ask to change payment method. Inputs needed from user: order_id, new payment_method_id, and explicit confirmation yes/no.",
+      "Changing the user’s default address is a profile-level task and not a typical immediate next step from checking a specific order’s details (which has its own shipping address). Usually only follows if the user explicitly asks to update their profile address; inputs: user_id and new address.",
+      "After confirming an order is delivered and which items were received, a common next step is initiating a return. Inputs needed from user: order_id, item_ids, payment_method_id for refund, and explicit confirmation yes/no."
+    ],
+    [
+      "After viewing product variants/availability, the next step is usually selecting an item variant or checking an existing order; cancelling a pending order is a separate, high-impact workflow requiring order context. Would need order_id and cancellation reason, which aren’t implied by product lookup.",
+      "Exchanging delivered items is an order-servicing action; product details might help choose a replacement, but you’d typically fetch the order first and confirm delivered status before initiating exchange. Requires order_id, item_ids, new_item_ids, payment_method_id—too much unrelated context for an immediate follow-up.",
+      "It’s plausible the customer asks about a specific order right after discussing product variants (e.g., “is this what I ordered?”), and the agent would then pull the order to compare product_id/item_id/options. Requires order_id from the user.",
+      "self — ignored",
+      "After getting product details, a common next step is discovering other products or finding a product_id; listing all product types is a broad catalog action that usually precedes (not follows) a specific product_id lookup. No strong immediate follow-up scenario.",
+      "Changing a pending order’s shipping address is unrelated to having just pulled product inventory/variants; you’d normally be working from an order-service request. Requires order_id and full new address fields.",
+      "Product details can inform which new variant item_id to swap to, but modifying pending order items is a consequential, one-time action and typically follows reviewing the specific order and collecting confirmations. Requires order_id, item_ids, new_item_ids, payment_method_id.",
+      "Modifying payment on a pending order is an order-management workflow and not a natural immediate next step after checking product inventory. Requires order_id and payment_method_id.",
+      "Updating the user’s default address is profile management; it doesn’t naturally follow a product variant/availability inquiry. Requires user_id and full address fields plus explicit confirmation.",
+      "Returns are order-level post-delivery actions; product details might be incidental but you’d first retrieve the delivered order and confirm return items. Requires order_id, item_ids, payment_method_id, so not an immediate follow-up to product lookup."
+    ],
+    [
+      "Listing product types is a catalog-browsing step; cancelling a pending order is a high-friction, unrelated operational action and would usually start from an order issue, not from browsing product types.",
+      "Exchanging delivered items is a consequential post-purchase workflow and typically starts from an order problem. It’s not a common immediate next step after listing product types unless the user is already working within a specific delivered order context.",
+      "Order lookup is order-centric; after listing product types, the more typical next step is drilling into a chosen product’s variants/availability. Using GetOrderDetails immediately after is uncommon unless the customer pivots to an order issue and provides order_id.",
+      "After seeing the catalog list, a common next step is the customer picks a product and asks what sizes/colors are available; the agent would call this with product_id (chosen from the list).",
+      "self — ignored",
+      "If the user is browsing product types to find the right product to swap to (e.g., “what products do you have?” then “show me the T‑Shirt options”), the agent would next call GetProductDetails using product_id.",
+      "Changing a pending order’s shipping address is an order-management action; listing product types doesn’t usually lead into it. Would require an order_id and a separate address-change intent.",
+      "Modifying pending order items could follow only if the customer is in a pending-order modification flow; listing all product types is not the normal next tool (you’d usually inspect the order first). Also requires order_id, item_ids/new_item_ids, payment_method_id.",
+      "Modifying payment method is unrelated to catalog browsing and is a consequential action that typically starts from an identified pending order. Requires order_id and payment_method_id plus explicit confirmation.",
+      "Modifying the user’s default address is a profile action and not a common immediate follow-up to listing product types. Requires a separate address-update request and full address fields."
+    ],
+    [
+      "After changing the shipping address, a common follow-up is the user deciding to cancel the same pending order instead. Agent would use order_id and ask the user for the cancellation reason ('no longer needed'/'ordered by mistake') plus confirmation.",
+      "This is for delivered orders only; immediately after modifying a pending-order address, exchanging delivered items is a mismatched workflow unless the customer switches to a different delivered-order issue.",
+      "After modifying the address, the agent may immediately verify the update/status with the customer by re-fetching the order. Needs order_id.",
+      "Product inventory lookup is not a typical next step after an address-only change; it’s more relevant to item modification/exchange flows and requires product_id.",
+      "Listing the whole catalog is unrelated to confirming or completing an order address change; no normal immediate support follow-up requires it.",
+      "self — ignored",
+      "After an address change, the customer may also want to change items in the same pending order; the agent could proceed to item modification next. Needs order_id, item_ids, new_item_ids, and a payment_method_id (from user profile/order) plus confirmation.",
+      "After an address change, the customer may also want to change the payment method on the same pending order. Needs order_id and the new payment_method_id (from user profile) plus confirmation.",
+      "A frequent follow-up is the customer asking to also update their default/profile address so future orders use it. Needs user_id and the full new address fields (address1,address2,city,state,country,zip) plus confirmation.",
+      "Returning items applies only to delivered orders, so it’s not a plausible immediate next step from modifying a pending order’s address unless the user changes topics to a delivered-order return."
+    ],
+    [
+      "After modifying items, a common follow-up is the customer deciding to cancel the order anyway (e.g., changed their mind). Agent would use cancel with user-provided order_id and reason ('no longer needed' or 'ordered by mistake'), plus explicit confirmation.",
+      "Item-modification is for pending orders; exchanging delivered items is a different lifecycle step and wouldn’t normally be called immediately after a successful pending-item modification. Only plausible if the order were delivered, which contradicts the just-modified pending context.",
+      "After modifying items, the agent may need to re-check and show the updated order summary (items, totals/payment history, status) for customer reassurance or to answer questions. Requires order_id.",
+      "If the customer asks what other sizes/colors are available for the product they just swapped, the agent would look up variants and availability. Requires product_id (from the updated order’s items) or the user stating which product they mean.",
+      "Listing all product types is rarely the immediate next step after modifying items; customers usually care about variants within the specific product already in the order, not the full catalog. Not a typical post-modification workflow step.",
+      "Customer may also want to update the shipping address after changing items (still a pending-order modification flow). Requires order_id plus the new address fields (address1, address2, city, state, country, zip) and explicit confirmation.",
+      "self — ignored",
+      "If the price difference or payment implications lead the customer to want a different payment method (or the chosen method failed and they pick another), modifying payment is a plausible next step. Requires order_id and new payment_method_id (from user profile), plus explicit confirmation.",
+      "Modifying the user’s default address is not the typical immediate follow-up to changing items in a specific pending order; the more direct action would be modifying the order shipping address. Would only be used if the customer explicitly asks to update their profile address. ",
+      "Returning delivered items is a post-delivery workflow and doesn’t normally follow immediately after modifying items on a pending order. Only makes sense if the order were delivered, which conflicts with the target’s intended use."
+    ],
+    [
+      "After changing payment, the user may decide they just want to cancel the pending order instead. Agent would use order_id and ask for cancellation reason ('no longer needed'/'ordered by mistake') and explicit confirmation.",
+      "Exchange is for delivered orders and a different workflow; switching payment on a pending order doesn’t naturally lead to a delivered-order exchange request. Would require order to be delivered plus item_ids/new_item_ids.",
+      "After modifying payment, a common next step is to verify the updated order/payment history or confirm the order is still pending. Agent would use order_id.",
+      "Product catalog lookup isn’t a typical immediate follow-up to changing payment method unless the user is also changing items; not directly tied to payment change. Requires product_id.",
+      "Listing all product types is unrelated to modifying payment on a specific pending order; not a routine next step. No relevant user-provided input.",
+      "Users often bundle changes: after updating payment they may also want to update the shipping address for the same pending order. Agent would use order_id plus the new address fields (address1, address2, city, state, country, zip) and explicit confirmation.",
+      "Users may next request changing item options on the same pending order (size/color etc.) after fixing payment. Agent would use order_id, item_ids, new_item_ids, and payment_method_id for any price difference, plus explicit confirmation (and remind it can be done only once).",
+      "self — ignored",
+      "Modifying the user’s default address is plausible only if the user explicitly asks to update their profile address; it’s not a typical immediate follow-up to changing payment on a single order. Would require user_id and full address fields.",
+      "Returns apply to delivered orders; changing payment on a pending order doesn’t typically lead directly to a return request. Would require delivered order_id plus item_ids and payment_method_id."
+    ],
+    [
+      "After updating the user’s default address, the customer may immediately ask to cancel an order that was shipping to the old address. Agent would use this after getting the order_id and cancellation reason (no longer needed/ordered by mistake) and confirming.",
+      "After changing the default address, the customer might realize a delivered order went to the wrong place and ask to exchange items instead. Agent would need order_id, item_ids, new_item_ids, and payment_method_id (plus user confirmation).",
+      "A common follow-up to changing the default address is the customer asking “Can you update my open order too?” Agent would fetch the order status/details first using order_id to decide whether address modification is allowed.",
+      "Product catalog lookup isn’t a typical immediate next step after updating a user’s default shipping address; it’s more relevant to shopping/item changes. Only plausible via a topic shift, so not a neighbour.",
+      "After updating the default address, the customer often wants the shipping address on a specific pending order updated as well. Agent would need order_id and the new address fields (address1, address2, city, state, country, zip) and confirmation.",
+      "After changing the default address, the customer may also want to change items on a still-pending order (often prompted by reviewing their profile/orders). Agent would need order_id, item_ids, new_item_ids, and payment_method_id (with explicit confirmation and “only once” reminder).",
+      "A related follow-up is the customer also wanting to update payment for a pending order while they’re updating account details. Agent would need order_id and the new payment_method_id, with explicit confirmation.",
+      "self — ignored",
+      "Returning delivered items is not a typical immediate step caused by changing the default address; it’s a different workflow and usually not triggered by an address update alone. Possible but more of a new request, so not a neighbour.",
+      "After updating the default address, the customer may ask to browse products or confirm product IDs for an upcoming modification/exchange. Agent could list product types with no extra inputs, but it’s still a plausible next step if they’re about to change order items. "
+    ],
+    [
+      "After a return request on a delivered order, cancelling a different pending order is a separate, high-friction action and not a typical immediate next step without an explicit new customer request (order_id, reason).",
+      "If the customer changes their mind from return to exchange (or wants an exchange for other items) right after discussing a return, the agent may proceed to an exchange request for that delivered order. Inputs needed: order_id, item_ids, new_item_ids, payment_method_id.",
+      "A common follow-up to a return request (or a return failure) is to re-check the order status/items/payment_history to confirm what was returned and what refund method was used. Input needed: order_id.",
+      "Return flow doesn’t normally require browsing product catalog details; product_id-based inventory lookup is unrelated unless the customer explicitly asks about replacements. Also requires product_id, which is not a routine next-step input after a return request.",
+      "Listing all product types is not a typical immediate follow-up to initiating a return; it’s exploratory catalog browsing and not tied to completing/confirming the return workflow.",
+      "Changing a pending order’s shipping address is unrelated to returning items from a delivered order and would require a separate order context (order_id plus full new address).",
+      "Modifying items in a pending order is a separate, consequential workflow and not a normal next step after placing a return request on a delivered order; would require a different order_id plus item_ids/new_item_ids/payment_method_id.",
+      "Modifying payment on a pending order is unrelated to a delivered-order return request and requires a different order context (order_id, new payment_method_id).",
+      "Updating the user’s default address is not part of the return workflow for a specific delivered order; at most it’s a separate profile request. Requires full address fields and user_id.",
+      "self — ignored"
+    ]
+  ],
+  "is_root": [
+    true,
+    false,
+    true,
+    false,
+    true,
+    true,
+    false,
+    false,
+    false,
+    false
+  ],
+  "is_root_reason": [
+    "A customer can directly ask “please cancel my order #…,” and can typically provide the order_id and one of the allowed reasons ('no longer needed'/'ordered by mistake') in the first message (authentication is assumed handled). The agent can then proceed to cancellation after the required explicit confirmation.",
+    "This tool requires internal/non-human-facing identifiers (item_ids, new_item_ids, and a payment_method_id) plus the correct delivered order_id, which typically must be discovered/validated via order and product lookup steps. A customer usually can’t provide all required IDs unambiguously at the start of the interaction.",
+    "A customer often starts support by asking “Where’s my order?” or “What’s the status of order #…?” and can provide the human-facing order_id. After authentication (assumed handled), the agent can call this immediately to retrieve status, items, address, and payment history.",
+    "Calling get_product_details requires a specific internal product_id, which many customers won’t know at the start of a chat; it’s usually obtained via prior catalog lookup (e.g., list/search products) or from an order’s line items. Without a lightweight product-id discovery helper provided here, this is not a reliable first action.",
+    "A customer can reasonably start by asking what kinds of products the store sells (browse the catalog). This function needs no inputs and returns a human-readable list of product names and product_ids, making it a viable first action after authentication.",
+    "A customer can initiate contact to fix a shipping address for a specific pending order, providing order_id and the corrected address fields (address1,address2,city,state,country,zip). Authentication is an assumed prerequisite, and the tool itself performs the primary single-step action (with user confirmation handled in the turn).",
+    "This tool requires internal identifiers the customer often won’t have upfront (item_ids, new_item_ids, and payment_method_id), and typically requires prior discovery/validation of order contents and available variants (often via order/product details) plus explicit confirmation. So it’s not a practical first action in a support contact.",
+    "As an initial support action, this typically requires first looking up/confirming the correct pending order and selecting a valid new payment_method_id from the user’s saved methods, plus collecting explicit confirmation. Customers often start with “change my payment,” but the agent usually must retrieve order details/payment methods before calling this tool.",
+    "Although customers can request “change my default shipping address,” the tool requires user_id, which customers typically don’t know and must be obtained via the required authentication lookup (email or name+zip). That prerequisite means this is not the first meaningful tool call.",
+    "Although a customer can ask to return items, this function requires internal item_ids and a valid refund payment_method_id (must match the original method or a stored gift card), which typically must be looked up from order/profile details first. So it usually cannot be the first meaningful action without prior discovery (e.g., get order details to obtain item_ids/payment method choices)."
+  ]
+}

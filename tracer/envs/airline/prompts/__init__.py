@@ -1,0 +1,2 @@
+from .task_generator import SYSTEM_PROMPT as TASK_GENERATOR_SYSTEM_PROMPT
+from .task_generator import USER_PROMPT as TASK_GENERATOR_USER_PROMPT

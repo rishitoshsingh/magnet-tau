@@ -1,27 +1,38 @@
 import glob
 import json
 import os
+from typing import Any, Dict
 
 import networkx as nx
 from pyvis.network import Network
 
-OUTPUT_DIR = "output"
+OUTPUT_DIR = "output/graphs"
 PATTERN = "*.json"   # adjust if needed
 
 
-def build_graph_from_json(path: str) -> nx.DiGraph:
+def build_graph_from_json(path: str):
     with open(path, "r") as f:
         data = json.load(f)
-
     # If your JSON has a "results" wrapper, uncomment this and adjust:
     # data = data["results"]
-
+    # print(data[0])
     tools = data["tools"]
     adjacency_matrix = data["adjacency_matrix"]
     reason_matrix = data.get("reason_matrix")
 
     tool_names = [t["name"] for t in tools]
     n_tools = len(tool_names)
+
+    # Build is_root_map: Dict[str, bool] mapping tool name → is_root (if available)
+    # is_root_map: Dict[str, bool] = {}
+    is_root_map: Dict[str, Dict[str, bool]] = {}
+
+    for i, t in enumerate(tools):
+        if "is_root" in data:
+            is_root_map[t["name"]] = {
+                "is_root": data["is_root"][i],
+                "reason": data["is_root_reason"][i],
+            }
 
     # ---- unwrap triple nesting: [ [ [bool, ...] ], ... ] -> [ [bool, ...], ... ] ----
     cleaned_adj = []
@@ -51,7 +62,7 @@ def build_graph_from_json(path: str) -> nx.DiGraph:
 
     if not adjacency_matrix:
         print(f"[WARN] {path}: empty adjacency_matrix")
-        return G
+        return G, is_root_map
 
     total_edges = 0
 
@@ -78,16 +89,31 @@ def build_graph_from_json(path: str) -> nx.DiGraph:
             G.add_edge(tool_names[i], tool_names[j], reason=reason)
             total_edges += 1
 
-    return G
+    return G, is_root_map
 
 
-def visualize_graph(G: nx.DiGraph, title: str, out_html: str) -> None:
+def visualize_graph(G: nx.DiGraph, title: str, out_html: str, is_root_map: Dict[str, Any]) -> None:
     net = Network(height="800px", width="100%", directed=True, notebook=True)
     net.barnes_hut()
 
     # Nodes
     for node in G.nodes:
-        net.add_node(node, label=node)
+        # is_root_map entries may be either a boolean (legacy) or a dict {"is_root": bool, "reason": str}
+        entry = is_root_map.get(node)
+        is_root_flag = False
+        reason_text = None
+        if isinstance(entry, dict):
+            is_root_flag = bool(entry.get("is_root"))
+            reason_text = entry.get("reason")
+        else:
+            # legacy boolean-style entry
+            is_root_flag = bool(entry)
+
+        if is_root_flag:
+            tooltip = reason_text if isinstance(reason_text, str) and reason_text.strip() else "ROOT TOOL"
+            net.add_node(node, label=node, color="green", title=tooltip)
+        else:
+            net.add_node(node, label=node)
 
     # Edges with label + hover tooltip
     for source, target, data in G.edges(data=True):
@@ -121,11 +147,10 @@ def main():
         print(f"Processing {path} -> {html_name}")
 
         try:
-            G = build_graph_from_json(path)
-            visualize_graph(G, title=basename, out_html=html_name)
+            G, is_root_map = build_graph_from_json(path)
+            visualize_graph(G, title=basename, out_html=html_name, is_root_map=is_root_map)
         except Exception as e:
             print(f"Failed to process {path}: {e}")
-
 
 if __name__ == "__main__":
     main()

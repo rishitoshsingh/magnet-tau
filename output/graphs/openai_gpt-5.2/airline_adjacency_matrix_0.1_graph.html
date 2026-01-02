@@ -1,0 +1,156 @@
+<html>
+
+<head>
+    <meta charset="utf-8">
+
+    <script src="lib/bindings/utils.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css"
+        integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js"
+        integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
+    <center>
+        <h1></h1>
+    </center>
+
+    <!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+        crossorigin="anonymous"></script>
+
+
+    <center>
+        <h1></h1>
+    </center>
+    <style type="text/css">
+        #mynetwork {
+            width: 100%;
+            height: 1200px;
+            background-color: #ffffff;
+            border: 1px solid lightgray;
+            position: relative;
+            float: left;
+        }
+    </style>
+</head>
+
+
+<body>
+    <div class="card" style="width: 100%">
+
+
+        <div id="mynetwork" class="card-body"></div>
+    </div>
+
+
+
+
+    <script type="text/javascript">
+
+        // initialize global variables.
+        var edges;
+        var nodes;
+        var allNodes;
+        var allEdges;
+        var nodeColors;
+        var originalNodes;
+        var network;
+        var container;
+        var options, data;
+        var filter = {
+            item: '',
+            property: '',
+            value: []
+        };
+
+
+
+
+
+        // This method is responsible for drawing the graph, returns the drawn network
+        function drawGraph() {
+            var container = document.getElementById('mynetwork');
+
+
+
+            // parsing and collecting nodes and edges from the python
+            nodes = new vis.DataSet([{ "color": "green", "id": "BookReservation", "label": "BookReservation", "shape": "dot", "title": "A customer can initiate contact to book a trip, and the agent can collect the required user-facing details in the conversation (origin, destination, dates/flight numbers, trip type, cabin, passenger names/DOBs, bags/insurance choice, and which stored payment methods to use). user_id is assumed already obtained via authentication per the prompt." }, { "color": "green", "id": "CancelReservation", "label": "CancelReservation", "shape": "dot", "title": "A customer can start a support chat by saying they want to cancel a trip and providing a reservation_id (confirmation code). With that single user-facing input (reservation_id) and prior authentication assumed, cancelling can be the first meaningful agent action (after getting required confirmation/reason per policy)." }, { "color": "green", "id": "GetReservationDetails", "label": "GetReservationDetails", "shape": "dot", "title": "A customer can start by asking \u201cCan you pull up my booking?\u201d and provide the human-facing reservation_id (record locator). Retrieving reservation details is a natural first meaningful action and doesn\u2019t require multi-step prerequisites beyond having the reservation code." }, { "color": "green", "id": "SearchDirectFlight", "label": "SearchDirectFlight", "shape": "dot", "title": "Customers commonly start by asking for available direct flights for a route and date. The required inputs (origin, destination, date) are user-facing and can be provided upfront or gathered with a single clarifying question." }, { "color": "green", "id": "SearchOnestopFlight", "label": "SearchOnestopFlight", "shape": "dot", "title": "A customer can start with \u201cfind me one-stop flights from ORIGIN to DEST on DATE,\u201d and the agent\u2019s first meaningful action can be to call this search using user-provided origin, destination, and date (obtainable via a single clarifying question if missing). No heavy prerequisites are required." }, { "color": "green", "id": "SendCertificate", "label": "SendCertificate", "shape": "dot", "title": "A customer can start a contact by complaining about a delayed/cancelled flight and explicitly requesting compensation; the agent could then call send_certificate first using user-provided/known user_id and the policy-defined amount (based on number of passengers, membership/insurance/business), after getting explicit confirmation to proceed." }, { "color": "#97c2fc", "id": "UpdateReservationBaggages", "label": "UpdateReservationBaggages", "shape": "dot" }, { "color": "#97c2fc", "id": "UpdateReservationFlights", "label": "UpdateReservationFlights", "shape": "dot" }, { "color": "#97c2fc", "id": "UpdateReservationPassengers", "label": "UpdateReservationPassengers", "shape": "dot" }]);
+            edges = new vis.DataSet([{ "arrows": "to", "from": "BookReservation", "label": "If the user immediately regrets the purc\u2026", "title": "If the user immediately regrets the purchase or spots an error right after booking, the agent may cancel the brand-new reservation. Inputs: reservation_id (from the booking result) plus user confirmation per policy.", "to": "CancelReservation" }, { "arrows": "to", "from": "BookReservation", "label": "After booking, users commonly ask to ver\u2026", "title": "After booking, users commonly ask to verify the itinerary/charges or need the reservation number; retrieving the record is a normal next step. Inputs: reservation_id (from the booking result or user-provided).", "to": "GetReservationDetails" }, { "arrows": "to", "from": "BookReservation", "label": "If the user decides right after booking \u2026", "title": "If the user decides right after booking to add checked bags (allowed: add but not remove), updating baggage is a common post-booking change. Inputs: reservation_id, updated total_baggages/nonfree_baggages, and payment_id (credit card/gift card/certificate) plus user confirmation.", "to": "UpdateReservationBaggages" }, { "arrows": "to", "from": "BookReservation", "label": "If the user wants to change dates/itiner\u2026", "title": "If the user wants to change dates/itinerary or cabin after booking (and rules allow), modifying flights is a common immediate next step rather than making a whole new booking. Inputs: reservation_id, new cabin, full new flights list (flight_number/date), and payment_id plus user confirmation.", "to": "UpdateReservationFlights" }, { "arrows": "to", "from": "BookReservation", "label": "If the user notices a name/DOB typo righ\u2026", "title": "If the user notices a name/DOB typo right after booking, correcting passenger info is a common follow-up. Inputs: reservation_id and full passengers array (same count) with corrected first_name/last_name/dob plus user confirmation.", "to": "UpdateReservationPassengers" }, { "arrows": "to", "from": "CancelReservation", "label": "After a cancellation, customers commonly\u2026", "title": "After a cancellation, customers commonly want to rebook a new trip right away. Agent would collect user_id plus new trip details: origin, destination, flight_type, cabin, flights (flight_number/date), passengers (name/dob), payment_methods, baggage counts, insurance.", "to": "BookReservation" }, { "arrows": "to", "from": "CancelReservation", "label": "After cancelling, the user may ask to co\u2026", "title": "After cancelling, the user may ask to confirm the booking is indeed cancelled and what refunds were issued. Agent can fetch the final record using reservation_id (often the same one just cancelled).", "to": "GetReservationDetails" }, { "arrows": "to", "from": "CancelReservation", "label": "A common next step after cancellation is\u2026", "title": "A common next step after cancellation is helping the user find alternative flights before rebooking. Agent would use origin, destination, and preferred date (provided by the user).", "to": "SearchDirectFlight" }, { "arrows": "to", "from": "CancelReservation", "label": "If no direct options fit, the user may a\u2026", "title": "If no direct options fit, the user may ask for connecting alternatives immediately after cancelling. Agent would use origin, destination, and preferred date from the user.", "to": "SearchOnestopFlight" }, { "arrows": "to", "from": "GetReservationDetails", "label": "Common follow-up: user asks to cancel af\u2026", "title": "Common follow-up: user asks to cancel after you confirm itinerary, cabin, insurance, and timing from the reservation. Input needed: reservation_id (and agent would also collect cancellation reason per policy before proceeding).", "to": "CancelReservation" }, { "arrows": "to", "from": "GetReservationDetails", "label": "Common follow-up when the user wants to \u2026", "title": "Common follow-up when the user wants to change their trip: after confirming current origin/destination and segments, the agent searches availability for a replacement date/segment. Inputs needed: origin, destination, date (often taken from the reservation plus user\u2019s new desired date).", "to": "SearchDirectFlight" }, { "arrows": "to", "from": "GetReservationDetails", "label": "Common follow-up: user wants alternative\u2026", "title": "Common follow-up: user wants alternative itineraries (connections) after you confirm current trip details. Inputs needed: origin, destination, date (from reservation + user\u2019s requested new travel date).", "to": "SearchOnestopFlight" }, { "arrows": "to", "from": "GetReservationDetails", "label": "Common follow-up: user wants to add chec\u2026", "title": "Common follow-up: user wants to add checked bags; agent checks current baggage counts in the reservation, then updates. Inputs needed: reservation_id, new total_baggages, new nonfree_baggages, and payment_id (from user\u2019s saved payment methods).", "to": "UpdateReservationBaggages" }, { "arrows": "to", "from": "GetReservationDetails", "label": "Common follow-up: user asks to change fl\u2026", "title": "Common follow-up: user asks to change flights/cabin; after reviewing current flights/cabin and rules (e.g., basic economy limits), agent updates reservation flights. Inputs needed: reservation_id, desired cabin, full new flights list (flight_number/date for each segment), and payment_id.", "to": "UpdateReservationFlights" }, { "arrows": "to", "from": "GetReservationDetails", "label": "Common follow-up: user needs a name corr\u2026", "title": "Common follow-up: user needs a name correction or passenger detail update; agent verifies current passenger list then updates. Inputs needed: reservation_id and updated passengers (first_name, last_name, dob) with same passenger count.", "to": "UpdateReservationPassengers" }, { "arrows": "to", "from": "SearchDirectFlight", "label": "After showing available direct flights, \u2026", "title": "After showing available direct flights, a common next step is to book the selected option. The agent would collect user-provided: user_id, flight_type (one_way/round_trip), chosen flight_number(s) and date(s), cabin, passenger names+DOBs, payment_id(s)/amounts, baggage counts, and insurance yes/no (with explicit confirmation before booking).", "to": "BookReservation" }, { "arrows": "to", "from": "SearchDirectFlight", "label": "If no suitable direct flights show up (o\u2026", "title": "If no suitable direct flights show up (or user asks for more options), the natural next step is to search one-stop itineraries for the same route/date. Uses the same user-provided inputs: origin, destination, date.", "to": "SearchOnestopFlight" }, { "arrows": "to", "from": "SearchOnestopFlight", "label": "After finding a suitable one-stop itiner\u2026", "title": "After finding a suitable one-stop itinerary, a common next step is to book it. Inputs the user/agent would provide at that point: user_id, flight_type, cabin, flights (two flight_number+date legs chosen), passengers (names+DOBs), payment_methods (payment_id+amount), total_baggages, nonfree_baggages, insurance (yes/no).", "to": "BookReservation" }, { "arrows": "to", "from": "SearchOnestopFlight", "label": "If one-stop results are poor or the user\u2026", "title": "If one-stop results are poor or the user asks for non-stop alternatives, the agent would immediately run a direct-flight search for the same route/date. Inputs: origin, destination, date.", "to": "SearchDirectFlight" }, { "arrows": "to", "from": "UpdateReservationBaggages", "label": "Common immediate follow-up is to verify \u2026", "title": "Common immediate follow-up is to verify the new bag counts and any added charges by retrieving the updated record (reservation_id).", "to": "GetReservationDetails" }, { "arrows": "to", "from": "UpdateReservationBaggages", "label": "Plausible follow-up if the customer also\u2026", "title": "Plausible follow-up if the customer also wants to change their itinerary/cabin after handling baggage (e.g., \u2018also move me to an earlier flight\u2019). Agent would use (reservation_id) plus user-provided new (cabin, flights list with flight_number/date, payment_id).", "to": "UpdateReservationFlights" }, { "arrows": "to", "from": "UpdateReservationBaggages", "label": "Plausible follow-up if the customer noti\u2026", "title": "Plausible follow-up if the customer notices a name/DOB typo while dealing with trip add-ons (\u2018also fix passenger DOB/name\u2019). Agent would use (reservation_id) and corrected passenger fields (passengers: first_name, last_name, dob).", "to": "UpdateReservationPassengers" }, { "arrows": "to", "from": "UpdateReservationFlights", "label": "If the user decides not to travel after \u2026", "title": "If the user decides not to travel after changing flights (or the update results in an undesirable itinerary/cost), cancelling the reservation is a plausible next action. Inputs: reservation_id (user provides/confirm).", "to": "CancelReservation" }, { "arrows": "to", "from": "UpdateReservationFlights", "label": "After changing flights, it\u2019s common to p\u2026", "title": "After changing flights, it\u2019s common to pull the reservation again to confirm new segments, cabin, and any added/changed charges. Inputs: reservation_id (user provides/confirm).", "to": "GetReservationDetails" }, { "arrows": "to", "from": "UpdateReservationFlights", "label": "After changing flights, users often add \u2026", "title": "After changing flights, users often add checked bags for the new trip; adding bags is allowed and is a plausible next modification step. Inputs: reservation_id, total_baggages, nonfree_baggages, payment_id (from user\u2019s saved methods).", "to": "UpdateReservationBaggages" }, { "arrows": "to", "from": "UpdateReservationFlights", "label": "After a flight change, users sometimes n\u2026", "title": "After a flight change, users sometimes need to correct traveler names/DOBs on the updated trip; updating passenger info is a plausible next step. Inputs: reservation_id and full passengers list (same count) with first_name/last_name/dob from the user.", "to": "UpdateReservationPassengers" }, { "arrows": "to", "from": "UpdateReservationPassengers", "label": "If, while fixing passenger info, the use\u2026", "title": "If, while fixing passenger info, the user realizes they want to cancel instead (e.g., wrong traveler entered / trip no longer needed), the agent may proceed to cancel. Inputs: reservation_id (and per policy you\u2019d also collect cancellation reason + confirmation before acting).", "to": "CancelReservation" }, { "arrows": "to", "from": "UpdateReservationPassengers", "label": "After updating passenger details, the ag\u2026", "title": "After updating passenger details, the agent commonly pulls the record to verify the changes and read back the corrected names/DOBs. Inputs: reservation_id.", "to": "GetReservationDetails" }, { "arrows": "to", "from": "UpdateReservationPassengers", "label": "Users often bundle edits (names/DOBs) wi\u2026", "title": "Users often bundle edits (names/DOBs) with adding checked bags; after passenger update, the next step could be updating baggage counts and charging payment if needed. Inputs: reservation_id, total_baggages, nonfree_baggages, payment_id.", "to": "UpdateReservationBaggages" }, { "arrows": "to", "from": "UpdateReservationPassengers", "label": "If the passenger update is part of a bro\u2026", "title": "If the passenger update is part of a broader \u201cmodify my reservation\u201d request, the next step may be changing flights/cabin as well. Inputs: reservation_id, cabin, flights (full new list), payment_id.", "to": "UpdateReservationFlights" }]);
+
+            nodeColors = {};
+            allNodes = nodes.get({ returnType: "Object" });
+            for (nodeId in allNodes) {
+                nodeColors[nodeId] = allNodes[nodeId].color;
+            }
+            allEdges = edges.get({ returnType: "Object" });
+            // adding nodes and edges to the graph
+            data = { nodes: nodes, edges: edges };
+
+            var options = {
+                "configure": {
+                    "enabled": false
+                },
+                "edges": {
+                    "color": {
+                        "inherit": true
+                    },
+                    "smooth": {
+                        "enabled": true,
+                        "type": "dynamic"
+                    }
+                },
+                "interaction": {
+                    "dragNodes": true,
+                    "hideEdgesOnDrag": false,
+                    "hideNodesOnDrag": false
+                },
+                "physics": {
+                    "barnesHut": {
+                        "avoidOverlap": 0,
+                        "centralGravity": 0.3,
+                        "damping": 0.09,
+                        "gravitationalConstant": -80000,
+                        "springConstant": 0.001,
+                        "springLength": 250
+                    },
+                    "enabled": true,
+                    "stabilization": {
+                        "enabled": true,
+                        "fit": true,
+                        "iterations": 1000,
+                        "onlyDynamicEdges": false,
+                        "updateInterval": 50
+                    }
+                }
+            };
+
+
+
+
+
+
+            network = new vis.Network(container, data, options);
+
+
+
+
+
+
+
+
+
+
+            return network;
+
+        }
+        drawGraph();
+    </script>
+</body>
+
+</html>

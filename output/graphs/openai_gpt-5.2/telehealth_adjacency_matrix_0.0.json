@@ -1,0 +1,1414 @@
+{
+  "tools": [
+    {
+      "name": "GetAppointmentDetails",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "get_appointment_details",
+          "description": "Get detailed information about a scheduled appointment, including patient, provider, date, time, clinical details, billing information, and any prescription, referral, or cancellation details if present.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "appointment_id": {
+                "type": "string",
+                "description": "The appointment's unique identifier, such as 'APPT001'. This must match an existing appointment_id in the environment data."
+              }
+            },
+            "required": [
+              "appointment_id"
+            ]
+          },
+          "response": {
+            "type": "string",
+            "description": "Returns a human-readable, multi-line text summary of the appointment. If the appointment exists, the output includes:\n- Header with appointment ID\n- Patient and provider information\n- Appointment details (date, time, duration, type, status)\n- Clinical information (chief complaint, notes)\n- Billing information (insurance authorization, copay amount)\n- Meeting information (telehealth link)\n- Optional sections for prescription, referral, and cancellation details if those fields exist.\nIf the appointment is not found, returns an error message like 'Appointment with ID APPT001 not found.'",
+            "examples": [
+              "Appointment Details (ID: APPT001)\n\nPatient: Sarah Johnson (ID: sarah_johnson_1234)\nProvider: Dr. Garcia - Primary Care (ID: dr_garcia_primary)\n\nAppointment Information:\n- Date: 2024-01-15\n- Time: 09:00\n- Duration: 30 minutes\n- Type: Routine Checkup\n- Status: Scheduled\n\nClinical Information:\n- Chief Complaint: Annual physical examination\n- Notes: Patient requesting routine physical, blood pressure check\n\nBilling Information:\n- Insurance Authorization: AUTH123456\n- Copay Amount: $25.00\n\nMeeting Information:\n- Meeting Link: https://telehealth.healthcenter.com/room/APPT001",
+              "Appointment Details (ID: APPT010)\n\nPatient: Sarah Johnson (ID: sarah_johnson_1234)\nProvider: Dr. Smith - Cardiology (ID: dr_smith_cardiology)\n\nAppointment Information:\n- Date: 2024-02-10\n- Time: 14:30\n- Duration: 45 minutes\n- Type: Follow Up\n- Status: Completed\n\nClinical Information:\n- Chief Complaint: Follow-up for hypertension management\n- Notes: Blood pressure improved, continue current regimen\n\nBilling Information:\n- Insurance Authorization: AUTH987654\n- Copay Amount: $30.00\n\nMeeting Information:\n- Meeting Link: https://telehealth.healthcenter.com/room/APPT010\n\nPrescription Issued:\n- Lisinopril 10mg once daily\n- Quantity: 90, Refills: 3",
+              "Appointment with ID APPT999 not found."
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "GetProviderDetails",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "get_provider_details",
+          "description": "Get detailed information about a healthcare provider including specialty, license, credentials, languages, consultation fee, contact information, and weekly schedule. Returns a formatted multi-line string, or an error message if the provider is not found.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "provider_id": {
+                "type": "string",
+                "description": "The provider's unique identifier, such as 'dr_smith_cardiology' or 'dr_thompson_cardiology'."
+              }
+            },
+            "required": [
+              "provider_id"
+            ]
+          },
+          "response": {
+            "type": "string",
+            "description": "Human-readable multi-line provider summary, or an error message. Includes:\n- Name and ID\n- Specialty\n- License number\n- Credentials and years of experience\n- Contact information (phone, email)\n- Languages\n- Consultation fee\n- Weekly schedule by weekday and available times",
+            "examples": [
+              "Provider Details (ID: dr_smith_cardiology)\n\nName: MD Robert Smith\nSpecialty: Cardiology\nLicense Number: MD12345\nCredentials: MD, FACC\nYears of Experience: 15\n\nContact Information:\n- Phone: (555) 100-2001\n- Email: dr.smith@healthcenter.com\n\nLanguages: English, Spanish\nConsultation Fee: $200.00\n\nWeekly Schedule:\n- Monday: 09:00, 10:00, 11:00, 15:00, 16:00\n- Tuesday: 09:00, 10:00, 11:00, 15:00\n- Wednesday: 09:00, 10:00, 15:00, 16:00\n- Thursday: 09:00, 10:00, 11:00, 15:00, 16:00\n- Friday: 09:00, 10:00, 11:00, 15:00",
+              "Provider Details (ID: dr_thompson_cardiology)\n\nName: MD Margaret Thompson\nSpecialty: Cardiology\nLicense Number: MD67890\nCredentials: MD, FACC, FSCAI\nYears of Experience: 25\n\nContact Information:\n- Phone: (555) 100-2005\n- Email: dr.thompson@healthcenter.com\n\nLanguages: English\nConsultation Fee: $275.00\n\nWeekly Schedule:\n- Monday: 08:00, 09:00, 10:00, 11:00, 14:00, 15:00\n- Tuesday: 08:00, 09:00, 10:00, 11:00, 14:00\n- Wednesday: 08:00, 09:00, 10:00, 14:00, 15:00\n- Thursday: 08:00, 09:00, 10:00, 11:00, 14:00, 15:00\n- Friday: 08:00, 09:00, 10:00, 11:00",
+              "Provider with ID dr_unknown_9999 not found."
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "GetMedicalRecord",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "get_medical_record",
+          "description": "Retrieve a patient's medical record by record ID or by the related appointment ID. If both record_id and appointment_id are provided, record_id will be used. If no matching record is found, an error message is returned.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "record_id": {
+                "type": "string",
+                "description": "The unique medical record identifier, such as 'REC001'. If provided, this is used as the primary lookup key."
+              },
+              "appointment_id": {
+                "type": "string",
+                "description": "The appointment ID associated with the medical record, such as 'APPT002'. Used to find the record when record_id is not provided."
+              }
+            },
+            "required": []
+          },
+          "response": {
+            "type": "string",
+            "description": "Returns a multi-line, human-readable summary of the medical record if found, including:\n- Medical record header with record ID\n- Patient and provider names and IDs\n- Related appointment (if available): ID, date, and time\n- Record date and type\n- SOAP-style sections: Subjective, Objective, Assessment, Plan (when present)\n- Any recommendations listed as bullet points (when present)\n\nIf no record_id or appointment_id is provided, returns a guidance message. If no matching record is found, returns an error string.",
+            "examples": [
+              "Medical Record (ID: REC001)\nPatient: David Martinez (ID: david_martinez_5678)\nProvider: Dr. Williams Psychiatry (ID: dr_williams_psychiatry)\nRelated Appointment: APPT002 on 2024-01-16 at 10:00\nDate: 2024-01-16\nType: consultation_note\nSubjective: Patient reports significant improvement in anxiety symptoms since starting sertraline 6 weeks ago.\nObjective: Patient appears calm and engaged. Good eye contact.\nAssessment: Generalized anxiety disorder, responding well to sertraline 50mg daily.\nPlan: Increase sertraline to 75mg daily and follow up in 6 weeks.\nRecommendations:\n- Continue medication as adjusted\n- Practice daily stress management techniques",
+              "Medical record with ID REC999 not found.",
+              "No medical record found for appointment ID APPT999.",
+              "Please provide a record_id or appointment_id to look up the medical record."
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "GetRegimenOptions",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "get_regimen_options",
+          "description": "Retrieve the current medication regimen and optimized alternative regimen options for a patient. Includes component-level details (medication, dosage, unit cost, supplier), overall pill burden, and any synergy/clinical notes for each optimized option. Returns a human-readable multi-line string or an error message if no regimen data is available.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "patient_id": {
+                "type": "string",
+                "description": "ID of the patient, such as 'sarah_johnson_1234'. Must correspond to a key in the 'regimen_plans' map."
+              }
+            },
+            "required": [
+              "patient_id"
+            ]
+          },
+          "response": {
+            "type": "string",
+            "description": "Multi-line, human-readable summary of the patient's current regimen and optimized regimen options, or an error string if no regimen optimization data exists for the patient. The format includes:\n- Current regimen components (one per line)\n- Current pill burden (tablets per day, devices per month)\n- Current regimen notes (if present)\n- Optimized options with name, focus, components, pill burden, and synergy notes",
+            "examples": [
+              "Current regimen components:\n- Metformin | dosage=500mg | daily_dose=2 | monthly_units=60 | unit_type=tablet | brand=Glucophage | supplier=PharmaCo USA | unit_cost_usd=0.45\n- Lisinopril | dosage=10mg | daily_dose=1 | monthly_units=30 | unit_type=tablet | brand=Prinivil | supplier=MedSupply Inc | unit_cost_usd=0.30\nCurrent pill burden: tablets_per_day=3 | devices_per_month=0\nCurrent regimen notes:\n  * Taking medications twice daily\n  * No reported side effects\n  * Good adherence per patient report\nOptimized regimen options:\nOption 1: Extended Release Option\n  Focus: Reduced pill burden with extended-release formulation\n  - Metformin ER | dosage=1000mg | daily_dose=1 | monthly_units=30 | unit_type=tablet | brand=Glucophage XR | supplier=PharmaCo USA | unit_cost_usd=0.85\n  - Lisinopril | dosage=10mg | daily_dose=1 | monthly_units=30 | unit_type=tablet | brand=Prinivil | supplier=MedSupply Inc | unit_cost_usd=0.30\n  Pill burden: tablets_per_day=2 | devices_per_month=0\n  Synergy notes:\n    - Single daily Metformin dose improves adherence\n    - Reduced GI side effects with extended release\n    - Same efficacy as current regimen\nOption 2: Cost-Optimized Generic\n  Focus: Lower cost with generic alternatives\n  - Metformin | dosage=500mg | daily_dose=2 | monthly_units=60 | unit_type=tablet | brand=Generic | supplier=ValueMeds Direct | unit_cost_usd=0.18\n  - Lisinopril | dosage=10mg | daily_dose=1 | monthly_units=30 | unit_type=tablet | brand=Generic | supplier=ValueMeds Direct | unit_cost_usd=0.12\n  Pill burden: tablets_per_day=3 | devices_per_month=0\n  Synergy notes:\n    - Significant cost savings\n    - Same active ingredients as brand\n    - FDA-approved bioequivalent formulations",
+              "No regimen optimization data available for patient unknown_patient_9999."
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "ListPatientMedicalRecords",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "list_patient_medical_records",
+          "description": "List a patient's medical records (most recent first). Each record line includes record_id, date, related appointment_id, and a comma-separated list of prescribed medications if present. Supports an optional 'limit' to restrict how many records are returned.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "patient_id": {
+                "type": "string",
+                "description": "ID of the patient, such as 'david_martinez_5678'. Must exist in the medical_records dataset, otherwise an error-style string is returned."
+              },
+              "limit": {
+                "type": "integer",
+                "description": "Optional maximum number of records to return. If provided and > 0, only the newest N records are included."
+              }
+            },
+            "required": [
+              "patient_id"
+            ]
+          },
+          "response": {
+            "type": "string",
+            "description": "A multi-line, human-readable string. The first line is a header ('Medical records (newest first):'), followed by one line per record in the format:\nrecord_id=<ID> | date=<YYYY-MM-DD> | appointment_id=<APPT_ID> | medications=<list or 'None recorded'>.\nIf no records are found for the patient, an informative message is returned instead.",
+            "examples": [
+              "Medical records (newest first):\nrecord_id=REC001 | date=2024-01-16 | appointment_id=APPT002 | medications=Sertraline",
+              "No medical records found for patient sarah_johnson_1234.",
+              "Medical records (newest first):\nrecord_id=REC010 | date=2024-05-10 | appointment_id=APPT020 | medications=Metformin, Lisinopril\nrecord_id=REC007 | date=2024-03-01 | appointment_id=APPT015 | medications=None recorded"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "ListAvailableProviders",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "list_available_providers",
+          "description": "List all available healthcare providers, optionally filtered by specialty. If a specialty is provided, only providers whose specialty matches (case-insensitive) will be returned. Output is a human-readable multi-line summary.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "specialty": {
+                "type": "string",
+                "description": "Optional specialty name to filter providers by, such as 'Cardiology', 'Primary Care', 'Psychiatry', 'Dermatology'."
+              }
+            },
+            "required": []
+          },
+          "response": {
+            "type": "string",
+            "description": "Returns a formatted list of providers matching the specialty filter (if given). Each provider includes name, ID, specialty, years of experience, languages, consultation fee, and phone. Returns an error-like string if no providers match the query.",
+            "examples": [
+              "Available Providers:\n\n• MD Robert Smith (ID: dr_smith_cardiology)\n  Specialty: Cardiology\n  Experience: 15 years\n  Languages: English, Spanish\n  Consultation Fee: $200.00\n  Phone: (555) 100-2001",
+              "Available Providers - Cardiology:\n\n• MD Robert Smith (ID: dr_smith_cardiology)\n  Specialty: Cardiology\n  Experience: 15 years\n  Languages: English, Spanish\n  Consultation Fee: $200.00\n  Phone: (555) 100-2001",
+              "No providers found with specialty: Dermatology",
+              "No providers found."
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "ListPatientAppointments",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "list_patient_appointments",
+          "description": "List all appointments for a patient, optionally filtering by an appointment status such as 'scheduled', 'pending_approval', or 'cancelled'. Results are sorted chronologically by date and time and include provider name, specialty, status, and appointment type in a human-readable format.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "patient_id": {
+                "type": "string",
+                "description": "The patient's unique identifier, such as 'sarah_johnson_1234'. Must exist in the patients dataset."
+              },
+              "status_filter": {
+                "type": "string",
+                "description": "Optional appointment status filter (case-insensitive). Examples: 'scheduled', 'completed', 'cancelled', 'pending_approval'. If omitted, all appointments for the patient are listed."
+              }
+            },
+            "required": [
+              "patient_id"
+            ]
+          },
+          "response": {
+            "type": "string",
+            "description": "A multi-line, human-readable string listing the patient's appointments chronologically. Each line includes appointment ID, date, time, provider name and specialty, status, and appointment type. If no matching appointments are found, or if the patient ID is invalid, an informative error-style message string is returned instead.",
+            "examples": [
+              "Appointments for Sarah Johnson (ID: sarah_johnson_1234)\n- APPT001: 2024-01-15 at 09:00 with Dr. Garcia (Primary Care) [Scheduled, Type: Routine Checkup]",
+              "No appointments found for patient sarah_johnson_1234 with status cancelled.",
+              "No appointments found for patient david_martinez_5678.",
+              "Patient with ID unknown_patient_9999 not found."
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "ListMedicationSuppliers",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "list_medication_suppliers",
+          "description": "List suppliers for a given medication, optionally filtered by country and optionally limited to the lowest-cost suppliers. Case-insensitive matching is supported. Output is a human-readable multi-line list of suppliers including company, country, brand name, and price in USD. If no suppliers are found, returns an informative error message.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "medication": {
+                "type": "string",
+                "description": "Medication name to search for, such as 'Atorvastatin' or 'Aspirin EC'. Must match a key in the medication supplier catalog (case-insensitive)."
+              },
+              "country_filter": {
+                "type": "string",
+                "description": "Optional country name to filter suppliers by (case-insensitive), such as 'India', 'USA', 'Canada', 'Germany'."
+              },
+              "limit": {
+                "type": "integer",
+                "description": "Optional maximum number of suppliers to return. If provided, suppliers are sorted by price and the lowest-cost results are returned."
+              }
+            },
+            "required": [
+              "medication"
+            ]
+          },
+          "response": {
+            "type": "string",
+            "description": "A multi-line formatted string listing suppliers for the requested medication. Each supplier entry contains: company, country, brand name, and price in USD. If no suppliers are found—or if country filtering eliminates all results—an error-like string is returned instead.",
+            "examples": [
+              "Suppliers for Atorvastatin:\nSunrise Biotech (India) | brand=Lipistal | price_usd=4.15\nVedaRx Labs (India) | brand=Atorveeda | price_usd=4.05\nBharat Lifecare (India) | brand=Cholozen | price_usd=4.30\nLagos Pharma (Nigeria) | brand=Atorlag | price_usd=5.95\nQianlong Remedies (China) | brand=LongStat | price_usd=5.40\nMedFirst Generics (USA) | brand=StatGuard | price_usd=6.80\nPacific Coast Labs (USA) | brand=CoastStat | price_usd=6.55\nSilver Maple Pharma (Canada) | brand=MapleStat | price_usd=6.20\nTrinity Generics (UK) | brand=Cardiotor | price_usd=6.45\nNovaNord Therapeutics (Denmark) | brand=AtorvaNova | price_usd=7.10",
+              "Suppliers for Atorvastatin:\nVedaRx Labs (India) | brand=Atorveeda | price_usd=4.05\nSunrise Biotech (India) | brand=Lipistal | price_usd=4.15\nBharat Lifecare (India) | brand=Cholozen | price_usd=4.30",
+              "Suppliers for Metoprolol Succinate:\nAurora Heart Labs (India) | brand=BetaShield | price_usd=3.80\nMedNova Kerala (India) | brand=Metotime | price_usd=3.95",
+              "No supplier information found for Xylostat. (Tip: ensure the medication name matches the catalog)",
+              "No suppliers in Germany for Aspirin EC."
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "ListTelemetryUploads",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "list_telemetry_uploads",
+          "description": "List telemetry upload artifacts for a given device over an optional date window. Entries are filtered by device_id, optionally constrained to start_date/end_date (inclusive), then sorted by date in ascending order before applying any limit.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "device_id": {
+                "type": "string",
+                "description": "Unique identifier of the telemetry device, e.g. 'VC-449'. This is required."
+              },
+              "start_date": {
+                "type": "string",
+                "description": "Optional inclusive start date in 'YYYY-MM-DD' format. If provided, only uploads on or after this date are returned."
+              },
+              "end_date": {
+                "type": "string",
+                "description": "Optional inclusive end date in 'YYYY-MM-DD' format. If provided, only uploads on or before this date are returned."
+              },
+              "limit": {
+                "type": "integer",
+                "description": "Optional maximum number of entries to return. If provided and > 0, only the first N entries (after sorting by date ascending) are included."
+              }
+            },
+            "required": [
+              "device_id"
+            ]
+          },
+          "response": {
+            "type": "string",
+            "description": "On success: a JSON-encoded array of telemetry upload objects for the requested device, already filtered and sorted by date ascending. Each object typically includes fields such as:\n\n  {\n    \"device_id\": \"VC-449\",\n    \"date\": \"2025-06-01\",\n    \"usage_hours\": 7.4,\n    \"synced_at\": \"2025-06-01T06:15:00Z\",\n    \"event\": \"normal\",\n    \"alerts\": []\n  }\n\nIf no uploads match the device_id and date window, returns a human-readable message instead:\n  'No telemetry uploads found for device <device_id> in the specified window.'",
+            "examples": [
+              "[\n  {\n    \"device_id\": \"VC-449\",\n    \"date\": \"2025-06-01\",\n    \"usage_hours\": 7.4,\n    \"synced_at\": \"2025-06-01T06:15:00Z\",\n    \"event\": \"normal\",\n    \"alerts\": []\n  },\n  {\n    \"device_id\": \"VC-449\",\n    \"date\": \"2025-06-02\",\n    \"usage_hours\": 6.8,\n    \"synced_at\": \"2025-06-02T06:12:00Z\",\n    \"event\": \"normal\",\n    \"alerts\": []\n  },\n  {\n    \"device_id\": \"VC-449\",\n    \"date\": \"2025-06-03\",\n    \"usage_hours\": 5.9,\n    \"synced_at\": \"2025-06-03T06:09:00Z\",\n    \"event\": \"normal\",\n    \"alerts\": []\n  }\n]",
+              "[\n  {\n    \"device_id\": \"VC-449\",\n    \"date\": \"2025-06-02\",\n    \"usage_hours\": 6.8,\n    \"synced_at\": \"2025-06-02T06:12:00Z\",\n    \"event\": \"normal\",\n    \"alerts\": []\n  }\n]",
+              "No telemetry uploads found for device VC-449 in the specified window."
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "CheckDrugInteractions",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "check_drug_interactions",
+          "description": "Evaluate potential interactions between a primary medication and a patient’s current regimen using the environment’s structured interaction data. This is for simulation/training only and is not real-world medical advice.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "primary_medication": {
+                "type": "string",
+                "description": "The medication that was taken accidentally or requires review, such as 'Sertraline'."
+              },
+              "current_medications": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "List of the patient’s active medications, such as ['Warfarin', 'Aspirin', 'Metoprolol']."
+              }
+            },
+            "required": [
+              "primary_medication",
+              "current_medications"
+            ]
+          },
+          "response": {
+            "type": "string",
+            "description": "Returns a multi-line textual analysis. If interactions are found, the output includes:\n- A header line 'Drug interaction analysis:'\n- One line per interaction of the form:\n  '<Drug A> + <Drug B>: severity=<severity>, risk_score=<score>, overlap_hours=<hours>. <recommended action>'\n- A summary block with medications to hold, whether emergency escalation is required, the peak overlap window, and the highest-severity interaction.\nIf no interactions are found, returns a one-line reassurance message. This output is for benchmarking/simulation only, not clinical decision-making.",
+            "examples": [
+              "Drug interaction analysis:\nSertraline + Warfarin: severity=high, risk_score=9, overlap_hours=36. Hold the next warfarin dose, monitor INR, and seek urgent clinical guidance.\nSertraline + Aspirin: severity=moderate, risk_score=6, overlap_hours=24. Hold aspirin for 24 hours and observe for bleeding.\n\nMedications to hold today: Aspirin, Warfarin\nEmergency escalation required: Yes\nPeak overlap risk window (hours): 36\nHighest severity interaction: Sertraline + Warfarin (high)",
+              "Drug interaction analysis:\nSertraline + Metoprolol: severity=low, risk_score=3, overlap_hours=12. Monitor for bradycardia; no dose adjustment typically needed.\n\nMedications to hold today: None\nEmergency escalation required: No\nPeak overlap risk window (hours): 12\nHighest severity interaction: Sertraline + Metoprolol (low)",
+              "No documented high-risk interactions found for the supplied medications. Continue monitoring as per care plan."
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "ScheduleAppointment",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "schedule_appointment",
+          "description": "Schedule a new telehealth appointment for a patient with a healthcare provider.\n\nThe tool will:\n- Validate that the patient and provider exist.\n- Validate the appointment date format (YYYY-MM-DD) and derive the weekday.\n- Check the provider's weekly schedule to ensure they work on that weekday and that the requested time is one of their available time slots.\n- Reject the request if the provider is already booked at that date/time with a status of 'scheduled' or 'pending_approval'.\n- Generate a new appointment ID of the form 'APPT###' based on existing IDs.\n- Determine copay based on patient insurance and provider specialty (Primary Care vs specialist).\n- If bill_insurance=true, mark payment as insurance-based and set copay and an insurance authorization code.\n- If bill_insurance=false, skip insurance billing, optionally apply a voucher, and set payment_method to either 'telehealth_voucher' or 'self_pay'.\n- Create a 30-minute scheduled appointment with a telehealth meeting link and return a human-readable confirmation summary.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "patient_id": {
+                "type": "string",
+                "description": "The patient's unique identifier, e.g. 'sarah_johnson_1234'. Must exist in the patients dataset."
+              },
+              "provider_id": {
+                "type": "string",
+                "description": "The provider's unique identifier, e.g. 'dr_smith_cardiology'. Must exist in the providers dataset."
+              },
+              "date": {
+                "type": "string",
+                "description": "Appointment date in 'YYYY-MM-DD' format. The provider's schedule for that weekday will be checked."
+              },
+              "time": {
+                "type": "string",
+                "description": "Appointment time in 'HH:MM' 24-hour format, e.g. '09:00', '15:30'. Must exactly match one of the provider's available time slots for that weekday."
+              },
+              "appointment_type": {
+                "type": "string",
+                "description": "Type of appointment, such as 'routine_checkup', 'follow_up', 'consultation', 'specialist_consultation', or 'sick_visit'. Stored in the appointment's 'type' field."
+              },
+              "bill_insurance": {
+                "type": "boolean",
+                "description": "Whether to bill the patient's primary insurance for this visit. Defaults to true.\n- If true: copay is set based on provider specialty (primary vs specialist) and an insurance authorization code is generated.\n- If false: insurance is not billed, copay is set to 0.0, and payment is either via telehealth voucher or self-pay.",
+                "default": true
+              },
+              "voucher_id": {
+                "type": "string",
+                "description": "Optional voucher identifier to apply when bill_insurance is false. If provided, payment_method is 'telehealth_voucher'; otherwise 'self_pay'."
+              },
+              "payment_notes": {
+                "type": "string",
+                "description": "Optional free-text notes regarding payment or billing handling. Stored in the appointment's 'notes' field if provided."
+              }
+            },
+            "required": [
+              "patient_id",
+              "provider_id",
+              "date",
+              "time",
+              "appointment_type"
+            ]
+          },
+          "response": {
+            "type": "string",
+            "description": "On success, returns a multi-line human-readable confirmation message including:\n- Appointment ID\n- Patient and provider names\n- Date, time, and appointment type\n- Copay and insurance authorization details (if bill_insurance=true)\n- Or voucher/self-pay details (if bill_insurance=false)\n- Telehealth meeting link\nand a reminder to save the appointment ID.\n\nOn failure, returns a human-readable error string such as:\n- 'Patient with ID ... not found.'\n- 'Provider with ID ... not found.'\n- 'Invalid date format: ... Please use YYYY-MM-DD format.'\n- 'Provider ... does not work on <Day>.'\n- 'Provider ... is not available at <time> on <Day>. Available times: ...'\n- 'Provider ... already has an appointment scheduled at <time> on <date>.'",
+            "examples": [
+              "Appointment successfully scheduled!\n\nAppointment ID: APPT002\nPatient: Sarah Johnson\nProvider: Dr. Smith - Cardiology\nDate: 2024-01-16\nTime: 10:00\nType: Consultation\nCopay: $50.00\nInsurance Authorization: AUTH000002\nMeeting Link: https://telehealth.healthcenter.com/room/APPT002\n\nPlease save your appointment ID for future reference.",
+              "Appointment successfully scheduled!\n\nAppointment ID: APPT003\nPatient: Sarah Johnson\nProvider: Dr. Smith - Cardiology\nDate: 2024-01-16\nTime: 15:00\nType: Follow Up\nInsurance Billing: Skipped\nPayment Method: Telehealth Voucher\nVoucher Applied: VOUCHER123\nAmount Due Today: $0.00\nBilling Notes: Sponsored follow-up visit\nMeeting Link: https://telehealth.healthcenter.com/room/APPT003\n\nPlease save your appointment ID for future reference.",
+              "Patient with ID unknown_patient_999 not found.",
+              "Provider with ID dr_unknown not found.",
+              "Invalid date format: 16-01-2024. Please use YYYY-MM-DD format.",
+              "Provider dr_smith_cardiology does not work on Sunday.",
+              "Provider dr_smith_cardiology is not available at 14:00 on Monday. Available times: 09:00, 10:00, 11:00, 15:00, 16:00",
+              "Provider dr_smith_cardiology already has an appointment scheduled at 09:00 on 2024-01-15."
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "CancelAppointment",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "cancel_appointment",
+          "description": "Cancel a scheduled appointment by appointment_id. If the appointment is scheduled, its status will be set to 'cancelled', with cancellation_reason='patient_cancelled' and cancellation_date set to today. If the appointment is already cancelled or completed, an explanatory message is returned instead.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "appointment_id": {
+                "type": "string",
+                "description": "The appointment's unique identifier, such as 'APPT001'."
+              }
+            },
+            "required": [
+              "appointment_id"
+            ]
+          },
+          "response": {
+            "type": "string",
+            "description": "On success, returns a multi-line human-readable confirmation message containing appointment id, patient name, provider name, original date/time, cancellation reason, and cancellation date. On failure, returns an error message string explaining why the appointment could not be cancelled (not found, already cancelled, or completed).",
+            "examples": [
+              "Appointment successfully cancelled.\n\nAppointment ID: APPT001\nPatient: Sarah Johnson\nProvider: Dr. Unknown Provider\nOriginal Date/Time: 2024-01-15 at 09:00\nCancellation Reason: Patient Cancelled\nCancellation Date: 2025-01-10\n\nThe appointment slot is now available for other patients. If this was a patient cancellation, please remind them of the cancellation policy.",
+              "Appointment with ID APPT999 not found.",
+              "Appointment APPT002 is already cancelled.",
+              "Cannot cancel appointment APPT003 - appointment has already been completed."
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "RescheduleAppointment",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "reschedule_appointment",
+          "description": "Reschedule an existing appointment to a new date and time, while enforcing provider availability and avoiding double-booking.\n\nThe tool will:\n- Validate that the appointment exists.\n- Reject rescheduling for appointments that are already cancelled or completed.\n- Look up the provider's weekly schedule and check that the provider works on the requested day and that the requested time is one of the available time slots.\n- Reject the request if the date format is invalid (must be YYYY-MM-DD).\n- Reject the request if another appointment for the same provider already exists at the same date and time with status 'scheduled' or 'pending_approval'.\n- On success, update the appointment's date and time and return a confirmation summary showing the old and new date/time along with patient and provider details.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "appointment_id": {
+                "type": "string",
+                "description": "The appointment's unique identifier to be rescheduled, e.g. 'APPT001'."
+              },
+              "new_date": {
+                "type": "string",
+                "description": "New appointment date in 'YYYY-MM-DD' format. The provider's workday for this date will be used to check availability against their weekly schedule (e.g., Monday, Tuesday)."
+              },
+              "new_time": {
+                "type": "string",
+                "description": "New appointment time in 'HH:MM' 24-hour format, e.g. '09:00', '15:30'. Must exactly match one of the provider's available time slots for that day."
+              }
+            },
+            "required": [
+              "appointment_id",
+              "new_date",
+              "new_time"
+            ]
+          },
+          "response": {
+            "type": "string",
+            "description": "On success, returns a multi-line human-readable confirmation message, including:\n- Appointment ID\n- Patient name\n- Provider name and specialty\n- Previous date/time\n- New date/time\n- Meeting link\n\nOn failure, returns a human-readable error string explaining why the reschedule could not be performed, such as:\n- Appointment not found\n- Appointment already cancelled or completed\n- Invalid date format\n- Provider does not work that day\n- Provider is not available at the requested time\n- Provider already has a conflicting appointment at that slot.",
+            "examples": [
+              "Appointment successfully rescheduled.\n\nAppointment ID: APPT001\nPatient: Sarah Johnson\nProvider: Dr. Garcia - Primary Care\n\nPrevious Date/Time: 2024-01-15 at 09:00\nNew Date/Time: 2024-01-16 at 10:00\n\nMeeting Link: https://telehealth.healthcenter.com/room/APPT001\n\nPlease update your calendar with the new appointment time.",
+              "Appointment with ID APPT999 not found.",
+              "Cannot reschedule appointment APPT010 - appointment has been cancelled.",
+              "Cannot reschedule appointment APPT011 - appointment has already been completed.",
+              "Invalid date format: 15-01-2024. Please use YYYY-MM-DD format.",
+              "Provider dr_smith_cardiology does not work on Sunday.",
+              "Provider dr_smith_cardiology is not available at 13:00 on Monday. Available times: 09:00, 10:00, 11:00, 15:00, 16:00",
+              "Provider dr_smith_cardiology already has an appointment scheduled at 09:00 on 2024-01-15."
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "UpdatePrescriptionSupplier",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "update_prescription_supplier",
+          "description": "Update the supplier information for a specific prescription entry in a medical record.\n\nBehavior:\n- Looks up the record in data['medical_records'] by record_id.\n- If the record does not exist, returns: 'Error: medical record not found'.\n- Checks that the record has a non-empty 'prescriptions' list; if not, returns: 'Error: medical record has no prescriptions'.\n- Attempts to find the target prescription by medication name:\n  * Builds a case-insensitive map of existing prescription['medication'] values.\n  * First tries an exact (case-insensitive) match.\n  * If no exact match, tries a partial match to handle names with appended dosage like 'Sertraline 75mg once daily'.\n- If no matching medication is found, returns: 'Error: medication <medication> not found in record <record_id>'.\n- On a match, updates that prescription with:\n  * pharmacy = '<supplier_company> (<brand_name>)'\n  * supplier = {company, brand_name, price_usd, currency}\n- Returns the full updated medical record as a JSON string.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "record_id": {
+                "type": "string",
+                "description": "The medical record identifier to update, e.g. 'REC001'. Must exist in data['medical_records'] or an error is returned."
+              },
+              "medication": {
+                "type": "string",
+                "description": "Name of the medication whose prescription entry should be updated, e.g. 'Sertraline'. Matching is case-insensitive and can tolerate extra dosage text like 'Sertraline 75mg once daily'."
+              },
+              "supplier_company": {
+                "type": "string",
+                "description": "Name of the supplier company providing the medication, e.g. 'Sunrise Biotech'."
+              },
+              "brand_name": {
+                "type": "string",
+                "description": "Brand name used by the supplier for this medication, e.g. 'Lipistal'. This will be shown in the 'pharmacy' field as '<supplier_company> (<brand_name>)'."
+              },
+              "price_usd": {
+                "type": "number",
+                "description": "Unit price from the supplier catalog, expressed in USD by default. Will be stored as a float under supplier.price_usd."
+              },
+              "currency": {
+                "type": "string",
+                "description": "Currency code for the quoted price, e.g. 'USD', 'EUR'. Defaults to 'USD' if not provided.",
+                "default": "USD"
+              }
+            },
+            "required": [
+              "record_id",
+              "medication",
+              "supplier_company",
+              "brand_name",
+              "price_usd"
+            ]
+          },
+          "response": {
+            "type": "string",
+            "description": "On success: JSON string of the full updated medical record, including the modified prescription with 'pharmacy' and 'supplier' fields set.\nOn failure: one of the error strings:\n- 'Error: medical record not found'\n- 'Error: medical record has no prescriptions'\n- 'Error: medication <medication> not found in record <record_id>'",
+            "examples": [
+              "{\n  \"record_id\": \"REC001\",\n  \"appointment_id\": \"APPT002\",\n  \"patient_id\": \"david_martinez_5678\",\n  \"provider_id\": \"dr_williams_psychiatry\",\n  \"date\": \"2024-01-16\",\n  \"type\": \"consultation_note\",\n  \"...\": \"...\",\n  \"prescriptions\": [\n    {\n      \"medication\": \"Sertraline\",\n      \"dosage\": \"75mg\",\n      \"frequency\": \"once daily\",\n      \"quantity\": \"30 tablets\",\n      \"refills\": 2,\n      \"pharmacy\": \"Sunrise Biotech (Lipistal)\",\n      \"supplier\": {\n        \"company\": \"Sunrise Biotech\",\n        \"brand_name\": \"Lipistal\",\n        \"price_usd\": 4.15,\n        \"currency\": \"USD\"\n      }\n    }\n  ]\n}",
+              "Error: medical record not found",
+              "Error: medical record has no prescriptions",
+              "Error: medication Sertraline 50mg not found in record REC999"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "ListTelemetryDevices",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "list_telemetry_devices",
+          "description": "List telemetry wearable devices from the telemetry inventory, optionally filtered by device status and limited to a maximum number of entries. Devices are sorted by device_id in ascending order before limiting.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "status_filter": {
+                "type": "string",
+                "description": "Optional status filter to restrict results. Comparison is case-insensitive. Examples: 'available', 'shipped', 'missing_overdue'. If omitted, all devices are listed."
+              },
+              "limit": {
+                "type": "integer",
+                "description": "Optional maximum number of devices to list. If provided and > 0, only the first N devices (after sorting) are included."
+              }
+            },
+            "required": []
+          },
+          "response": {
+            "type": "string",
+            "description": "A human-readable string. In the normal case it begins with the header 'Telemetry devices:' followed by one line per device in the format:\n\n  <device_id> | status=<status> | last_audit=<YYYY-MM-DD> | notes=<free text>\n\nIf the telemetry inventory is empty, returns:\n  'Telemetry inventory is empty.'\n\nIf a status_filter is provided but no devices match, returns:\n  'No telemetry devices with status <status_filter>.'",
+            "examples": [
+              "Telemetry devices:\nNS-EEG-218 | status=available | last_audit=2025-07-20 | notes=Spare unit ready for dispatch\nNS-EEG-219 | status=shipped | last_audit=2025-07-18 | notes=In transit to patient\nNS-EEG-220 | status=missing_overdue | last_audit=2025-07-05 | notes=Flagged missing; escalate replacement",
+              "Telemetry devices:\nNS-EEG-218 | status=available | last_audit=2025-07-20 | notes=Spare unit ready for dispatch",
+              "No telemetry devices with status retired.",
+              "Telemetry inventory is empty."
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "GetTelemetryUpload",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "get_telemetry_upload",
+          "description": "Retrieve a specific telemetry upload artifact for a device and date. If an upload exists for the given device_id and date, returns a JSON object representing the upload record. Otherwise returns an error string.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "device_id": {
+                "type": "string",
+                "description": "Unique identifier of the telemetry device, e.g. 'VC-449'."
+              },
+              "date": {
+                "type": "string",
+                "description": "The target date in 'YYYY-MM-DD' format."
+              }
+            },
+            "required": [
+              "device_id",
+              "date"
+            ]
+          },
+          "response": {
+            "oneOf": [
+              {
+                "type": "object",
+                "description": "The telemetry upload record for the given device and date.",
+                "properties": {
+                  "device_id": {
+                    "type": "string",
+                    "description": "The device identifier."
+                  },
+                  "date": {
+                    "type": "string",
+                    "description": "Date of the telemetry upload (YYYY-MM-DD)."
+                  },
+                  "usage_hours": {
+                    "type": "number",
+                    "description": "Hours of usage recorded for the day."
+                  },
+                  "synced_at": {
+                    "type": "string",
+                    "description": "Timestamp indicating when telemetry was last synced, in ISO 8601 format."
+                  },
+                  "event": {
+                    "type": "string",
+                    "description": "Event type associated with the upload, such as 'normal', 'error', 'warning', etc."
+                  },
+                  "alerts": {
+                    "type": "array",
+                    "description": "List of alert messages or codes encountered during the day.",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "required": [
+                  "device_id",
+                  "date",
+                  "usage_hours",
+                  "synced_at",
+                  "event",
+                  "alerts"
+                ]
+              },
+              {
+                "type": "string",
+                "description": "Error message returned when the specified device/date upload was not found."
+              }
+            ],
+            "examples": [
+              {
+                "device_id": "VC-449",
+                "date": "2025-06-01",
+                "usage_hours": 7.4,
+                "synced_at": "2025-06-01T06:15:00Z",
+                "event": "normal",
+                "alerts": []
+              },
+              {
+                "device_id": "VC-449",
+                "date": "2025-06-02",
+                "usage_hours": 6.8,
+                "synced_at": "2025-06-02T06:12:00Z",
+                "event": "normal",
+                "alerts": []
+              },
+              "No telemetry upload found for device VC-449 on 2025-06-03."
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "UpdateMedicalRecordNote",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "update_medical_record_note",
+          "description": "Append an audit or compliance note to an existing medical record.\n\nBehavior:\n- Looks up the medical record by record_id in data['medical_records'].\n- If the record does not exist, returns an error string like 'Error: medical record REC999 not found'.\n- Ensures the record has a 'notes' list (creates it if missing).\n- Appends a new entry of the form {'note': <note>, 'metadata': <metadata?>}.\n- Returns the full updated medical record as a JSON string.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "record_id": {
+                "type": "string",
+                "description": "Identifier of the medical record to update, e.g. 'REC001'. Must exist in data['medical_records'] or an error string is returned."
+              },
+              "note": {
+                "type": "string",
+                "description": "Free-text note to append to the record's 'notes' list. Use this for audit trail entries, compliance annotations, clarifications, or follow-up instructions."
+              },
+              "metadata": {
+                "type": "object",
+                "description": "Optional structured metadata to attach alongside the note. Common fields might include 'author', 'timestamp', 'role', 'reason_code', or 'source_system'. If provided, it is stored under the 'metadata' key in the appended note entry."
+              }
+            },
+            "required": [
+              "record_id",
+              "note"
+            ]
+          },
+          "response": {
+            "type": "string",
+            "description": "On success: JSON string of the full updated medical record, including the newly appended note entry in the 'notes' array.\nOn failure: error string 'Error: medical record <record_id> not found'.",
+            "examples": [
+              "{\n  \"record_id\": \"REC001\",\n  \"appointment_id\": \"APPT002\",\n  \"patient_id\": \"david_martinez_5678\",\n  \"provider_id\": \"dr_williams_psychiatry\",\n  \"date\": \"2024-01-16\",\n  \"type\": \"consultation_note\",\n  \"...\": \"...\",\n  \"notes\": [\n    {\"note\": \"QA review completed\",\n     \"metadata\": {\"author\": \"compliance_bot\", \"timestamp\": \"2024-02-01T10:15:00Z\"}}\n  ]\n}",
+              "Error: medical record REC999 not found"
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "adjacency_matrix": [
+    [
+      false,
+      true,
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      false,
+      false,
+      true,
+      true,
+      true,
+      false,
+      false,
+      false,
+      false
+    ],
+    [
+      true,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      true,
+      true,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    [
+      true,
+      true,
+      false,
+      false,
+      true,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false
+    ],
+    [
+      false,
+      false,
+      true,
+      false,
+      true,
+      false,
+      false,
+      true,
+      true,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      true
+    ],
+    [
+      true,
+      true,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    [
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    [
+      true,
+      true,
+      true,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      true,
+      true,
+      true,
+      false,
+      false,
+      false,
+      false
+    ],
+    [
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      true
+    ],
+    [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false
+    ],
+    [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false
+    ],
+    [
+      true,
+      true,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      true,
+      false,
+      false,
+      false,
+      false
+    ],
+    [
+      true,
+      true,
+      false,
+      false,
+      false,
+      true,
+      true,
+      false,
+      false,
+      false,
+      true,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false
+    ],
+    [
+      true,
+      true,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    [
+      false,
+      false,
+      true,
+      true,
+      true,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      true
+    ],
+    [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false
+    ],
+    [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    [
+      true,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false
+    ]
+  ],
+  "reason_matrix": [
+    [
+      "self — ignored",
+      "After reviewing appointment details, a patient may ask for more info about the clinician (schedule, languages, fee) or to confirm specialty. Agent can call this using provider_id (from the appointment details).",
+      "If the appointment details mention notes/prescription/referral or the patient asks for the visit note, the agent can pull the associated medical record. Agent can call with appointment_id (from the patient) or from the appointment details output.",
+      "Medication-regimen optimization is not a typical immediate follow-up to simply viewing appointment details; it’s a different workflow and requires patient_id plus clinical context.",
+      "If the patient says “show me my records” or wants the note/prescription history after seeing appointment info, listing records is a common next step. Requires patient_id (authenticated patient).",
+      "Listing providers is a separate discovery flow; after getting a specific appointment’s details, the more direct next step is provider details or reschedule/cancel rather than browsing all providers.",
+      "After seeing details, patients commonly ask “what other appointments do I have?” or “do I have anything scheduled?” Agent can list with patient_id and optional status_filter.",
+      "Medication supplier lookup is not a standard next step from appointment details; it’s more pharmacy/cost-shopping and not tied to the appointment workflow.",
+      "Telemetry uploads are unrelated to appointment-details support in this telehealth scheduling/records flow; would be an unrelated device-support pathway requiring device_id.",
+      "Drug-interaction checking is a medical safety workflow and not a routine follow-up to appointment details; also the policy discourages medical advice—would typically route to provider/human support instead.",
+      "After viewing appointment details, a patient may want to book a follow-up with the same provider or a different one. Requires patient_id, provider_id, date, time, appointment_type (and billing preferences).",
+      "A common next step after confirming details is the patient asking to cancel that appointment; agent would do this after explicit confirmation. Requires appointment_id.",
+      "Another common next step is rescheduling once the patient sees date/time conflicts; agent would do this after explicit confirmation. Requires appointment_id, new_date, new_time.",
+      "Updating a prescription’s supplier is a back-office/pharmacy data edit and not a typical immediate follow-up to appointment details. Also requires record_id and supplier fields not normally provided in this context.",
+      "Telemetry device inventory is unrelated to appointment details and would only apply to a different device-support intent.",
+      "Fetching a specific telemetry upload is unrelated to appointment details and requires device_id and date—typically not part of appointment support.",
+      "Appending audit/compliance notes to medical records is an internal/admin action and not a normal customer-facing follow-up to viewing appointment details; requires record_id and a compliance note."
+    ],
+    [
+      "After reviewing a provider, a patient may ask how their upcoming visit with that provider is set up (time, status, meeting link, copay). Agent would use the user-provided appointment_id (e.g., from the patient or from a prior appointments list).",
+      "self — ignored",
+      "Getting provider details doesn’t normally lead directly to pulling medical records; records are tied to the patient/appointment and is a separate intent. Would require record_id or appointment_id and a records request.",
+      "Regimen optimization is unrelated to provider details in a typical scheduling/info flow; it’s a medication-management intent. Requires patient_id and a specific request about regimens/cost/pill burden.",
+      "Listing the patient’s medical records is a separate medical-records intent and not a typical immediate next step after provider details. Requires patient_id and a request to view records.",
+      "If the patient asked “who else is available / any other cardiologists,” the agent would list providers (often filtered by specialty) after showing one provider’s details. Inputs: specialty (optional).",
+      "After provider details, the next step is usually scheduling, not listing the patient’s existing appointments; listing appointments is more common before choosing a provider. Requires patient_id and a request like “what appointments do I already have?”",
+      "Medication supplier lookup is not a typical follow-up to provider information; it’s pharmacy/cost-related. Requires medication name and optionally country_filter/limit.",
+      "Telemetry uploads are unrelated to provider details in common telehealth scheduling/info flows. Requires device_id (and optional date window).",
+      "If the patient wants to check safety/interactions, that’s a medication question rather than provider details; but it can plausibly follow when discussing a specialist visit and meds. Inputs: primary_medication and current_medications list (patient-provided).",
+      "Common next step after provider details is booking with that provider at an available time. Inputs: patient_id, provider_id, date, time, appointment_type (plus billing prefs like bill_insurance/voucher_id).",
+      "After provider details, a patient may decide to cancel an existing appointment with that provider (“cancel my visit with Dr. X”). Inputs: appointment_id (patient provides or agent has from context).",
+      "After provider details, a patient may want to move their existing appointment with that provider to a slot from the schedule shown. Inputs: appointment_id, new_date, new_time (with explicit patient confirmation per policy).",
+      "Updating a prescription supplier is not a typical immediate follow-up to provider details; it’s a records/pharmacy maintenance action. Requires record_id, medication, and supplier fields.",
+      "Telemetry device inventory is unrelated to provider details for standard telehealth support. No realistic immediate follow-up from provider info.",
+      "Getting a specific telemetry upload is unrelated to provider details in typical workflows. Requires device_id and date.",
+      "Appending an audit/compliance note to a medical record is an internal/admin action and not a normal patient-facing follow-up to provider details. Requires record_id and note."
+    ],
+    [
+      "After viewing a record, patients often ask for the underlying visit details (meeting link, copay, status). Agent can call this using appointment_id shown in the record (or provided by user).",
+      "If the record mentions a provider and the patient asks about the provider’s specialty, fees, languages, or schedule, the agent can fetch it next using provider_id from the record (or user).",
+      "self — ignored",
+      "Medication-regimen optimization is a separate workflow and not a typical immediate next step after simply retrieving a medical record; also risks drifting into medical advice. Unclear trigger from the record alone.",
+      "Common follow-up when the patient doesn’t know the record_id/appointment_id or wants “all my records”: list records first, then select one. Uses patient_id (already known post-auth).",
+      "Provider browsing is more aligned with scheduling/new care than reviewing an existing record; it’s not a routine immediate follow-up to record retrieval without a stated intent to find a new provider/specialist.",
+      "After reviewing a record tied to a prior visit, patients commonly ask about upcoming visits or to find the related appointment; listing appointments uses patient_id.",
+      "Medication supplier lookup is a pharmacy/cost-shopping flow and not a standard next step after retrieving a medical record unless the patient explicitly asks about where to fill meds; otherwise mismatched intent.",
+      "Telemetry uploads are unrelated to medical record retrieval in this telehealth workflow; requires device_id and a device-support context.",
+      "Drug-interaction checking is medical-advice-adjacent and not a routine operational follow-up to retrieving a record; only fits if patient explicitly asks about interactions, and policy suggests deferring to providers.",
+      "Scheduling a new appointment is a consequential action and not an immediate follow-up to record retrieval unless the patient explicitly requests booking follow-up care (and would still require confirmation and inputs like provider_id/date/time/type).",
+      "Cancellation is a consequential/terminal action; not a typical immediate next step after viewing a medical record unless the patient explicitly asks to cancel a specific upcoming appointment and provides appointment_id (plus confirmation).",
+      "If the record’s plan says “follow up in X weeks,” the patient may want to move an existing appointment; rescheduling is plausible next using appointment_id plus user-provided new_date and new_time (and explicit confirmation).",
+      "Updating prescription supplier is an internal modification to the medical record and not a common patient-facing support step; also would require specific supplier/price details and is high-risk for accuracy.",
+      "Telemetry device inventory is unrelated to medical record retrieval and requires device program context; not a normal follow-up step.",
+      "Getting a specific telemetry upload is unrelated to medical record retrieval and requires device_id and date; mismatched workflow.",
+      "Appending audit/compliance notes is an internal/back-office action, not a typical customer-facing follow-up to record retrieval; only plausible in admin scenarios."
+    ],
+    [
+      "After reviewing regimen options, pulling appointment details isn’t a routine next step unless tied to a specific visit; regimen review is generally medication-focused, not appointment-focused. Would require appointment_id, which the patient may not be discussing.",
+      "Provider details aren’t a typical immediate follow-up to regimen optimization; regimen questions usually relate to meds, costs, or records rather than provider bios/schedules. Would require provider_id, not naturally prompted here.",
+      "Patients may ask where the regimen came from or to see the underlying consult note/prescription context; the agent could fetch the relevant medical record next. Inputs needed: record_id or appointment_id (patient can give appointment_id; record_id may require listing first).",
+      "self — ignored",
+      "A common follow-up is “show me my recent notes/prescriptions that this is based on,” so listing records helps the agent/ patient choose a record to view or update. Input needed: patient_id.",
+      "Listing providers is not a natural next step after medication regimen options; it shifts into choosing clinicians rather than clarifying meds/costs. No strong workflow trigger from regimen optimization alone.",
+      "Patients may want to book a follow-up to discuss switching regimens or side effects/cost; listing appointments can help find the relevant recent visit or upcoming follow-up to reference. Input needed: patient_id (optional status_filter).",
+      "A frequent follow-up is “can I get this cheaper / different brand / different pharmacy,” so listing suppliers for a medication shown in the regimen options is a plausible next tool. Input needed: medication (optionally country_filter, limit).",
+      "Telemetry uploads are unrelated to medication regimen optimization in typical telehealth support flows; requires device_id and focuses on device data, not meds. Not a routine immediate follow-up.",
+      "Checking interactions is a plausible next step if the patient asks whether a proposed optimized option conflicts with existing meds or a new med they took. Inputs needed: primary_medication and current_medications (from regimen output and/or patient statement).",
+      "Scheduling an appointment can be a follow-up if the patient wants to discuss changing regimen with a provider; however it’s a consequential action and usually follows provider selection/availability checks, so not an immediate default neighbour here. Would need patient_id, provider_id, date, time, appointment_type.",
+      "Cancelling an appointment is high-friction and not commonly triggered by viewing regimen options; only makes sense in a rare case (e.g., no longer needed). Requires appointment_id and explicit confirmation; too indirect.",
+      "Rescheduling is similarly high-friction and not typically driven by regimen option retrieval; only plausible if patient pivots to appointment logistics. Requires appointment_id, new_date, new_time; not a routine immediate next step.",
+      "Updating a prescription supplier can naturally follow if the patient selects an optimized option/supplier and asks to record a new pharmacy/supplier in their prescription record. Inputs needed: record_id, medication, supplier_company, brand_name, price_usd (plus optional currency).",
+      "Listing telemetry devices is unrelated to medication regimen optimization and requires a telemetry/device support intent. Not a typical immediate follow-up.",
+      "If the patient wants to retrieve details for a specific day’s device data it’s still unrelated to regimen optimization and needs device_id and date. Not a plausible next step.",
+      "If regimen options discussion results in an audit/compliance note like “patient requested cost-optimized generic option; advised to discuss with provider,” appending a record note is plausible. Inputs needed: record_id and note (optional metadata)."
+    ],
+    [
+      "After listing records, patients often ask for details about a specific encounter tied to a record line. Agent would call this using appointment_id (e.g., APPT002) shown in the records list.",
+      "After seeing records/medications, the patient may ask who the prescribing clinician was or to confirm provider info. Agent would call this using provider_id (obtained from the chosen record via follow-up lookup, or from an appointment details view) after the patient indicates which visit/record they mean (record_id or appointment_id).",
+      "A common next step is the patient asking to open one record from the list to view the full note/prescriptions. Agent would call this using record_id (e.g., REC001) or appointment_id (e.g., APPT002) selected by the patient from the list.",
+      "Regimen optimization is a different workflow; listing historical records doesn’t normally lead directly to pulling optimization options in the next step. Would require a separate patient intent about changing meds and is closer to medication-management tooling.",
+      "self — ignored",
+      "Looking up providers is typically for scheduling or choosing care; it’s not a routine immediate follow-up to simply listing medical records unless the patient explicitly asks to find a new specialist.",
+      "After listing medical records, listing appointments is usually redundant; the record list already includes appointment_id and dates. It’s only needed if the patient shifts intent to reviewing/upcoming visits, which is not an immediate default follow-up.",
+      "Medication supplier shopping is not a typical next step after listing medical records in telehealth support; also risks straying into pharmacy fulfillment rather than record access.",
+      "Telemetry uploads are unrelated to medical record listing in normal telehealth support flows; requires a device_id and a device-monitoring context.",
+      "Drug-interaction checking is medical-advice-adjacent and not a routine follow-up to listing records. It would require explicit patient concern about interactions and a current_medications list; otherwise not appropriate.",
+      "Scheduling a new appointment is a separate, consequential workflow and not a typical immediate follow-up to listing medical records unless the patient explicitly asks to book based on a past visit.",
+      "Cancellation is a consequential action and not a natural immediate next step after listing medical records. It would only follow if the patient switches to managing a specific upcoming appointment and provides appointment_id + explicit confirmation.",
+      "Rescheduling is a consequential action and not a typical immediate follow-up to listing medical records; it requires a specific appointment_id plus new_date/new_time and explicit confirmation.",
+      "Updating prescription supplier modifies a medical record and is not a normal patient-facing action after listing records (and is high-risk/compliance-sensitive). Would require record_id and supplier details; generally implausible as immediate follow-up.",
+      "Telemetry devices inventory is unrelated to medical record listing and requires a device program context; not a standard next action for records access.",
+      "Retrieving a specific telemetry upload is unrelated to listing medical records and needs device_id and date; not a plausible immediate follow-up.",
+      "Appending audit/compliance notes is an internal/admin action, not a normal customer-facing next step after listing records, even if the patient asks questions. Requires record_id and internal note content."
+    ],
+    [
+      "After listing providers, jumping to appointment details is not a routine immediate next step unless the patient already has an appointment ID; it’s a different workflow (existing appointment management).",
+      "Common follow-up: patient picks a provider from the list and asks for more info (schedule, languages, fee). Agent would call this using provider_id (selected from the provider list).",
+      "Listing providers doesn’t naturally lead to pulling a medical record; that’s a separate records request and would require record_id or appointment_id, which isn’t part of the provider-selection flow.",
+      "Regimen optimization is unrelated to browsing providers; also requires patient_id and is more clinical/medication-management than provider discovery.",
+      "Not a typical next step after listing providers; listing patient medical records is a separate intent and requires patient_id.",
+      "self — ignored",
+      "After listing providers, the patient might instead ask about their own upcoming appointments; that would use patient_id (authenticated) and optionally status_filter.",
+      "Medication supplier lookup is not a typical follow-up to choosing a provider; it’s pharmacy/cost related and needs medication name.",
+      "Telemetry uploads are unrelated to provider discovery/scheduling; requires device_id and is a different product area.",
+      "Drug interaction checking is not a normal follow-up to listing providers, and it’s outside typical scheduling/provider-selection workflow; requires medication list.",
+      "Very common next step: patient chooses a provider and wants to book. Agent would use patient_id (authenticated), provider_id, date, time, appointment_type (and possibly bill_insurance/voucher_id).",
+      "Cancellation is a consequential action and not a typical immediate follow-up to listing providers; it also requires an existing appointment_id and explicit confirmation workflow.",
+      "Rescheduling is also a consequential, separate workflow requiring an existing appointment_id plus new_date/new_time; not a standard next step after browsing providers.",
+      "Updating prescription supplier is unrelated to listing providers and requires record_id plus medication/supplier details; not part of provider-selection flow.",
+      "Telemetry device inventory is unrelated to provider browsing/scheduling; different domain and no natural dependency.",
+      "Getting a specific telemetry upload is unrelated to listing providers and requires device_id and date.",
+      "Appending notes to a medical record is an internal/audit action and not a typical patient-facing follow-up to listing providers; also requires record_id."
+    ],
+    [
+      "After listing appointments, a patient often asks for more info on one specific visit (meeting link, copay, notes). Agent would use an appointment_id the patient picks from the list (e.g., APPT001).",
+      "The appointment list shows provider names/specialties; a common follow-up is “tell me more about this doctor” (languages, fees, schedule). Agent would use provider_id for the provider tied to the chosen appointment.",
+      "A common follow-up after seeing completed/past appointments is “can I see the notes/record from that visit?” Agent can look up by appointment_id from the listed appointments (or record_id if patient has it).",
+      "Regimen optimization is not a typical immediate follow-up to simply listing appointments; it’s a separate medication-management workflow and not directly prompted by the appointment list.",
+      "Listing medical records is a plausible separate request, but it’s not a routine immediate next step after listing appointments unless the patient explicitly pivots to records; without that trigger, it’s better treated as non-neighbour.",
+      "After reviewing their existing appointments, patients often want to book another visit (e.g., follow-up). Agent would need patient_id plus user-provided provider_id (or selected provider), date (YYYY-MM-DD), time (HH:MM), and appointment_type; confirmation would be required before actually scheduling per policy.",
+      "self — ignored",
+      "Medication suppliers is unrelated to the common “what are my appointments?” workflow; it’s a pharmacy/cost task not typically triggered immediately after an appointment list.",
+      "Telemetry uploads are unrelated to appointment listing in the telehealth scheduling workflow; would require device_id and is a different support track.",
+      "Drug interaction checking is a clinical-medication question and not a standard follow-up to listing appointments; also policy cautions against medical advice contexts.",
+      "A very common follow-up is “cancel APPT###” after seeing the list. Agent would use appointment_id selected from the listed appointments, and (outside the tool) must obtain explicit patient confirmation first.",
+      "A very common follow-up is “move my appointment to another time/date” after seeing the list. Agent would use appointment_id plus new_date and new_time provided by the patient, with explicit confirmation before the consequential change.",
+      "After listing appointments, patients may ask to see which providers are available to book with (often filtered by specialty seen in the list). Agent would call this with an optional specialty string (e.g., 'Cardiology').",
+      "Updating a prescription supplier is a medical-record maintenance action and not a normal immediate next step from listing appointments; it also requires record_id and detailed supplier fields, typically not part of scheduling support.",
+      "Listing telemetry devices is unrelated to appointment listing; it’s an inventory/remote-monitoring workflow requiring no linkage from appointments.",
+      "Retrieving a specific telemetry upload is unrelated to appointment listing and requires device_id and date; not a typical customer flow after viewing appointments.",
+      "Appending an audit/compliance note to a medical record is an internal/admin action, not a normal patient-facing follow-up to listing appointments; requires record_id and is rarely appropriate in front-line support."
+    ],
+    [
+      "After listing medication suppliers, the next step is rarely to fetch appointment details; that’s a different intent/workflow unless the user pivots to an appointment question (not an immediate, routine follow-up).",
+      "Supplier listings don’t normally require provider detail lookup; this would only follow if the patient changed topics to provider selection, which is not a typical immediate next step.",
+      "This could follow if the patient asks to see where that medication was prescribed from (e.g., “show my record that mentions it”). Inputs: record_id or appointment_id.",
+      "A common follow-up is cost optimization: after seeing suppliers for one drug, the patient asks for cheaper regimen options overall. Inputs: patient_id (authenticated).",
+      "Listing suppliers doesn’t naturally lead to listing all patient records unless the patient is trying to find which record/visit prescribed the medication; that’s a topic change rather than routine immediate follow-up.",
+      "Not a typical next step from medication suppliers; provider availability is for scheduling, not sourcing meds.",
+      "Appointments listing is unrelated to supplier selection in a normal flow; would only happen if the patient switches to appointment management.",
+      "self — ignored",
+      "Telemetry uploads are unrelated to medication supplier lookup; different product area and intent.",
+      "Plausible immediate follow-up if the patient is considering a new medication/supplier and asks whether it interacts with their current meds. Inputs: primary_medication, current_medications (list).",
+      "Scheduling an appointment is a high-friction/consequential action and not a routine follow-up to supplier listings unless the patient explicitly asks to book to discuss meds; otherwise implausible. Inputs would be patient_id, provider_id, date, time, appointment_type.",
+      "Cancellation is consequential and unrelated to supplier lookup unless the patient explicitly pivots to canceling; not a routine next step. Input: appointment_id.",
+      "A realistic follow-up is documenting the chosen supplier into the patient’s prescription/record after discussing options. Inputs: record_id, medication, supplier_company, brand_name, price_usd (currency optional).",
+      "Telemetry device inventory is unrelated to medication supplier lookup.",
+      "Fetching a telemetry upload is unrelated to medication supplier lookup.",
+      "Appending an audit/compliance note is an internal/admin-style action and not a normal customer-facing follow-up to supplier lookup; only plausible in rare workflows.",
+      "If supplier info affects the chart, the agent may add a note like “Patient requested supplier pricing info” or “Preferred supplier discussed.” Inputs: record_id, note (metadata optional)."
+    ],
+    [
+      "After listing telemetry uploads, jumping to appointment details is a different workflow; there’s no routine next step unless the patient explicitly switches to an appointment request with an appointment_id.",
+      "Provider details are not a typical immediate follow-up to viewing device upload history; it’s a separate intent unless the patient pivots to scheduling and provides provider_id.",
+      "Medical records retrieval is not a standard next step after listing telemetry uploads; it would require an explicit request plus record_id or appointment_id.",
+      "Regimen optimization is unrelated to telemetry upload artifact listing in normal support flow; would require a new medication-focused request and patient_id.",
+      "Listing medical records doesn’t naturally follow checking telemetry uploads; it’s a different patient request and needs patient_id.",
+      "Listing providers is not a routine follow-up to telemetry upload listings; would only fit if the patient pivots to finding a provider/specialty and provides specialty.",
+      "Listing appointments is not a typical immediate next action after telemetry upload review; it would require an explicit scheduling/appointment-management request and patient_id.",
+      "Medication suppliers are unrelated to telemetry upload artifacts; only plausible if the patient switches topics to pharmacy cost/sourcing and provides medication.",
+      "self — ignored",
+      "Drug-interaction checking is a separate clinical-safety workflow and not a normal follow-up to listing device uploads; would require primary_medication and current_medications from the patient.",
+      "Scheduling a new appointment is a high-friction, consequential action and not a routine next step after listing uploads unless the patient explicitly asks to book and provides provider_id, date, time, appointment_type (and confirmation per policy).",
+      "Cancelling an appointment is a consequential action unrelated to telemetry upload listing; only plausible after an explicit cancellation request with appointment_id and confirmation.",
+      "Rescheduling is a consequential appointment-change action and not a natural follow-up to telemetry upload listing unless the patient explicitly requests it and provides appointment_id, new_date, new_time (and confirms).",
+      "Updating a prescription supplier is unrelated to telemetry uploads and requires an explicit pharmacy-change request with record_id, medication, supplier_company, brand_name, price_usd.",
+      "After listing uploads, a common next step is the patient asking which device to pick/check or confirming the device_id; listing telemetry devices can help identify the correct device. Inputs: optional status_filter, limit.",
+      "After listing uploads, appending audit/compliance notes to a medical record is not a typical patient-facing follow-up; it’s more internal and requires record_id and note.",
+      "After listing uploads, it’s common to drill into one specific day’s upload for details/errors; get_telemetry_upload fits. Inputs: device_id, date."
+    ],
+    [
+      "After checking drug interactions, pulling appointment details is not a routine immediate next step; medication safety questions typically don’t require an appointment_id lookup unless the user explicitly asks about an upcoming visit.",
+      "Provider details aren’t a typical follow-up to an interaction check; the next step is usually advising the patient to contact their clinician/pharmacist, not retrieving a provider_id.",
+      "Possible but not a common immediate next step: interaction checking is usually based on the meds the patient reports, not fetching records. Only relevant if the user asks “what meds am I on?”; otherwise not routine.",
+      "Regimen optimization is a separate, high-level medication management workflow and risks veering into medical advice; not a typical immediate follow-up to a quick interaction check.",
+      "Listing records could help identify current meds, but it’s not a common immediate post-check step unless the patient cannot recall meds and asks the agent to look them up (would require patient_id). Treat as non-routine.",
+      "Listing providers is not a direct follow-up to an interaction result; the expected next step is directing them to their existing care team, not shopping for providers (unless explicitly requested).",
+      "Listing appointments is not a routine next action after an interaction check; only relevant if the patient asks to schedule/reschedule to discuss meds (requires patient_id).",
+      "After identifying an interaction, patients may ask where to obtain an alternative medication/brand or price shop; listing suppliers is a plausible follow-up using medication (and optional country_filter/limit).",
+      "Telemetry uploads are unrelated to medication interaction assessment in normal telehealth support flow; would be an orthogonal device-support scenario.",
+      "self — ignored",
+      "If interactions are concerning, patients may request an appointment to discuss urgently; scheduling is plausible follow-up but is a consequential action requiring explicit confirmation and inputs patient_id, provider_id, date, time, appointment_type.",
+      "Cancelling an appointment is high-friction and not a typical immediate follow-up to an interaction check unless the patient explicitly says they can’t attend due to the issue; otherwise too indirect (needs appointment_id).",
+      "Rescheduling is also a consequential action and not a typical immediate next step after interaction checking unless explicitly requested; requires appointment_id, new_date, new_time.",
+      "If the patient decides on a different pharmacy/supplier for the medication after discussing interactions/cost, updating the prescription supplier can be a plausible follow-up, requiring record_id, medication, supplier_company, brand_name, price_usd.",
+      "Telemetry device inventory is unrelated to drug interaction questions; not a plausible immediate follow-up.",
+      "Fetching a specific telemetry upload is unrelated to medication interaction checking; requires device_id and date and doesn’t fit the workflow.",
+      "Appending an audit note to a medical record is an internal/compliance action, not a normal customer-facing immediate step after an interaction check (requires record_id)."
+    ],
+    [
+      "After scheduling, the patient often asks to confirm details or retrieve the meeting link/billing info; agent can fetch using the new appointment_id (APPT###) returned by scheduling.",
+      "If the patient wants to double-check the provider’s schedule, languages, or fee after booking, the agent can pull provider info using provider_id.",
+      "Getting a medical record is not a typical immediate next step after creating a new appointment (no record exists yet); only makes sense much later or for unrelated record requests.",
+      "Regimen optimization is unrelated to the scheduling workflow and would be a separate clinical/medication-support request; not a routine follow-up immediately after booking.",
+      "Listing past medical records is a separate records request and not a normal immediate next step after scheduling a new appointment.",
+      "A common next step is booking additional appointments or choosing a different provider/specialty if the patient wants options; agent would use specialty (optional) provided by the patient.",
+      "After scheduling, it’s uncommon to immediately list all appointments unless the patient asks to review their calendar; in most flows the schedule confirmation already suffices.",
+      "Medication supplier lookup is unrelated to scheduling and would only follow if the patient asks pharmacy/cost questions; not a routine immediate follow-up.",
+      "Telemetry upload listing is unrelated to appointment scheduling and would only come up for device-monitoring support scenarios.",
+      "Drug interaction checking is a clinical-medication question and not a standard follow-up to appointment scheduling; also sensitive and outside typical scheduling workflow.",
+      "self — ignored",
+      "A plausible follow-up is the patient immediately decides they no longer need it and asks to cancel; agent would use appointment_id (APPT###) from the scheduling confirmation (with explicit confirmation to proceed).",
+      "A very common follow-up is “can we move it to a different time/day?”; agent would use appointment_id plus new_date and new_time supplied by the patient (with explicit confirmation).",
+      "Updating a prescription supplier is unrelated to scheduling and requires a record_id/medication details; not a typical immediate next step.",
+      "Listing telemetry devices is unrelated to telehealth appointment scheduling and would be used in device logistics/support flows.",
+      "Retrieving a telemetry upload is unrelated to appointment scheduling and would require device_id and date; not a normal follow-up.",
+      "Updating a medical record note is an internal/audit operation and not a typical customer-facing step immediately after scheduling; also requires record_id."
+    ],
+    [
+      "After cancellation, the patient may ask for confirmation details (status, meeting link no longer valid, billing/copay info). Agent can fetch by user-provided appointment_id to read back the updated appointment including cancellation details.",
+      "After cancellation, patient may ask how to contact the same clinician or check their schedule before rebooking. Agent would use provider_id (typically obtained from the cancelled appointment, or provided by the user) to show provider details.",
+      "Medical records are not typically created/updated by cancelling an appointment; cancellation doesn’t naturally lead to retrieving a medical record. Only plausible if the patient changes topics, so not an immediate follow-up.",
+      "Medication regimen optimization is unrelated to cancelling an appointment and would be a topic shift, not a routine next step.",
+      "Listing medical records is unrelated to a just-cancelled appointment and not a normal follow-up to cancellation.",
+      "After cancelling, patients commonly want to book a new time; listing providers (optionally by specialty) is a typical next step. Inputs: optional user-provided specialty (e.g., 'Cardiology').",
+      "If the patient cancelled because they couldn’t attend and wants to reschedule/rebook, the agent may list remaining scheduled/pending appointments to pick which one to act on next. Inputs: patient_id (from prior authentication) and optional status_filter (e.g., 'scheduled').",
+      "Medication supplier lookup is unrelated to appointment cancellation; not a plausible immediate follow-up in the same workflow.",
+      "Telemetry uploads are unrelated to cancelling a telehealth appointment and would be an off-topic/rare follow-up.",
+      "Drug interaction checking is a clinical/medication safety task, not a routine next step after cancelling an appointment; also outside typical appointment admin flow.",
+      "Common follow-up to a cancellation is scheduling a replacement appointment. Inputs: patient_id (authenticated), provider_id (user-selected or from prior appointment), date, time, appointment_type (and billing preferences).",
+      "self — ignored",
+      "If the patient actually wanted to change the time (not fully cancel) or wants to move a different appointment, rescheduling is a common adjacent action in appointment management. Inputs: appointment_id, new_date, new_time.",
+      "Updating a prescription supplier is unrelated to cancelling an appointment and would require a record_id/medication details; not a normal immediate follow-up.",
+      "Telemetry device inventory is unrelated to appointment cancellation; not a typical patient-support next step here.",
+      "Retrieving a specific telemetry upload is unrelated to cancelling a telehealth appointment; implausible immediate follow-up.",
+      "Appending compliance/audit notes to medical records is not a normal patient-facing follow-up to cancellation and would be an internal/admin action."
+    ],
+    [
+      "After a reschedule, patients commonly ask to verify the updated date/time, status, or to re-send the meeting link/cost details. Inputs: appointment_id.",
+      "If the reschedule fails due to availability constraints or the patient asks what times the clinician works, the agent may pull the provider’s weekly schedule. Inputs: provider_id.",
+      "Rescheduling is an appointments workflow; fetching a medical record is a different intent and not a routine immediate next step after a reschedule. Would only apply if the patient pivots to records. ",
+      "Medication regimen optimization is unrelated to changing an appointment time and is not a typical follow-up step in scheduling support. ",
+      "Listing records is not a routine follow-up to rescheduling; it’s a separate medical-records request that usually starts its own workflow. ",
+      "If rescheduling fails and the patient wants a different clinician, the agent may list providers (possibly by specialty) to choose an alternative. Inputs: specialty (optional).",
+      "If the patient doesn’t know the appointment_id to reschedule another visit (or confirm what was changed), listing their appointments is a common immediate next action. Inputs: patient_id, status_filter (optional).",
+      "Medication supplier lookup is unrelated to appointment rescheduling and would be a separate pharmacy/cost request. ",
+      "Telemetry upload listing is unrelated to appointment rescheduling and not part of standard telehealth scheduling support. ",
+      "Drug interaction checking is clinical/medication-related and not a normal next step after rescheduling an appointment. ",
+      "If the patient decides they actually need a brand-new visit (or reschedule fails and they want to book a different time/provider), scheduling a new appointment is a plausible next step. Inputs: patient_id, provider_id, date, time, appointment_type (plus bill_insurance/voucher_id optionally).",
+      "If the patient decides not to keep the visit after attempting to reschedule (or no times work), cancelling is a common follow-up. Inputs: appointment_id (with explicit patient confirmation per policy).",
+      "self — ignored",
+      "Updating prescription supplier details is a medical-record maintenance task, not a typical follow-up to rescheduling. ",
+      "Listing telemetry devices is unrelated to appointment rescheduling and outside the standard scheduling workflow. ",
+      "Fetching a specific telemetry upload is unrelated to rescheduling and would only happen in a different support flow. ",
+      "Appending an audit/compliance note to a medical record is not a customer-facing, routine follow-up to rescheduling an appointment."
+    ],
+    [
+      "After updating a prescription’s supplier, pulling appointment details is not a routine next step; it’s a different object (appointment) unless the patient explicitly asks about the visit. Would require appointment_id, which isn’t naturally prompted by supplier updates.",
+      "Provider details are generally unrelated to updating a prescription’s supplier; not a typical immediate follow-up unless the patient pivots to provider questions. Would require provider_id.",
+      "Common follow-up is verifying the change by re-fetching the record summary after the supplier update or if the update returned an error and the agent needs to inspect the record. Inputs: record_id (or appointment_id).",
+      "After changing supplier/brand/price, the patient may ask for cheaper or alternative regimen options; agent may retrieve optimization options to discuss choices (without giving medical advice). Inputs: patient_id.",
+      "If the patient doesn’t know the record_id to update (or multiple records exist), the agent may list records to find the right one and confirm where the prescription lives. Inputs: patient_id, optional limit.",
+      "Listing providers doesn’t typically follow a prescription supplier update; it’s about scheduling/provider selection rather than pharmacy/supplier updates. Would require specialty (optional).",
+      "Appointments listing is not a normal next step after updating prescription supplier info unless the patient changes topic to scheduling. Would require patient_id and optional status_filter.",
+      "Very common adjacent step: if the patient wants to change supplier, the agent may first/next look up supplier options (price/brand) for the medication to confirm the right supplier details. Inputs: medication, optional country_filter, optional limit.",
+      "Telemetry uploads are unrelated to prescription supplier updates; this would be a topic shift. Would require device_id and optional date window.",
+      "Checking drug interactions is not a plausible immediate follow-up to merely updating supplier/brand/price fields; also risks drifting into medical advice. Inputs would be primary_medication and current_medications, but not routinely triggered here.",
+      "Scheduling an appointment is a high-friction, separate workflow and not a natural immediate follow-up to a pharmacy/supplier update unless the patient explicitly requests a visit. Inputs: patient_id, provider_id, date, time, appointment_type.",
+      "Cancelling an appointment is a consequential action and not a typical next step after updating prescription supplier info without an explicit patient request/confirmation. Input: appointment_id.",
+      "Rescheduling is also consequential and unrelated to supplier updates unless the patient explicitly asks to change an appointment. Inputs: appointment_id, new_date, new_time.",
+      "self — ignored",
+      "Telemetry devices listing is unrelated to prescription supplier updates and would only occur if the user changes topics to wearables support. Inputs: optional status_filter/limit.",
+      "Getting a specific telemetry upload is unrelated to prescription supplier updates; only relevant for device data troubleshooting. Inputs: device_id, date.",
+      "Common compliance/workflow follow-up: document the change request and confirmation/audit context on the medical record after updating supplier info. Inputs: record_id, note (and optional metadata)."
+    ],
+    [
+      "Listing telemetry inventory doesn’t naturally lead into fetching a specific appointment; that’s a different workflow unless the user also provides an appointment_id tied to device dispatch (not indicated here).",
+      "Provider details are unrelated to telemetry inventory listing; would only follow if the user shifted to provider questions, not a routine next step from listing devices.",
+      "Medical records retrieval is a separate patient-clinical workflow and not a typical immediate follow-up after listing inventory devices.",
+      "Medication regimen options are unrelated to device inventory management; not a plausible immediate next action from listing devices.",
+      "Listing a patient’s medical records doesn’t follow from listing telemetry devices; it’s a different intent and requires patient_id.",
+      "Listing providers is unrelated to telemetry device inventory; no common support flow connects these immediately.",
+      "Patient appointment listing is a different task area; not a typical next step after viewing telemetry inventory, and would require patient_id.",
+      "Medication supplier listing is unrelated to telemetry device inventory; unlikely as an immediate follow-up without a medication-related request.",
+      "After listing devices, a common next step is to inspect usage/sync history for a specific device the user mentions. Inputs: device_id, optionally start_date, end_date, limit.",
+      "Drug interaction checking is unrelated to telemetry inventory listing and would be a context switch to medication safety questions.",
+      "Scheduling an appointment is not a routine follow-up to listing telemetry devices; also consequential and would require explicit patient intent plus inputs like provider_id/date/time/type.",
+      "Cancelling an appointment is a high-friction, consequential action and not a natural next step from listing device inventory without a separate cancellation request and appointment_id.",
+      "Rescheduling is similarly consequential and unrelated to listing devices unless the user separately requests it; would require appointment_id, new_date, new_time.",
+      "Updating prescription supplier is unrelated to telemetry inventory listing and requires record_id plus medication/supplier details.",
+      "self — ignored",
+      "After identifying a device from the inventory list, a common next step is to pull a specific day’s upload to troubleshoot missing data. Inputs: device_id, date.",
+      "Appending a medical record note is an internal/audit action and not a typical immediate follow-up to listing telemetry devices; also requires record_id and compliance context."
+    ],
+    [
+      "After retrieving a device telemetry upload, moving to appointment details is usually unrelated; there’s no routine next-step workflow tying a device_id/date upload check to an appointment_id without extra context.",
+      "Provider lookup is not a typical immediate follow-up to viewing a telemetry upload; it’s a separate scheduling/provider-info workflow requiring a provider_id.",
+      "Medical record retrieval isn’t a routine next step from a telemetry upload artifact; it would require a separate intent plus record_id or appointment_id context not implied by device telemetry.",
+      "Regimen options are medication-regimen support and don’t naturally follow from checking a device upload artifact; requires patient_id and a medication-management intent.",
+      "Listing the patient’s medical records is unrelated to verifying a telemetry upload for a device/date; it would require a separate records request and patient_id.",
+      "Listing providers is a scheduling/discovery flow and not a plausible immediate follow-up to checking whether a telemetry upload exists.",
+      "Listing appointments is a separate intent (scheduling management) and doesn’t commonly follow directly from a device upload check without additional context.",
+      "Medication supplier listing is a pharmacy/cost workflow and not a natural next step after retrieving a telemetry upload.",
+      "A common follow-up after checking a specific device/day upload is to broaden the investigation (e.g., verify other days), so listing uploads for the same device is plausible using device_id and optional start_date/end_date.",
+      "Drug interaction checking is clinical/medication-related and does not flow from telemetry upload retrieval; also would require primary_medication and current_medications.",
+      "Scheduling an appointment is a consequential action and not a routine next step from a telemetry upload check; it requires a separate patient request plus patient_id, provider_id, date, time, appointment_type.",
+      "Cancellation is a high-friction consequential step and not a typical immediate follow-up to a telemetry upload lookup; it requires a distinct intent and appointment_id.",
+      "Rescheduling is also consequential and unrelated to verifying a telemetry upload; it requires a distinct request and appointment_id, new_date, new_time.",
+      "Updating prescription supplier is unrelated to device telemetry; requires record_id plus medication/supplier details and is not a normal follow-up.",
+      "If a user can’t provide the device_id (or device seems missing), listing telemetry devices can be a prior discovery step, not an immediate follow-up after successfully calling get_telemetry_upload.",
+      "self — ignored",
+      "Updating a medical record note is an internal/audit workflow and not a normal customer-facing follow-up to checking telemetry uploads; requires record_id and a compliance intent."
+    ],
+    [
+      "After appending a compliance/audit note, the agent may verify the related visit context (e.g., which appointment this record belongs to) by pulling the appointment summary. Inputs: appointment_id (often found on the medical record or provided by the patient).",
+      "Updating a medical-record audit note doesn’t normally lead to looking up provider profile/schedule; that’s a separate intent unless the patient is scheduling with that provider.",
+      "A common immediate follow-up is to retrieve and display/confirm the medical record now that the note was appended (or to confirm it’s the correct record). Inputs: record_id (or appointment_id if re-locating the record).",
+      "Medication regimen optimization is unrelated to appending an audit/compliance note to an existing record; not a typical next step in the same support turn.",
+      "If the agent is appending a note because the patient asked to add a clarification to “my last record,” they may first/next list the patient’s records to find the correct record_id. Inputs: patient_id (and optionally limit).",
+      "Adding an audit note to a record doesn’t naturally transition into browsing providers; that’s a separate scheduling/discovery workflow.",
+      "After updating a record note, the agent may list appointments to cross-reference which visit/appointment the note pertains to (especially if the patient referenced a date rather than record_id). Inputs: patient_id (and optionally status_filter).",
+      "Medication supplier lookup is unrelated to appending an audit/compliance note, unless the note is specifically about pharmacy sourcing (not a common default).",
+      "Telemetry uploads are outside the medical-record note workflow in this telehealth context; not a typical immediate follow-up.",
+      "Drug interaction checking is a clinical/medication-support action and not a routine follow-up to appending an audit note; also sensitive/medical-advice adjacent.",
+      "Scheduling a new appointment is a consequential, separate workflow; it wouldn’t normally be the immediate next action after adding an audit/compliance note without an explicit patient request and confirmation.",
+      "Cancelling an appointment is a high-impact action and not a typical follow-up to updating a medical record note; would require explicit request + confirmation.",
+      "Rescheduling is also a high-impact action and separate from record auditing; only plausible with an explicit patient request and confirmation, not as a routine next step.",
+      "If the note being appended concerns a prescription correction/source change, the agent might next update the prescription’s supplier within the same record. Inputs: record_id, medication, supplier_company, brand_name, price_usd (currency optional).",
+      "Telemetry device inventory is unrelated to medical record note updates; not a normal follow-up step.",
+      "Telemetry upload retrieval is unrelated to appending a medical record audit/compliance note; not a normal follow-up.",
+      "self — ignored"
+    ]
+  ],
+  "is_root": [
+    true,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    true,
+    false,
+    true,
+    false,
+    true,
+    true,
+    false,
+    true,
+    false,
+    false
+  ],
+  "is_root_reason": [
+    "A patient can reasonably start by asking “Can you show me the details for appointment APPT### / my meeting link / copay?” and provide the appointment_id in the first message. With authentication handled as a routine prerequisite, the agent’s first meaningful domain action can be get_appointment_details using appointment_id.",
+    "As a first action, the agent typically must identify which provider the patient means (search/list by name/specialty) before having a valid provider_id. Since provider_id is required and often not known by patients, get_provider_details is usually not the initial tool call.",
+    "Patients usually start by asking for “my records” without knowing internal identifiers; get_medical_record requires record_id or appointment_id, which typically must be discovered first (e.g., via listing records or appointments). Therefore it’s not a reliable first meaningful action as an entry point.",
+    "Although a patient may ask about their medication regimen, this tool requires an internal patient_id (e.g., sarah_johnson_1234) that patients typically don’t know and must be derived via the required authentication/lookup step (email or name + DOB). Without that prerequisite discovery, it’s not a reliable first action.",
+    "Although a patient can ask to see their medical records, the tool requires patient_id, which per policy must be established via an authentication workflow (email or full name + DOB lookup) before any records are accessed. That prerequisite makes this function not a reliable first meaningful action.",
+    "A patient can reasonably start a conversation with “Which providers are available?” or “Show cardiologists,” and the agent can call this immediately with an optional user-provided specialty (or none). Patient authentication is required by policy but is treated as an omitted prerequisite step.",
+    "Although patients commonly ask “What appointments do I have?”, the function requires patient_id, which patients typically don’t know and must be obtained via the required authentication step (email or full name + DOB) and lookup. Because that prerequisite discovery is needed before calling the tool, it is not a clean first action/root.",
+    "Patients can reasonably initiate contact by asking where to buy/fill a medication or which suppliers offer it, optionally by country/price. Required inputs are natural-language and user-facing (medication name, optional country_filter, optional limit) and don’t require multi-step prerequisite workflows.",
+    "Not a good entry-point because it requires an internal/non-human-facing identifier (device_id like 'VC-449') that patients often won’t know at first. Typically the agent would need to first identify the correct device (e.g., by listing/looking up the patient’s device) before calling this tool.",
+    "A patient can reasonably initiate contact saying they took/are considering a medication and want to know if it interacts with their current meds. The required inputs (primary_medication and a list of current_medications) are patient-provided in natural language, and no additional domain-specific prerequisite workflows are required beyond routine authentication.",
+    "Scheduling requires internal identifiers (patient_id and provider_id) that patients typically don’t know; the agent usually must first look up/authenticate the patient and help select/confirm the provider and an available slot before calling schedule_appointment.",
+    "A patient can reasonably start a support interaction by saying they want to cancel an appointment and providing the appointment ID (e.g., APPT001). Authentication is a standard prerequisite per policy and can be handled up front; once authenticated, the only needed input for this tool is appointment_id, which is user-facing.",
+    "A patient can plausibly contact support specifically to move an existing appointment and provide the needed inputs (appointment_id, new_date in YYYY-MM-DD, new_time in HH:MM). Authentication and the required explicit confirmation step are routine preliminaries that don’t require additional domain tools beyond the scheduling action.",
+    "Not a realistic first action because it requires internal identifiers and specifics the patient usually won’t have at the start (record_id, and exact medication name as stored in that record, plus supplier_company/brand_name/price). Typically the agent must first locate the correct medical record (e.g., via listing records or retrieving by appointment) and confirm the desired supplier details.",
+    "A customer or care-team member could reasonably start by asking “What telemetry devices are available/shipped/missing?” The function can be called immediately with optional user-stated filters like status_filter and limit and doesn’t require internal-only identifiers.",
+    "As a first support action, this requires an internal device_id (telemetry inventory identifier) and a specific date; patients often don’t know the exact device_id or may only describe the device, so a prior lookup/discovery step (e.g., listing/confirming the device) is typically needed.",
+    "Not a realistic first action because it requires an internal medical record identifier (record_id like REC###) that patients typically don’t know, and it presumes prior record discovery (e.g., via listing records or looking up by appointment) plus confirmation that adding an audit/compliance note is appropriate."
+  ]
+}

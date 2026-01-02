@@ -1,12 +1,13 @@
 import json
 import os
 import random
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, field
 from typing import Any, Dict, List, Literal, Optional
 
 import langchain_core
-from is_nested_model import build_chain as nested_model_chain
 from tqdm import tqdm
+
+from is_nested_model import build_chain as nested_model_chain
 
 
 # -----------------------------
@@ -17,6 +18,10 @@ class Tool:
     idx: int
     name: str
     info: Dict[str, Any]  # whatever tau-bench put in get_info()
+    # Indices of neighboring tools in the tool graph
+    neighbors: List[int] = field(default_factory=list)
+    # Mapping from neighbor index -> textual reason why this edge exists
+    neighbor_reasons: Dict[int, str] = field(default_factory=dict)
 
 
 Turn = List[Tool]           # one or more tools in a single turn
@@ -28,8 +33,11 @@ FSP = List[Turn]            # full function sequence plan
 # -----------------------------
 def load_graph(json_path: str):
     """
-    Load tools + adjacency_matrix + reason_matrix from the JSON file produced
-    by neighbour_app.py.
+    Load the tool graph from the JSON file produced by neighbour_app.py.
+
+    This populates each Tool with:
+      - neighbors: list of neighbor tool indices
+      - neighbor_reasons: mapping neighbor index -> textual reason for the edge
     """
     with open(json_path, "r", encoding="utf-8") as f:
         data = json.load(f)
@@ -43,12 +51,18 @@ def load_graph(json_path: str):
         for i, t in enumerate(tools_raw)
     ]
 
-    # neighbors[i] = list of indices j where adjacency_matrix[i][j] is True
-    neighbors: Dict[int, List[int]] = {}
-    for i, row in enumerate(adjacency_matrix):
-        neighbors[i] = [j for j, is_neigh in enumerate(row) if is_neigh]
+    # Populate neighbor information directly on each Tool instance
+    if adjacency_matrix is not None:
+        for i, row in enumerate(adjacency_matrix):
+            for j, is_neigh in enumerate(row):
+                if not is_neigh:
+                    continue
+                tools[i].neighbors.append(j)
+                if reason_matrix is not None:
+                    # reason_matrix is expected to be aligned with adjacency_matrix
+                    tools[i].neighbor_reasons[j] = reason_matrix[i][j]
 
-    return tools, neighbors, reason_matrix
+    return tools
 
 
 # -----------------------------
@@ -375,4 +389,4 @@ def serialize_turn(turn: List[Any]):
 
 
 def serialize_fsp(fsp: List[List[Any]]):
-    return [serialize_turn(turn) for turn in fsp]
+    return [serialize_turn(turn) for turn in fsp]    return [serialize_turn(turn) for turn in fsp]

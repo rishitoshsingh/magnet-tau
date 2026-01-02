@@ -1,0 +1,1787 @@
+{
+  "tools": [
+    {
+      "name": "BookReservation",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "book_reservation",
+          "description": "Book a reservation.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "user_id": {
+                "type": "string",
+                "description": "The ID of the user to book the reservation, such as 'sara_doe_496'."
+              },
+              "origin": {
+                "type": "string",
+                "description": "The IATA code for the origin city, such as 'SFO'."
+              },
+              "destination": {
+                "type": "string",
+                "description": "The IATA code for the destination city, such as 'JFK'."
+              },
+              "flight_type": {
+                "type": "string",
+                "enum": [
+                  "one_way",
+                  "round_trip"
+                ]
+              },
+              "cabin": {
+                "type": "string",
+                "enum": [
+                  "basic_economy",
+                  "economy",
+                  "business"
+                ]
+              },
+              "flights": {
+                "type": "array",
+                "description": "An array of objects containing details about each piece of flight.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "flight_number": {
+                      "type": "string",
+                      "description": "Flight number, such as 'HAT001'."
+                    },
+                    "date": {
+                      "type": "string",
+                      "description": "The date for the flight in the format 'YYYY-MM-DD', such as '2024-05-01'."
+                    }
+                  },
+                  "required": [
+                    "flight_number",
+                    "date"
+                  ]
+                }
+              },
+              "passengers": {
+                "type": "array",
+                "description": "An array of objects containing details about each passenger.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "first_name": {
+                      "type": "string",
+                      "description": "The first name of the passenger, such as 'Noah'."
+                    },
+                    "last_name": {
+                      "type": "string",
+                      "description": "The last name of the passenger, such as 'Brown'."
+                    },
+                    "dob": {
+                      "type": "string",
+                      "description": "The date of birth of the passenger in the format 'YYYY-MM-DD', such as '1990-01-01'."
+                    }
+                  },
+                  "required": [
+                    "first_name",
+                    "last_name",
+                    "dob"
+                  ]
+                }
+              },
+              "payment_methods": {
+                "type": "array",
+                "description": "An array of objects containing details about each payment method.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "payment_id": {
+                      "type": "string",
+                      "description": "The payment id stored in user profile, such as 'credit_card_7815826', 'gift_card_7815826', 'certificate_7815826'."
+                    },
+                    "amount": {
+                      "type": "number",
+                      "description": "The amount to be paid."
+                    }
+                  },
+                  "required": [
+                    "payment_id",
+                    "amount"
+                  ]
+                }
+              },
+              "total_baggages": {
+                "type": "integer",
+                "description": "The total number of baggage items included in the reservation."
+              },
+              "nonfree_baggages": {
+                "type": "integer",
+                "description": "The number of non-free baggage items included in the reservation."
+              },
+              "insurance": {
+                "type": "string",
+                "enum": [
+                  "yes",
+                  "no"
+                ]
+              }
+            },
+            "required": [
+              "user_id",
+              "origin",
+              "destination",
+              "flight_type",
+              "cabin",
+              "flights",
+              "passengers",
+              "payment_methods",
+              "total_baggages",
+              "nonfree_baggages",
+              "insurance"
+            ]
+          },
+          "response": {
+            "type": "object",
+            "description": "Details of the successfully created reservation.",
+            "properties": {
+              "reservation_id": {
+                "type": "string",
+                "description": "The unique ID of the reservation, such as 'HATHAT'."
+              },
+              "user_id": {
+                "type": "string",
+                "description": "The ID of the user who made the reservation."
+              },
+              "origin": {
+                "type": "string",
+                "description": "The IATA code for the origin city."
+              },
+              "destination": {
+                "type": "string",
+                "description": "The IATA code for the destination city."
+              },
+              "flight_type": {
+                "type": "string",
+                "enum": [
+                  "one_way",
+                  "round_trip"
+                ],
+                "description": "The type of trip."
+              },
+              "cabin": {
+                "type": "string",
+                "enum": [
+                  "basic_economy",
+                  "economy",
+                  "business"
+                ],
+                "description": "The cabin type of the reservation."
+              },
+              "flights": {
+                "type": "array",
+                "description": "An array of objects containing details about each booked flight segment.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "flight_number": {
+                      "type": "string",
+                      "description": "Flight number, such as 'HAT001'."
+                    },
+                    "date": {
+                      "type": "string",
+                      "description": "The date for the flight in the format 'YYYY-MM-DD'."
+                    },
+                    "origin": {
+                      "type": "string",
+                      "description": "The IATA code for the origin city of this segment."
+                    },
+                    "destination": {
+                      "type": "string",
+                      "description": "The IATA code for the destination city of this segment."
+                    },
+                    "price": {
+                      "type": "number",
+                      "description": "The price per passenger for this segment in the selected cabin."
+                    }
+                  },
+                  "required": [
+                    "flight_number",
+                    "date",
+                    "origin",
+                    "destination",
+                    "price"
+                  ]
+                }
+              },
+              "passengers": {
+                "type": "array",
+                "description": "An array of objects containing details about each passenger.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "first_name": {
+                      "type": "string"
+                    },
+                    "last_name": {
+                      "type": "string"
+                    },
+                    "dob": {
+                      "type": "string",
+                      "description": "The date of birth of the passenger in the format 'YYYY-MM-DD'."
+                    }
+                  },
+                  "required": [
+                    "first_name",
+                    "last_name",
+                    "dob"
+                  ]
+                }
+              },
+              "payment_history": {
+                "type": "array",
+                "description": "An array of objects describing how the reservation was paid.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "payment_id": {
+                      "type": "string",
+                      "description": "The payment method ID used for this part of the payment."
+                    },
+                    "amount": {
+                      "type": "number",
+                      "description": "The amount charged to this payment method."
+                    }
+                  },
+                  "required": [
+                    "payment_id",
+                    "amount"
+                  ]
+                }
+              },
+              "created_at": {
+                "type": "string",
+                "description": "The ISO 8601 timestamp when the reservation was created, such as '2024-05-15T15:00:00'."
+              },
+              "total_baggages": {
+                "type": "integer",
+                "description": "The total number of baggage items included in the reservation."
+              },
+              "nonfree_baggages": {
+                "type": "integer",
+                "description": "The number of non-free baggage items included in the reservation."
+              },
+              "insurance": {
+                "type": "string",
+                "enum": [
+                  "yes",
+                  "no"
+                ],
+                "description": "Whether travel insurance is included."
+              }
+            },
+            "required": [
+              "reservation_id",
+              "user_id",
+              "origin",
+              "destination",
+              "flight_type",
+              "cabin",
+              "flights",
+              "passengers",
+              "payment_history",
+              "created_at",
+              "total_baggages",
+              "nonfree_baggages",
+              "insurance"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "CancelReservation",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "cancel_reservation",
+          "description": "Cancel the whole reservation.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "reservation_id": {
+                "type": "string",
+                "description": "The reservation ID, such as 'ZFA04Y'."
+              }
+            },
+            "required": [
+              "reservation_id"
+            ]
+          },
+          "response": {
+            "type": "object",
+            "description": "Details of the reservation after cancellation. On success, the reservation status is updated to 'cancelled' and refund entries are appended to the payment history.",
+            "properties": {
+              "reservation_id": {
+                "type": "string",
+                "description": "The unique ID of the reservation, such as 'HATHAT'."
+              },
+              "user_id": {
+                "type": "string",
+                "description": "The ID of the user who owns the reservation."
+              },
+              "origin": {
+                "type": "string",
+                "description": "The IATA code for the origin city."
+              },
+              "destination": {
+                "type": "string",
+                "description": "The IATA code for the destination city."
+              },
+              "flight_type": {
+                "type": "string",
+                "enum": [
+                  "one_way",
+                  "round_trip"
+                ],
+                "description": "The type of trip."
+              },
+              "cabin": {
+                "type": "string",
+                "enum": [
+                  "basic_economy",
+                  "economy",
+                  "business"
+                ],
+                "description": "The cabin type of the reservation."
+              },
+              "flights": {
+                "type": "array",
+                "description": "An array of objects containing details about each booked flight segment.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "flight_number": {
+                      "type": "string",
+                      "description": "Flight number, such as 'HAT001'."
+                    },
+                    "date": {
+                      "type": "string",
+                      "description": "The date for the flight in the format 'YYYY-MM-DD'."
+                    },
+                    "origin": {
+                      "type": "string",
+                      "description": "The IATA code for the origin city of this segment."
+                    },
+                    "destination": {
+                      "type": "string",
+                      "description": "The IATA code for the destination city of this segment."
+                    },
+                    "price": {
+                      "type": "number",
+                      "description": "The price per passenger for this segment in the selected cabin."
+                    }
+                  },
+                  "required": [
+                    "flight_number",
+                    "date",
+                    "origin",
+                    "destination",
+                    "price"
+                  ]
+                }
+              },
+              "passengers": {
+                "type": "array",
+                "description": "An array of objects containing details about each passenger.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "first_name": {
+                      "type": "string"
+                    },
+                    "last_name": {
+                      "type": "string"
+                    },
+                    "dob": {
+                      "type": "string",
+                      "description": "The date of birth of the passenger in the format 'YYYY-MM-DD'."
+                    }
+                  },
+                  "required": [
+                    "first_name",
+                    "last_name",
+                    "dob"
+                  ]
+                }
+              },
+              "payment_history": {
+                "type": "array",
+                "description": "An array of objects describing all payment and refund entries. Refunds are represented as negative amounts.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "payment_id": {
+                      "type": "string",
+                      "description": "The payment method ID used for this entry."
+                    },
+                    "amount": {
+                      "type": "number",
+                      "description": "The amount charged (positive) or refunded (negative) for this entry."
+                    }
+                  },
+                  "required": [
+                    "payment_id",
+                    "amount"
+                  ]
+                }
+              },
+              "created_at": {
+                "type": "string",
+                "description": "The ISO 8601 timestamp when the reservation was originally created, such as '2024-05-15T15:00:00'."
+              },
+              "total_baggages": {
+                "type": "integer",
+                "description": "The total number of baggage items included in the reservation."
+              },
+              "nonfree_baggages": {
+                "type": "integer",
+                "description": "The number of non-free baggage items included in the reservation."
+              },
+              "insurance": {
+                "type": "string",
+                "enum": [
+                  "yes",
+                  "no"
+                ],
+                "description": "Whether travel insurance is included."
+              },
+              "status": {
+                "type": "string",
+                "description": "The current status of the reservation. After cancellation this will be 'cancelled'."
+              }
+            },
+            "required": [
+              "reservation_id",
+              "user_id",
+              "origin",
+              "destination",
+              "flight_type",
+              "cabin",
+              "flights",
+              "passengers",
+              "payment_history",
+              "created_at",
+              "total_baggages",
+              "nonfree_baggages",
+              "insurance",
+              "status"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "GetReservationDetails",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "get_reservation_details",
+          "description": "Get the details of a reservation.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "reservation_id": {
+                "type": "string",
+                "description": "The reservation id, such as '8JX2WO'."
+              }
+            },
+            "required": [
+              "reservation_id"
+            ]
+          },
+          "response": {
+            "type": "object",
+            "description": "The complete reservation record as stored in the system.",
+            "properties": {
+              "reservation_id": {
+                "type": "string",
+                "description": "The unique ID of the reservation."
+              },
+              "user_id": {
+                "type": "string",
+                "description": "The ID of the user who made the reservation."
+              },
+              "origin": {
+                "type": "string",
+                "description": "The IATA code for the origin city."
+              },
+              "destination": {
+                "type": "string",
+                "description": "The IATA code for the destination city."
+              },
+              "flight_type": {
+                "type": "string",
+                "enum": [
+                  "one_way",
+                  "round_trip"
+                ],
+                "description": "The type of trip."
+              },
+              "cabin": {
+                "type": "string",
+                "enum": [
+                  "basic_economy",
+                  "economy",
+                  "business"
+                ],
+                "description": "The cabin type of the reservation."
+              },
+              "flights": {
+                "type": "array",
+                "description": "An array of objects containing details about each booked flight segment.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "flight_number": {
+                      "type": "string",
+                      "description": "Flight number, such as 'HAT001'."
+                    },
+                    "date": {
+                      "type": "string",
+                      "description": "The date for the flight in the format 'YYYY-MM-DD'."
+                    },
+                    "origin": {
+                      "type": "string",
+                      "description": "The origin airport for this segment."
+                    },
+                    "destination": {
+                      "type": "string",
+                      "description": "The destination airport for this segment."
+                    },
+                    "price": {
+                      "type": "number",
+                      "description": "The price per passenger for this segment in the selected cabin."
+                    }
+                  },
+                  "required": [
+                    "flight_number",
+                    "date",
+                    "origin",
+                    "destination",
+                    "price"
+                  ]
+                }
+              },
+              "passengers": {
+                "type": "array",
+                "description": "An array of passenger details.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "first_name": {
+                      "type": "string"
+                    },
+                    "last_name": {
+                      "type": "string"
+                    },
+                    "dob": {
+                      "type": "string",
+                      "description": "Date of birth in 'YYYY-MM-DD' format."
+                    }
+                  },
+                  "required": [
+                    "first_name",
+                    "last_name",
+                    "dob"
+                  ]
+                }
+              },
+              "payment_history": {
+                "type": "array",
+                "description": "Full payment activity including refunds (negative amounts).",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "payment_id": {
+                      "type": "string",
+                      "description": "The payment method ID used."
+                    },
+                    "amount": {
+                      "type": "number",
+                      "description": "Positive for charges, negative for refunds."
+                    }
+                  },
+                  "required": [
+                    "payment_id",
+                    "amount"
+                  ]
+                }
+              },
+              "created_at": {
+                "type": "string",
+                "description": "ISO timestamp when the reservation was created."
+              },
+              "total_baggages": {
+                "type": "integer",
+                "description": "Total number of baggage items included."
+              },
+              "nonfree_baggages": {
+                "type": "integer",
+                "description": "Number of paid baggage items."
+              },
+              "insurance": {
+                "type": "string",
+                "enum": [
+                  "yes",
+                  "no"
+                ],
+                "description": "Whether insurance was included."
+              },
+              "status": {
+                "type": "string",
+                "description": "Reservation status (e.g., 'cancelled' after cancellation)."
+              }
+            },
+            "required": [
+              "reservation_id",
+              "user_id",
+              "origin",
+              "destination",
+              "flight_type",
+              "cabin",
+              "flights",
+              "passengers",
+              "payment_history",
+              "created_at",
+              "total_baggages",
+              "nonfree_baggages",
+              "insurance"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "SearchDirectFlight",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "search_direct_flight",
+          "description": "Search direct flights between two cities on a specific date.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "origin": {
+                "type": "string",
+                "description": "The origin city airport in three letters, such as 'JFK'."
+              },
+              "destination": {
+                "type": "string",
+                "description": "The destination city airport in three letters, such as 'LAX'."
+              },
+              "date": {
+                "type": "string",
+                "description": "The date of the flight in the format 'YYYY-MM-DD', such as '2024-01-01'."
+              }
+            },
+            "required": [
+              "origin",
+              "destination",
+              "date"
+            ]
+          },
+          "response": {
+            "type": "array",
+            "description": "A list of direct flights matching origin, destination and date, including schedule, availability, and prices. Empty list if no flights are available.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "flight_number": {
+                  "type": "string",
+                  "description": "The flight number, such as 'HAT001'."
+                },
+                "origin": {
+                  "type": "string",
+                  "description": "The origin airport IATA code, such as 'PHL'."
+                },
+                "destination": {
+                  "type": "string",
+                  "description": "The destination airport IATA code, such as 'LGA'."
+                },
+                "scheduled_departure_time_est": {
+                  "type": "string",
+                  "description": "Scheduled departure time in Eastern Time, format 'HH:MM:SS', such as '06:00:00'."
+                },
+                "scheduled_arrival_time_est": {
+                  "type": "string",
+                  "description": "Scheduled arrival time in Eastern Time, format 'HH:MM:SS', such as '07:00:00'."
+                },
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "available"
+                  ],
+                  "description": "The status for this flight on the requested date. Only 'available' flights are returned."
+                },
+                "available_seats": {
+                  "type": "object",
+                  "description": "Number of remaining seats for each cabin on the requested date.",
+                  "properties": {
+                    "basic_economy": {
+                      "type": "integer"
+                    },
+                    "economy": {
+                      "type": "integer"
+                    },
+                    "business": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "basic_economy",
+                    "economy",
+                    "business"
+                  ]
+                },
+                "prices": {
+                  "type": "object",
+                  "description": "Price per passenger in each cabin on the requested date.",
+                  "properties": {
+                    "basic_economy": {
+                      "type": "number"
+                    },
+                    "economy": {
+                      "type": "number"
+                    },
+                    "business": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "basic_economy",
+                    "economy",
+                    "business"
+                  ]
+                }
+              },
+              "required": [
+                "flight_number",
+                "origin",
+                "destination",
+                "scheduled_departure_time_est",
+                "scheduled_arrival_time_est",
+                "status",
+                "available_seats",
+                "prices"
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "SearchOnestopFlight",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "search_onestop_flight",
+          "description": "Search one-stop flights between two cities on a specific date.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "origin": {
+                "type": "string",
+                "description": "The origin airport IATA code, such as 'JFK'."
+              },
+              "destination": {
+                "type": "string",
+                "description": "The destination airport IATA code, such as 'LAX'."
+              },
+              "date": {
+                "type": "string",
+                "description": "The flight date in 'YYYY-MM-DD' format, such as '2024-05-01'."
+              }
+            },
+            "required": [
+              "origin",
+              "destination",
+              "date"
+            ]
+          },
+          "response": {
+            "type": "array",
+            "description": "A list of one-stop itineraries. Each itinerary contains two flight segments, each with schedule, availability, prices, and date.",
+            "items": {
+              "type": "array",
+              "description": "A two-flight itinerary: [first_leg, second_leg].",
+              "minItems": 2,
+              "maxItems": 2,
+              "items": {
+                "type": "object",
+                "properties": {
+                  "flight_number": {
+                    "type": "string",
+                    "description": "Flight number, such as 'HAT001'."
+                  },
+                  "origin": {
+                    "type": "string",
+                    "description": "Segment origin airport."
+                  },
+                  "destination": {
+                    "type": "string",
+                    "description": "Segment destination airport."
+                  },
+                  "scheduled_departure_time_est": {
+                    "type": "string",
+                    "description": "Scheduled departure time (EST), format 'HH:MM:SS'."
+                  },
+                  "scheduled_arrival_time_est": {
+                    "type": "string",
+                    "description": "Scheduled arrival time (EST), format 'HH:MM:SS'."
+                  },
+                  "date": {
+                    "type": "string",
+                    "description": "Flight date used for this segment. The second segment may be '+1 day' depending on arrival time logic."
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "available"
+                    ],
+                    "description": "Status for this flight on its date. Only 'available' flights are returned."
+                  },
+                  "available_seats": {
+                    "type": "object",
+                    "properties": {
+                      "basic_economy": {
+                        "type": "integer"
+                      },
+                      "economy": {
+                        "type": "integer"
+                      },
+                      "business": {
+                        "type": "integer"
+                      }
+                    },
+                    "required": [
+                      "basic_economy",
+                      "economy",
+                      "business"
+                    ],
+                    "description": "Seat availability for the given segment date."
+                  },
+                  "prices": {
+                    "type": "object",
+                    "properties": {
+                      "basic_economy": {
+                        "type": "number"
+                      },
+                      "economy": {
+                        "type": "number"
+                      },
+                      "business": {
+                        "type": "number"
+                      }
+                    },
+                    "required": [
+                      "basic_economy",
+                      "economy",
+                      "business"
+                    ],
+                    "description": "Price per passenger for each cabin."
+                  }
+                },
+                "required": [
+                  "flight_number",
+                  "origin",
+                  "destination",
+                  "scheduled_departure_time_est",
+                  "scheduled_arrival_time_est",
+                  "date",
+                  "status",
+                  "available_seats",
+                  "prices"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "SendCertificate",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "send_certificate",
+          "description": "Send a certificate to a user as a compensation for a specific complaint filed by the user, which could be flight delay or flight got canceled. It can only be called first not after any other function even if the function have the required parameters for this function.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "user_id": {
+                "type": "string",
+                "description": "The ID of the user to receive the certificate as compensation, such as 'sara_doe_496'."
+              },
+              "amount": {
+                "type": "number",
+                "description": "Certificate amount to send as compensation."
+              }
+            },
+            "required": [
+              "user_id",
+              "amount"
+            ]
+          },
+          "response": {
+            "type": "string",
+            "description": "A human-readable message. On success: 'Certificate <certificate_id> added to user <user_id> with amount <amount>.' On failure: 'Error: user not found'.",
+            "examples": [
+              "Certificate certificate_3221322 added to user mia_li_3668 with amount 100.",
+              "Error: user not found"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "UpdateReservationBaggages",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "update_reservation_baggages",
+          "description": "Update the baggage information of a reservation.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "reservation_id": {
+                "type": "string",
+                "description": "The reservation ID, such as '4WQ150'."
+              },
+              "total_baggages": {
+                "type": "integer",
+                "description": "The updated total number of baggage items included in the reservation."
+              },
+              "nonfree_baggages": {
+                "type": "integer",
+                "description": "The updated number of non-free baggage items included in the reservation."
+              },
+              "payment_id": {
+                "type": "string",
+                "description": "The payment id stored in user profile, such as 'credit_card_7815826', 'gift_card_7815826', 'certificate_7815826'."
+              }
+            },
+            "required": [
+              "reservation_id",
+              "total_baggages",
+              "nonfree_baggages",
+              "payment_id"
+            ]
+          },
+          "response": {
+            "type": "object",
+            "description": "The updated reservation record after modifying baggage counts and possibly appending a payment entry.",
+            "properties": {
+              "reservation_id": {
+                "type": "string",
+                "description": "The unique ID of the reservation, such as '4WQ150'."
+              },
+              "user_id": {
+                "type": "string",
+                "description": "The ID of the user who owns the reservation."
+              },
+              "origin": {
+                "type": "string",
+                "description": "The IATA code for the origin city."
+              },
+              "destination": {
+                "type": "string",
+                "description": "The IATA code for the destination city."
+              },
+              "flight_type": {
+                "type": "string",
+                "enum": [
+                  "one_way",
+                  "round_trip"
+                ],
+                "description": "The type of trip."
+              },
+              "cabin": {
+                "type": "string",
+                "enum": [
+                  "basic_economy",
+                  "economy",
+                  "business"
+                ],
+                "description": "The cabin type of the reservation."
+              },
+              "flights": {
+                "type": "array",
+                "description": "An array of objects containing details about each booked flight segment.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "origin": {
+                      "type": "string",
+                      "description": "Segment origin airport."
+                    },
+                    "destination": {
+                      "type": "string",
+                      "description": "Segment destination airport."
+                    },
+                    "flight_number": {
+                      "type": "string",
+                      "description": "Flight number, such as 'HAT170'."
+                    },
+                    "date": {
+                      "type": "string",
+                      "description": "The date for the flight in 'YYYY-MM-DD' format."
+                    },
+                    "price": {
+                      "type": "number",
+                      "description": "Price per passenger for this segment in the selected cabin."
+                    }
+                  },
+                  "required": [
+                    "origin",
+                    "destination",
+                    "flight_number",
+                    "date",
+                    "price"
+                  ]
+                }
+              },
+              "passengers": {
+                "type": "array",
+                "description": "An array of passenger details.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "first_name": {
+                      "type": "string"
+                    },
+                    "last_name": {
+                      "type": "string"
+                    },
+                    "dob": {
+                      "type": "string",
+                      "description": "Date of birth in 'YYYY-MM-DD' format."
+                    }
+                  },
+                  "required": [
+                    "first_name",
+                    "last_name",
+                    "dob"
+                  ]
+                }
+              },
+              "payment_history": {
+                "type": "array",
+                "description": "Payment entries for the reservation, including any new baggage charge.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "payment_id": {
+                      "type": "string",
+                      "description": "Payment method ID used for this entry."
+                    },
+                    "amount": {
+                      "type": "number",
+                      "description": "Amount charged (positive) or refunded (negative)."
+                    }
+                  },
+                  "required": [
+                    "payment_id",
+                    "amount"
+                  ]
+                }
+              },
+              "created_at": {
+                "type": "string",
+                "description": "ISO 8601 timestamp when the reservation was created, such as '2024-05-02T03:10:19'."
+              },
+              "total_baggages": {
+                "type": "integer",
+                "description": "The updated total number of baggage items included in the reservation."
+              },
+              "nonfree_baggages": {
+                "type": "integer",
+                "description": "The updated number of non-free baggage items included in the reservation."
+              },
+              "insurance": {
+                "type": "string",
+                "enum": [
+                  "yes",
+                  "no"
+                ],
+                "description": "Whether travel insurance is included."
+              },
+              "status": {
+                "type": "string",
+                "description": "Current reservation status (e.g., 'cancelled'). May be absent for active reservations."
+              }
+            },
+            "required": [
+              "reservation_id",
+              "user_id",
+              "origin",
+              "destination",
+              "flight_type",
+              "cabin",
+              "flights",
+              "passengers",
+              "payment_history",
+              "created_at",
+              "total_baggages",
+              "nonfree_baggages",
+              "insurance"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "UpdateReservationFlights",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "update_reservation_flights",
+          "description": "Update the flight information of a reservation.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "reservation_id": {
+                "type": "string",
+                "description": "The reservation ID, such as 'ZFA04Y'."
+              },
+              "cabin": {
+                "type": "string",
+                "enum": [
+                  "basic_economy",
+                  "economy",
+                  "business"
+                ]
+              },
+              "flights": {
+                "type": "array",
+                "description": "An array of objects containing details about each piece of flight in the ENTIRE new reservation. Even if a flight segment is not changed, it should still be included in the array.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "flight_number": {
+                      "type": "string",
+                      "description": "Flight number, such as 'HAT001'."
+                    },
+                    "date": {
+                      "type": "string",
+                      "description": "The date for the flight in the format 'YYYY-MM-DD', such as '2024-05-01'."
+                    }
+                  },
+                  "required": [
+                    "flight_number",
+                    "date"
+                  ]
+                }
+              },
+              "payment_id": {
+                "type": "string",
+                "description": "The payment id stored in user profile, such as 'credit_card_7815826', 'gift_card_7815826', 'certificate_7815826'."
+              }
+            },
+            "required": [
+              "reservation_id",
+              "cabin",
+              "flights",
+              "payment_id"
+            ]
+          },
+          "response": {
+            "type": "object",
+            "description": "The updated reservation after changing its flights and possibly adding a payment entry.",
+            "properties": {
+              "reservation_id": {
+                "type": "string",
+                "description": "The unique ID of the reservation."
+              },
+              "user_id": {
+                "type": "string",
+                "description": "The ID of the user who owns the reservation."
+              },
+              "origin": {
+                "type": "string",
+                "description": "The IATA code for the origin city."
+              },
+              "destination": {
+                "type": "string",
+                "description": "The IATA code for the destination city."
+              },
+              "flight_type": {
+                "type": "string",
+                "enum": [
+                  "one_way",
+                  "round_trip"
+                ],
+                "description": "The type of trip."
+              },
+              "cabin": {
+                "type": "string",
+                "enum": [
+                  "basic_economy",
+                  "economy",
+                  "business"
+                ],
+                "description": "The cabin type of the reservation."
+              },
+              "flights": {
+                "type": "array",
+                "description": "The new list of flight segments in the reservation.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "origin": {
+                      "type": "string",
+                      "description": "Segment origin airport."
+                    },
+                    "destination": {
+                      "type": "string",
+                      "description": "Segment destination airport."
+                    },
+                    "flight_number": {
+                      "type": "string",
+                      "description": "Flight number, such as 'HAT001'."
+                    },
+                    "date": {
+                      "type": "string",
+                      "description": "The date for this segment in 'YYYY-MM-DD' format."
+                    },
+                    "price": {
+                      "type": "number",
+                      "description": "Price per passenger for this segment in the selected cabin."
+                    }
+                  },
+                  "required": [
+                    "origin",
+                    "destination",
+                    "flight_number",
+                    "date",
+                    "price"
+                  ]
+                }
+              },
+              "passengers": {
+                "type": "array",
+                "description": "Passenger details for this reservation.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "first_name": {
+                      "type": "string"
+                    },
+                    "last_name": {
+                      "type": "string"
+                    },
+                    "dob": {
+                      "type": "string",
+                      "description": "Date of birth in 'YYYY-MM-DD' format."
+                    }
+                  },
+                  "required": [
+                    "first_name",
+                    "last_name",
+                    "dob"
+                  ]
+                }
+              },
+              "payment_history": {
+                "type": "array",
+                "description": "All payment entries for the reservation, including any new charge from the flight update.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "payment_id": {
+                      "type": "string",
+                      "description": "Payment method ID used for this entry."
+                    },
+                    "amount": {
+                      "type": "number",
+                      "description": "Amount charged (positive) or refunded (negative)."
+                    }
+                  },
+                  "required": [
+                    "payment_id",
+                    "amount"
+                  ]
+                }
+              },
+              "created_at": {
+                "type": "string",
+                "description": "ISO 8601 timestamp when the reservation was created."
+              },
+              "total_baggages": {
+                "type": "integer",
+                "description": "Total number of baggage items included in the reservation."
+              },
+              "nonfree_baggages": {
+                "type": "integer",
+                "description": "Number of non-free baggage items."
+              },
+              "insurance": {
+                "type": "string",
+                "enum": [
+                  "yes",
+                  "no"
+                ],
+                "description": "Whether travel insurance is included."
+              },
+              "status": {
+                "type": "string",
+                "description": "Current reservation status (e.g., 'cancelled'). May be absent for active reservations."
+              }
+            },
+            "required": [
+              "reservation_id",
+              "user_id",
+              "origin",
+              "destination",
+              "flight_type",
+              "cabin",
+              "flights",
+              "passengers",
+              "payment_history",
+              "created_at",
+              "total_baggages",
+              "nonfree_baggages",
+              "insurance"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "UpdateReservationPassengers",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "update_reservation_passengers",
+          "description": "Update the passenger information of a reservation.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "reservation_id": {
+                "type": "string",
+                "description": "The reservation ID, such as 'ZFA04Y'."
+              },
+              "passengers": {
+                "type": "array",
+                "description": "An array of objects containing details about each passenger. The number of passengers must match the existing reservation.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "first_name": {
+                      "type": "string",
+                      "description": "The first name of the passenger, such as 'Noah'."
+                    },
+                    "last_name": {
+                      "type": "string",
+                      "description": "The last name of the passenger, such as 'Brown'."
+                    },
+                    "dob": {
+                      "type": "string",
+                      "description": "The date of birth of the passenger in the format 'YYYY-MM-DD', such as '1990-01-01'."
+                    }
+                  },
+                  "required": [
+                    "first_name",
+                    "last_name",
+                    "dob"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "reservation_id",
+              "passengers"
+            ]
+          },
+          "response": {
+            "type": "object",
+            "description": "The updated reservation record after modifying passenger details.",
+            "properties": {
+              "reservation_id": {
+                "type": "string",
+                "description": "The unique ID of the reservation."
+              },
+              "user_id": {
+                "type": "string",
+                "description": "The ID of the user who owns the reservation."
+              },
+              "origin": {
+                "type": "string",
+                "description": "The IATA code for the origin city."
+              },
+              "destination": {
+                "type": "string",
+                "description": "The IATA code for the destination city."
+              },
+              "flight_type": {
+                "type": "string",
+                "enum": [
+                  "one_way",
+                  "round_trip"
+                ],
+                "description": "The type of trip."
+              },
+              "cabin": {
+                "type": "string",
+                "enum": [
+                  "basic_economy",
+                  "economy",
+                  "business"
+                ],
+                "description": "The cabin type of the reservation."
+              },
+              "flights": {
+                "type": "array",
+                "description": "An array of objects containing details about each booked flight segment.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "origin": {
+                      "type": "string",
+                      "description": "Segment origin airport."
+                    },
+                    "destination": {
+                      "type": "string",
+                      "description": "Segment destination airport."
+                    },
+                    "flight_number": {
+                      "type": "string",
+                      "description": "Flight number, such as 'HAT001'."
+                    },
+                    "date": {
+                      "type": "string",
+                      "description": "The date for the flight in 'YYYY-MM-DD' format."
+                    },
+                    "price": {
+                      "type": "number",
+                      "description": "Price per passenger for this segment in the selected cabin."
+                    }
+                  },
+                  "required": [
+                    "origin",
+                    "destination",
+                    "flight_number",
+                    "date",
+                    "price"
+                  ]
+                }
+              },
+              "passengers": {
+                "type": "array",
+                "description": "Updated passenger details for this reservation.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "first_name": {
+                      "type": "string"
+                    },
+                    "last_name": {
+                      "type": "string"
+                    },
+                    "dob": {
+                      "type": "string",
+                      "description": "Date of birth in 'YYYY-MM-DD' format."
+                    }
+                  },
+                  "required": [
+                    "first_name",
+                    "last_name",
+                    "dob"
+                  ]
+                }
+              },
+              "payment_history": {
+                "type": "array",
+                "description": "All payment entries for the reservation.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "payment_id": {
+                      "type": "string",
+                      "description": "Payment method ID used for this entry."
+                    },
+                    "amount": {
+                      "type": "number",
+                      "description": "Amount charged (positive) or refunded (negative)."
+                    }
+                  },
+                  "required": [
+                    "payment_id",
+                    "amount"
+                  ]
+                }
+              },
+              "created_at": {
+                "type": "string",
+                "description": "ISO 8601 timestamp when the reservation was created."
+              },
+              "total_baggages": {
+                "type": "integer",
+                "description": "Total number of baggage items included in the reservation."
+              },
+              "nonfree_baggages": {
+                "type": "integer",
+                "description": "Number of non-free baggage items."
+              },
+              "insurance": {
+                "type": "string",
+                "enum": [
+                  "yes",
+                  "no"
+                ],
+                "description": "Whether travel insurance is included."
+              },
+              "status": {
+                "type": "string",
+                "description": "Current reservation status (e.g., 'cancelled'). May be absent for active reservations."
+              }
+            },
+            "required": [
+              "reservation_id",
+              "user_id",
+              "origin",
+              "destination",
+              "flight_type",
+              "cabin",
+              "flights",
+              "passengers",
+              "payment_history",
+              "created_at",
+              "total_baggages",
+              "nonfree_baggages",
+              "insurance"
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "adjacency_matrix": [
+    [
+      false,
+      true,
+      true,
+      false,
+      false,
+      false,
+      true,
+      true,
+      true
+    ],
+    [
+      true,
+      false,
+      true,
+      true,
+      true,
+      false,
+      false,
+      false,
+      false
+    ],
+    [
+      false,
+      true,
+      false,
+      true,
+      true,
+      false,
+      true,
+      true,
+      true
+    ],
+    [
+      true,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false
+    ],
+    [
+      true,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    [
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      true,
+      true
+    ],
+    [
+      false,
+      true,
+      true,
+      true,
+      true,
+      false,
+      true,
+      false,
+      true
+    ],
+    [
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      true,
+      true,
+      false
+    ]
+  ],
+  "reason_matrix": [
+    [
+      "self — ignored",
+      "Plausible if the user immediately regrets the booking or notices a mistake and asks to cancel right after booking. Agent would use the new reservation_id (from booking result) and user confirmation to proceed.",
+      "Common follow-up to show/verify what was booked (dates, flight numbers, cabin, passengers, baggage, insurance) right after creation or if the user asks for the itinerary/receipt. Needs reservation_id (from the booking result or user-provided).",
+      "After booking, agents don’t usually search flights next; search is typically done before booking to pick flights, not after. Would be a new shopping flow rather than an immediate follow-up.",
+      "Same as direct-flight search: searching is normally a pre-booking step; doing it immediately after booking is atypical unless starting a new booking, not continuing this one.",
+      "Not a valid neighbour: tool description says it can only be called first and not after any other function. Also compensation certificates relate to delay/cancellation complaints, not a just-booked reservation.",
+      "Plausible if right after booking the user says they need to add checked bags (allowed: can add but not remove). Needs reservation_id plus new total_baggages/nonfree_baggages and a payment_id from user profile, with explicit user confirmation.",
+      "Plausible if the user immediately asks to change flights/cabin after booking (a common modification request). Needs reservation_id, desired cabin, full new flights list (flight_number/date), and a payment_id for any fare difference/refund, with explicit user confirmation.",
+      "Plausible if the user spots a name/DOB typo right after booking and asks to correct passenger details (number of passengers unchanged). Needs reservation_id and corrected passengers list (first_name, last_name, dob), with explicit user confirmation."
+    ],
+    [
+      "After cancelling, a common next step is the customer wanting to rebook a new trip; the agent would start a new booking. Inputs needed from user: user_id, origin, destination, flight_type, cabin, preferred flights (flight_number/date), passenger names/DOBs, payment_ids/amounts, bag counts, insurance yes/no.",
+      "self — ignored",
+      "Agent may immediately fetch the cancelled record to confirm status and read back refund/payment_history details. Input needed: reservation_id.",
+      "Customer often asks for alternative flights right after cancelling (or cancels to rebook); searching direct options is a natural next action. Inputs needed: origin, destination, date.",
+      "If no direct flights work, searching one-stop itineraries is a typical follow-up to help the customer rebook after cancellation. Inputs needed: origin, destination, date.",
+      "Not a plausible immediate follow-up because the tool explicitly states it can only be called first and not after any other function; also compensation requires a complaint flow. Inputs would be user_id, amount but call is disallowed post-cancel.",
+      "After cancellation the reservation is no longer being managed for bags; adding bags is irrelevant and would typically be disallowed/unsupported. Even if requested, inputs would be reservation_id, total_baggages, nonfree_baggages, payment_id.",
+      "Updating flights is a modification workflow for an active reservation; after cancellation you would rebook instead, not update the cancelled record. Inputs would be reservation_id, cabin, flights, payment_id but intent mismatches.",
+      "Updating passenger details is only relevant for an active reservation; after cancellation you would rebook with correct passenger info instead. Inputs would be reservation_id and updated passengers, but it’s not a normal post-cancel step."
+    ],
+    [
+      "After viewing reservation details, starting a brand-new booking is a different customer intent/workflow and not a typical immediate next step; booking also requires many new inputs (origin/destination, flights, passengers, payment) beyond what was fetched.",
+      "Common follow-up when a user asks to cancel: agent fetches reservation details to verify cabin/insurance/segments, then proceeds to cancel once the user confirms. User-provided inputs: reservation_id (and separately collected per policy: cancellation reason and explicit confirmation).",
+      "self — ignored",
+      "After retrieving the reservation, the next step for a change request is often searching alternatives matching the same route/date(s) from the booked segment(s). Inputs: origin, destination, date (from the reservation; agent may confirm which segment/date to change).",
+      "If the user wants options that require a connection (or no direct flights exist), the agent would search one-stop itineraries after reviewing the booked segment details. Inputs: origin, destination, date (from the reservation; agent may confirm which leg/date to change).",
+      "Not a plausible neighbour because the tool explicitly states it can only be called first, not after any other function call, even if parameters are known.",
+      "If the user wants to add checked bags, the agent would review current baggage counts in the reservation details, then update baggage and charge the selected payment method after explicit confirmation. Inputs: reservation_id, new total_baggages, new nonfree_baggages, payment_id.",
+      "If the user requests to change flights or cabin (and rules allow), the agent would inspect current itinerary/cabin in the details, then apply the flight update after user confirms and provides a payment/refund method. Inputs: reservation_id, new cabin, full new flights list (flight_number/date), payment_id.",
+      "If the user needs to correct passenger name/DOB (without changing passenger count), the agent would first pull current passenger list, then submit the corrected list. Inputs: reservation_id and updated passengers array (first_name, last_name, dob) after explicit confirmation."
+    ],
+    [
+      "After showing available direct-flight options, a common next step is booking the chosen itinerary. The agent would rely on user_id plus user-provided selections/details: flight_type, chosen flight_number(s) and date(s), cabin, passenger names+DOBs, baggage count, insurance yes/no, and payment_id(s)/amounts (from profile).",
+      "Cancelling a reservation is unrelated to searching availability; it’s a separate intent and a high-friction/terminal action that would normally follow identifying an existing reservation, not a flight search.",
+      "Getting reservation details is for managing an existing booking; it’s not a typical immediate follow-up to searching flights unless the user is actually modifying an existing reservation (would start from reservation_id instead).",
+      "self — ignored",
+      "If no suitable direct options exist (or user requests connections), the agent would typically broaden the search to one-stop itineraries using the same user-provided inputs: origin, destination, date.",
+      "Compensation certificates are only relevant after a user complaint about delay/cancellation and per tool constraint it “can only be called first not after any other function,” so it cannot follow a flight search.",
+      "Updating baggages applies to an existing reservation and requires reservation_id and payment_id; it’s not a normal next step right after a flight availability search.",
+      "Updating reservation flights is a modify-booking action requiring reservation_id, full new flights list, cabin, and payment_id; it’s not a typical immediate step after a generic flight search (and is high-impact).",
+      "Updating passengers is for correcting an existing reservation and requires reservation_id plus full passenger list; it does not logically follow a flight availability search."
+    ],
+    [
+      "After presenting one-stop options, a common next step is booking the chosen itinerary. User/agent would need: user_id, flight_type, selected cabin, chosen flights (flight_number + date for each leg), passenger names + DOBs, payment_methods (payment_id + amount), total_baggages/nonfree_baggages, insurance, plus explicit user confirmation.",
+      "Canceling a reservation is unrelated to immediately following a flight search; it requires an existing reservation and a cancellation reason, and is a high-friction/terminal action not triggered by simply viewing one-stop options (unless the user explicitly switches to canceling).",
+      "Getting reservation details is typically part of manage/modify/cancel workflows for an existing booking, not a normal immediate next step after searching one-stop flights for a new trip (unless the user pivots to “compare with my current booking”).",
+      "If one-stop results are poor or the user asks “are there any nonstop flights?”, the agent would immediately run a direct-flight search for the same route/date. Inputs needed: origin, destination, date.",
+      "self — ignored",
+      "Not a plausible follow-up: compensation certificates are for complaints about delays/cancellations and the tool explicitly says it can only be called first (not after any other function).",
+      "Updating baggages applies to an existing reservation (reservation_id + baggage counts + payment_id). That’s not a normal step right after a flight availability search, before any booking exists.",
+      "Updating reservation flights is a modify-existing-booking action requiring reservation_id and payment_id; it’s high-impact and not a typical immediate follow-up to searching one-stop options for planning a trip.",
+      "Updating passengers is also an existing-reservation maintenance action (reservation_id + full passenger list). It doesn’t naturally follow from searching one-stop flights."
+    ],
+    [
+      "After sending compensation, booking a brand-new reservation is a separate, high-effort workflow (requires full itinerary, passengers, payment, bags, insurance) and is not a routine immediate follow-up to issuing a certificate.",
+      "Cancelling a reservation is a high-friction/terminal action and not a normal next step right after issuing a certificate; cancellation would typically be handled before/alongside compensation and requires reservation_id plus eligibility checks.",
+      "Getting reservation details is usually done before determining eligibility/amount for compensation; immediately after sending the certificate, it’s not a typical next step unless doing internal verification (edge-case).",
+      "Searching direct flights is a separate shopping flow; after compensation is issued, the common next step is just confirmation/closing, not initiating flight search (origin, destination, date).",
+      "Searching one-stop flights is likewise a separate shopping flow and not a typical immediate follow-up to issuing a compensation certificate (would require origin, destination, date).",
+      "self — ignored",
+      "Updating baggages is unrelated to the compensation action and would require a separate customer request plus reservation_id, baggage counts, and a payment_id; not a routine follow-up to sending a certificate.",
+      "Updating reservation flights is a major change workflow and typically happens before any compensation for delay/cancellation; doing it immediately after issuing the certificate is not standard and requires reservation_id, full new flights list, cabin, and payment_id.",
+      "Updating passenger info is unrelated to compensation and is only appropriate if the user explicitly asks to correct passenger details; requires reservation_id and full passenger list."
+    ],
+    [
+      "After updating bags, booking a brand-new reservation is a separate workflow and not a typical immediate next step; it requires a full itinerary and passenger/payment details beyond the baggage-change context.",
+      "Canceling the whole trip is a high-friction, terminal action and is not a routine follow-up to adding bags unless the customer explicitly pivots to cancellation; otherwise it’s mismatched intent.",
+      "Common immediate follow-up is to verify the updated bag counts/charges or read back the confirmation; the agent may call this using reservation_id if the user asks to confirm what changed or wants an updated receipt view.",
+      "Searching flights is part of a rebooking/change-flight flow and not a typical next step after a baggage update unless the user explicitly asks to change flights; otherwise intent is unrelated.",
+      "Same as direct search: one-stop flight search is for itinerary shopping/rebooking, which is not a normal follow-up to updating baggage counts without an explicit change-flight request.",
+      "Not a neighbour: tool policy explicitly says send_certificate “can only be called first not after any other function,” so it cannot be called immediately after a baggage update.",
+      "self — ignored",
+      "Plausible if the user’s underlying issue is broader trip modification (e.g., “also change my flight/cabin after adding bags”); agent would proceed using reservation_id plus user-chosen new flights/cabin and payment_id.",
+      "Plausible if, after baggage update, the user notices a name/DOB issue and asks to correct passenger details; agent would use reservation_id and the corrected passengers list (first_name, last_name, dob for each existing passenger)."
+    ],
+    [
+      "After updating an existing reservation’s flights, the typical next step is not to create a brand-new booking; booking is a separate workflow unless the modification fails and user wants a new trip.",
+      "If the user decides they no longer want the trip after seeing the updated itinerary/price difference, an agent may proceed to cancel the reservation. Inputs: reservation_id (and per policy, user confirmation; cancellation reason is gathered conversationally).",
+      "After updating flights, the user often asks to review the final itinerary and charges; fetching the updated record is a common immediate verification step. Inputs: reservation_id.",
+      "A common workflow is: search availability first, then update reservation. Doing a search *after* updating is only needed if the user still wants other options, but that’s a plausible immediate follow-up. Inputs: origin, destination, date.",
+      "Similarly, if the user wants to compare connecting options after the update (or the desired direct option isn’t suitable), searching one-stop itineraries is a plausible next step. Inputs: origin, destination, date.",
+      "Not a neighbour: this tool explicitly says it can only be called first, not after any other function, so it cannot be an immediate follow-up to a flight update.",
+      "After changing flights, users commonly add checked bags for the new trip; baggage updates are a routine adjacent modification. Inputs: reservation_id, total_baggages, nonfree_baggages, payment_id (plus user confirmation).",
+      "self — ignored",
+      "After changing flights, users often request name/DOB corrections on the reservation; updating passenger details is a plausible follow-up modification. Inputs: reservation_id and updated passengers array (same passenger count), plus user confirmation."
+    ],
+    [
+      "After updating passenger info, booking a brand-new reservation is a separate intent and not a typical immediate next step. It would require many new inputs (user_id, route, dates, flights, payment_methods) beyond the passenger correction workflow.",
+      "Cancellation is a high-friction/terminal action and is not a routine follow-up to correcting passenger details unless the user explicitly pivots to cancelling. If needed, it would require reservation_id plus a cancellation reason (per policy) and eligibility checks.",
+      "Common follow-up is to verify the passenger changes were applied correctly by re-fetching the reservation. Requires reservation_id.",
+      "Searching flights is unrelated to correcting passenger names/DOB and is not a typical immediate follow-up unless the user is also changing flights. Would require origin, destination, date for the search, which is a different workflow.",
+      "One-stop flight search is likewise unrelated to passenger-info correction and would only arise if the user also wants to modify flights. Requires origin, destination, date—different intent than passenger update validation.",
+      "Tool is explicitly restricted: it “can only be called first not after any other function,” so it cannot be an immediate follow-up after updating passengers. Also compensation is only for delay/cancel complaints, not name corrections.",
+      "A realistic next request after fixing passenger details is “also add checked bags” for the same reservation. Requires reservation_id, updated total_baggages, nonfree_baggages, and payment_id (from user’s saved methods).",
+      "Another plausible follow-up is the user then asks to change the itinerary/cabin after handling passenger corrections. Requires reservation_id, cabin, full flights list (flight_number/date), and payment_id for any fare difference/refund.",
+      "self — ignored"
+    ]
+  ],
+  "is_root": [
+    false,
+    true,
+    true,
+    true,
+    true,
+    true,
+    false,
+    false,
+    false
+  ],
+  "is_root_reason": [
+    "Booking requires many non-trivial inputs that customers typically don’t have upfront without an availability/price search and selection flow (specific flight_number(s), dates, cabin, baggage counts, payment_id(s) from the stored profile). So it’s usually not the first meaningful action in a support interaction.",
+    "A customer can reasonably start a support interaction by asking to cancel a booking and providing their reservation_id (often from an email/itinerary). Other required policy prerequisites (reason for cancellation and explicit confirmation) can be collected conversationally without additional domain tools.",
+    "A customer commonly contacts support to view/verify an itinerary or charges and can provide the reservation_id directly (e.g., from a confirmation email). No additional domain-specific discovery is required to make the first meaningful action this lookup.",
+    "A customer can start with “What direct flights are available from ORIGIN to DESTINATION on DATE?” and the agent can immediately call this using human-facing inputs: origin, destination, and date, with no additional domain-specific prerequisites.",
+    "A customer can start with “Find me one-stop flights from ORIGIN to DESTINATION on DATE,” and the agent can call this immediately with user-provided origin, destination, and date. No internal-only identifiers or multi-step prerequisites are required to perform the search.",
+    "A customer can directly ask for compensation for a delay/cancellation, and the agent can issue the certificate as the first meaningful action once the user is identified. The required inputs (user_id and a stated/eligible compensation amount) are available/derivable at the start of the interaction.",
+    "update_reservation_baggages requires reservation_id plus precise total_baggages/nonfree_baggages and a payment_id from the user’s stored profile; agents typically must first retrieve the reservation and compute free vs paid bags based on cabin/membership, then present charges and get explicit confirmation before updating.",
+    "Updating reservation flights typically cannot be the first meaningful action because the agent must first retrieve/confirm the existing reservation context and ensure policy constraints (e.g., basic economy not modifiable, same origin/destination/trip type) and collect specific new flight selections plus payment_id. The required flights array and payment_id usually require prior discovery and user confirmation.",
+    "Not a good entry-point because it requires a specific reservation_id and a full passengers array matching the existing passenger count, which typically must be retrieved/verified first (e.g., via get_reservation_details) before an agent can safely submit the update."
+  ]
+}

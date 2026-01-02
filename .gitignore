@@ -2,3 +2,8 @@
 .vscode/
 .DS_Store
 
+report
+
+output/traces/*
+
+*/__pycache__/

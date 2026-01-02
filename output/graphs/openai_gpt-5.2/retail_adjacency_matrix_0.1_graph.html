@@ -1,0 +1,156 @@
+<html>
+
+<head>
+    <meta charset="utf-8">
+
+    <script src="lib/bindings/utils.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css"
+        integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js"
+        integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
+    <center>
+        <h1></h1>
+    </center>
+
+    <!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+        crossorigin="anonymous"></script>
+
+
+    <center>
+        <h1></h1>
+    </center>
+    <style type="text/css">
+        #mynetwork {
+            width: 100%;
+            height: 1200px;
+            background-color: #ffffff;
+            border: 1px solid lightgray;
+            position: relative;
+            float: left;
+        }
+    </style>
+</head>
+
+
+<body>
+    <div class="card" style="width: 100%">
+
+
+        <div id="mynetwork" class="card-body"></div>
+    </div>
+
+
+
+
+    <script type="text/javascript">
+
+        // initialize global variables.
+        var edges;
+        var nodes;
+        var allNodes;
+        var allEdges;
+        var nodeColors;
+        var originalNodes;
+        var network;
+        var container;
+        var options, data;
+        var filter = {
+            item: '',
+            property: '',
+            value: []
+        };
+
+
+
+
+
+        // This method is responsible for drawing the graph, returns the drawn network
+        function drawGraph() {
+            var container = document.getElementById('mynetwork');
+
+
+
+            // parsing and collecting nodes and edges from the python
+            nodes = new vis.DataSet([{ "color": "green", "id": "CancelPendingOrder", "label": "CancelPendingOrder", "shape": "dot", "title": "A customer can initiate contact with \u201cPlease cancel my order #W\u2026\u201d. The required inputs (order_id and a simple reason: \u0027no longer needed\u0027 or \u0027ordered by mistake\u0027) are user-provided or can be obtained with a single clarification, assuming authentication is handled as a routine prerequisite." }, { "color": "#97c2fc", "id": "ExchangeDeliveredOrderItems", "label": "ExchangeDeliveredOrderItems", "shape": "dot" }, { "color": "green", "id": "GetOrderDetails", "label": "GetOrderDetails", "shape": "dot", "title": "A customer often starts by asking \u201cWhere is my order?\u201d or \u201cWhat\u2019s in my order?\u201d and can provide the human-facing order_id (e.g., \u0027#W...\u0027). With authentication assumed handled as a routine prerequisite, get_order_details can be the first meaningful action." }, { "color": "#97c2fc", "id": "GetProductDetails", "label": "GetProductDetails", "shape": "dot" }, { "color": "green", "id": "ListAllProductTypes", "label": "ListAllProductTypes", "shape": "dot", "title": "A customer can start with \u201cWhat products do you sell?\u201d or \u201cShow me your product categories,\u201d and this function needs no customer-provided identifiers or multi-step prerequisites, making it a realistic first meaningful action after authentication." }, { "color": "green", "id": "ModifyPendingOrderAddress", "label": "ModifyPendingOrderAddress", "shape": "dot", "title": "A customer can open a support chat with \u201cPlease change the shipping address on order #\u2026,\u201d and provide order_id plus the full new address (address1/address2/city/state/country/zip) in one turn or via a quick clarification. Authentication is assumed handled as a routine prerequisite per policy, and no heavy multi-step discovery is required." }, { "color": "#97c2fc", "id": "ModifyPendingOrderItems", "label": "ModifyPendingOrderItems", "shape": "dot" }, { "color": "#97c2fc", "id": "ModifyPendingOrderPayment", "label": "ModifyPendingOrderPayment", "shape": "dot" }, { "color": "green", "id": "ModifyUserAddress", "label": "ModifyUserAddress", "shape": "dot", "title": "A customer can directly ask to update their default shipping address, and all required fields (address1/address2/city/state/country/zip) can be provided in the initial message or obtained with a single clarification; user_id is available after the standard authentication step." }, { "color": "#97c2fc", "id": "ReturnDeliveredOrderItems", "label": "ReturnDeliveredOrderItems", "shape": "dot" }]);
+            edges = new vis.DataSet([{ "arrows": "to", "from": "ExchangeDeliveredOrderItems", "label": "After requesting an exchange, the custom\u2026", "title": "After requesting an exchange, the customer often asks to confirm the updated order status, exchanged item mappings, or price difference; the agent can fetch the latest state. Inputs: order_id.", "to": "GetOrderDetails" }, { "arrows": "to", "from": "ExchangeDeliveredOrderItems", "label": "After an exchange request, the customer \u2026", "title": "After an exchange request, the customer may ask what variants/options are available (to pick a correct replacement) or to verify the new item is valid/in stock for the same product. Inputs: product_id (from order items).", "to": "GetProductDetails" }, { "arrows": "to", "from": "ExchangeDeliveredOrderItems", "label": "If the user changes their mind right aft\u2026", "title": "If the user changes their mind right after starting an exchange (or exchange isn\u2019t possible), a return is the closest alternative resolution path for a delivered order. Inputs: order_id, item_ids to return, payment_method_id for refund.", "to": "ReturnDeliveredOrderItems" }, { "arrows": "to", "from": "GetOrderDetails", "label": "After viewing order details/status, a co\u2026", "title": "After viewing order details/status, a common next step is the customer asking to cancel if the order is still pending. Inputs needed: order_id and cancellation reason (\u0027no longer needed\u0027|\u0027ordered by mistake\u0027) plus user confirmation.", "to": "CancelPendingOrder" }, { "arrows": "to", "from": "GetOrderDetails", "label": "After checking the order is delivered an\u2026", "title": "After checking the order is delivered and seeing its items, a common next step is to start an exchange. Inputs needed: order_id, item_ids to exchange, new_item_ids to swap to, and payment_method_id (plus user confirmation).", "to": "ExchangeDeliveredOrderItems" }, { "arrows": "to", "from": "GetOrderDetails", "label": "After reviewing order items (and their p\u2026", "title": "After reviewing order items (and their product_id), an agent may need product variant availability/pricing to help the user pick replacement options for an exchange/modify flow. Input needed: product_id.", "to": "GetProductDetails" }, { "arrows": "to", "from": "GetOrderDetails", "label": "If the order details show status \u0027pendin\u2026", "title": "If the order details show status \u0027pending\u0027 and the customer says the shipping address is wrong, the agent would proceed to change the order\u2019s shipping address. Inputs needed: order_id and the full new address fields (address1, address2, city, state, country, zip) plus user confirmation.", "to": "ModifyPendingOrderAddress" }, { "arrows": "to", "from": "GetOrderDetails", "label": "If the order is pending and the customer\u2026", "title": "If the order is pending and the customer wants a different size/color/variant, after inspecting current items/options the agent would modify line items. Inputs needed: order_id, item_ids, new_item_ids, and payment_method_id (plus user confirmation).", "to": "ModifyPendingOrderItems" }, { "arrows": "to", "from": "GetOrderDetails", "label": "If the order is pending and the customer\u2026", "title": "If the order is pending and the customer wants to change how they pay, after viewing payment history the agent may update the payment method. Inputs needed: order_id and new payment_method_id (plus user confirmation).", "to": "ModifyPendingOrderPayment" }, { "arrows": "to", "from": "GetOrderDetails", "label": "After seeing the order\u2019s shipping addres\u2026", "title": "After seeing the order\u2019s shipping address, a common follow-up is the customer asking to update their default account address so future orders ship there. Inputs needed: user_id and the new address fields (address1, address2, city, state, country, zip) plus user confirmation.", "to": "ModifyUserAddress" }, { "arrows": "to", "from": "GetOrderDetails", "label": "If the order details show status \u0027delive\u2026", "title": "If the order details show status \u0027delivered\u0027 and the customer wants a refund for specific items, the agent would initiate a return. Inputs needed: order_id, item_ids to return, and refund payment_method_id (original method or stored gift card) plus user confirmation.", "to": "ReturnDeliveredOrderItems" }, { "arrows": "to", "from": "GetProductDetails", "label": "After viewing product variants/availabil\u2026", "title": "After viewing product variants/availability, a common next step is to exchange a delivered item to a different variant of the same product (e.g., different size/color). Agent would use the chosen variant\u2019s item_id as new_item_ids, plus user-provided order_id, item_ids to exchange, and payment_method_id.", "to": "ExchangeDeliveredOrderItems" }, { "arrows": "to", "from": "GetProductDetails", "label": "Product details are often pulled to conf\u2026", "title": "Product details are often pulled to confirm which variant/item_id matches something in an order; then the agent may immediately fetch the order to see status and line items before any change. Requires user-provided order_id.", "to": "GetOrderDetails" }, { "arrows": "to", "from": "GetProductDetails", "label": "After inspecting product variants, a com\u2026", "title": "After inspecting product variants, a common next step is to modify a pending order\u2019s items to a different variant (selecting new item_id from the product details). Requires user-provided order_id, item_ids to change, selected new_item_ids, and payment_method_id.", "to": "ModifyPendingOrderItems" }, { "arrows": "to", "from": "GetProductDetails", "label": "After seeing which variants are availabl\u2026", "title": "After seeing which variants are available, the customer may choose to return the delivered item instead of exchanging (e.g., desired variant out of stock); returning is a plausible next action in the same flow. Requires user-provided order_id, item_ids to return, and refund payment_method_id.", "to": "ReturnDeliveredOrderItems" }, { "arrows": "to", "from": "ListAllProductTypes", "label": "Common next step: after seeing the catal\u2026", "title": "Common next step: after seeing the catalog list, the customer picks a product and asks what options/variants exist or what\u2019s in stock; the agent would call this with the chosen product_id.", "to": "GetProductDetails" }, { "arrows": "to", "from": "ListAllProductTypes", "label": "Listing product types is often immediate\u2026", "title": "Listing product types is often immediately followed by drilling into a specific product\u2019s inventory/variants; this is the same flow as catalog browsing and can lead into picking item options (product_id).", "to": "ModifyPendingOrderAddress" }, { "arrows": "to", "from": "ModifyPendingOrderAddress", "label": "After changing the shipping address, a c\u2026", "title": "After changing the shipping address, a common follow-up is the customer deciding to cancel the same pending order instead. Inputs needed: order_id, reason (\u0027no longer needed\u0027|\u0027ordered by mistake\u0027).", "to": "CancelPendingOrder" }, { "arrows": "to", "from": "ModifyPendingOrderAddress", "label": "If the address-change call errors (e.g.,\u2026", "title": "If the address-change call errors (e.g., non-pending) or the customer wants to verify the new address/status, the agent would fetch the order record next. Input needed: order_id.", "to": "GetOrderDetails" }, { "arrows": "to", "from": "ModifyPendingOrderAddress", "label": "After updating the shipping address, the\u2026", "title": "After updating the shipping address, the customer may also want to change which items/variants are in the same pending order. Inputs needed: order_id, item_ids, new_item_ids, payment_method_id.", "to": "ModifyPendingOrderItems" }, { "arrows": "to", "from": "ModifyPendingOrderAddress", "label": "After updating the shipping address, a c\u2026", "title": "After updating the shipping address, a common adjacent request is changing the payment method for the same pending order. Inputs needed: order_id and new payment_method_id.", "to": "ModifyPendingOrderPayment" }, { "arrows": "to", "from": "ModifyPendingOrderAddress", "label": "Customer may want the new address to als\u2026", "title": "Customer may want the new address to also become their default profile address after updating this one order. Inputs needed: user_id and the new address fields (address1, address2, city, state, country, zip).", "to": "ModifyUserAddress" }, { "arrows": "to", "from": "ModifyPendingOrderItems", "label": "Common follow-up: confirm the modificati\u2026", "title": "Common follow-up: confirm the modification succeeded and show the updated items/status/total by re-fetching the order. Requires order_id.", "to": "GetOrderDetails" }, { "arrows": "to", "from": "ModifyPendingOrderItems", "label": "Common follow-up when user asks what var\u2026", "title": "Common follow-up when user asks what variants/options are available for the product they\u2019re swapping within: look up the product\u2019s variants to choose valid new_item_ids. Requires product_id (from the order\u2019s items).", "to": "GetProductDetails" }, { "arrows": "to", "from": "ModifyPendingOrderItems", "label": "Sometimes after item changes the user as\u2026", "title": "Sometimes after item changes the user asks what other product types exist or wants to browse alternatives before deciding; listing product types can support selecting a product to inspect. No user inputs required.", "to": "ListAllProductTypes" }, { "arrows": "to", "from": "ModifyPendingOrderItems", "label": "Another common pending-order change requ\u2026", "title": "Another common pending-order change request in the same interaction is updating the shipping address after items were corrected. Requires order_id and the full new address fields (address1, address2, city, state, country, zip).", "to": "ModifyPendingOrderAddress" }, { "arrows": "to", "from": "ModifyPendingOrderItems", "label": "If the price difference/payment situatio\u2026", "title": "If the price difference/payment situation leads the customer to prefer using a different payment method (or if payment fails and they choose another method), modifying payment is a plausible next step. Requires order_id and new payment_method_id.", "to": "ModifyPendingOrderPayment" }, { "arrows": "to", "from": "ModifyPendingOrderPayment", "label": "Plausible if, after changing payment, th\u2026", "title": "Plausible if, after changing payment, the customer immediately decides they no longer want the pending order and asks to cancel it. Inputs needed: order_id, reason (no longer needed/ordered by mistake) plus explicit confirmation.", "to": "CancelPendingOrder" }, { "arrows": "to", "from": "ModifyPendingOrderPayment", "label": "Common follow-up is verifying that the p\u2026", "title": "Common follow-up is verifying that the payment change took effect or checking updated payment history/status after the modification. Inputs needed: order_id.", "to": "GetOrderDetails" }, { "arrows": "to", "from": "ModifyPendingOrderPayment", "label": "Very plausible follow-up: user also want\u2026", "title": "Very plausible follow-up: user also wants to change the shipping address while the order is still pending. Inputs needed: order_id and full new address fields (address1, address2, city, state, country, zip) plus explicit confirmation.", "to": "ModifyPendingOrderAddress" }, { "arrows": "to", "from": "ModifyPendingOrderPayment", "label": "Plausible if the user\u2019s underlying issue\u2026", "title": "Plausible if the user\u2019s underlying issue is they want different variants and, after fixing payment, they proceed to modify items on the same pending order. Inputs needed: order_id, item_ids, new_item_ids, payment_method_id plus explicit confirmation (and reminder it can only be done once).", "to": "ModifyPendingOrderItems" }, { "arrows": "to", "from": "ModifyPendingOrderPayment", "label": "Plausible if the user realizes their sav\u2026", "title": "Plausible if the user realizes their saved/default address is wrong and wants it updated for future orders (separate from the current order\u2019s address). Inputs needed: user_id and new address fields (address1, address2, city, state, country, zip) plus explicit confirmation.", "to": "ModifyUserAddress" }, { "arrows": "to", "from": "ModifyUserAddress", "label": "Common follow-up: customer updated defau\u2026", "title": "Common follow-up: customer updated default address but also wants the shipping address on a specific pending order changed; agent would proceed to modify that order (needs order_id plus full new address fields).", "to": "ModifyPendingOrderAddress" }, { "arrows": "to", "from": "ModifyUserAddress", "label": "Plausible if the customer says their pen\u2026", "title": "Plausible if the customer says their pending order has wrong item options and they\u2019re already managing account details; agent can then modify items (needs order_id, item_ids, new_item_ids, payment_method_id).", "to": "ModifyPendingOrderItems" }, { "arrows": "to", "from": "ModifyUserAddress", "label": "Plausible if, after updating address, th\u2026", "title": "Plausible if, after updating address, the customer also needs to change how they\u2019ll pay for a pending order (needs order_id, new payment_method_id).", "to": "ModifyPendingOrderPayment" }, { "arrows": "to", "from": "ModifyUserAddress", "label": "Plausible if the address update was part\u2026", "title": "Plausible if the address update was part of resolving a delivery issue and the user now wants to return delivered items; agent proceeds to return flow (needs order_id, item_ids, payment_method_id).", "to": "ReturnDeliveredOrderItems" }, { "arrows": "to", "from": "ReturnDeliveredOrderItems", "label": "Customer may decide they want an exchang\u2026", "title": "Customer may decide they want an exchange instead of a return (size/color change) right after discussing return options; agent could proceed to exchange flow for the same delivered order. Inputs: order_id, item_ids to exchange, new_item_ids, payment_method_id.", "to": "ExchangeDeliveredOrderItems" }, { "arrows": "to", "from": "ReturnDeliveredOrderItems", "label": "After requesting a return, users often a\u2026", "title": "After requesting a return, users often ask to confirm updated status/what was recorded; agent may fetch the order to verify it shows \u0027return requested\u0027 and correct return_items. Input: order_id.", "to": "GetOrderDetails" }]);
+
+            nodeColors = {};
+            allNodes = nodes.get({ returnType: "Object" });
+            for (nodeId in allNodes) {
+                nodeColors[nodeId] = allNodes[nodeId].color;
+            }
+            allEdges = edges.get({ returnType: "Object" });
+            // adding nodes and edges to the graph
+            data = { nodes: nodes, edges: edges };
+
+            var options = {
+                "configure": {
+                    "enabled": false
+                },
+                "edges": {
+                    "color": {
+                        "inherit": true
+                    },
+                    "smooth": {
+                        "enabled": true,
+                        "type": "dynamic"
+                    }
+                },
+                "interaction": {
+                    "dragNodes": true,
+                    "hideEdgesOnDrag": false,
+                    "hideNodesOnDrag": false
+                },
+                "physics": {
+                    "barnesHut": {
+                        "avoidOverlap": 0,
+                        "centralGravity": 0.3,
+                        "damping": 0.09,
+                        "gravitationalConstant": -80000,
+                        "springConstant": 0.001,
+                        "springLength": 250
+                    },
+                    "enabled": true,
+                    "stabilization": {
+                        "enabled": true,
+                        "fit": true,
+                        "iterations": 1000,
+                        "onlyDynamicEdges": false,
+                        "updateInterval": 50
+                    }
+                }
+            };
+
+
+
+
+
+
+            network = new vis.Network(container, data, options);
+
+
+
+
+
+
+
+
+
+
+            return network;
+
+        }
+        drawGraph();
+    </script>
+</body>
+
+</html>
