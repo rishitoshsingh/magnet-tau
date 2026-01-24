@@ -59,14 +59,10 @@ output/traces/<graph_name>_traces.json
 Run `run_task_generator.py` using the traces produced in step 1.
 
 ```bash
-python run_task_generator.py \
-  --env airline \
+python tracer2/generate_verify.py \
   --trace-path output/traces/<graph_name>_traces.json \
-  --model-provider openai \
-  --model gpt-5.2 \
-  --temperature 0.2 \
   --start-index 0 \
-  --end-index 10
+  --end-index -1
 ```
 
 **Arguments**
@@ -75,10 +71,9 @@ python run_task_generator.py \
 - `--trace-path`: Path to the traces JSON file
 - `--model-provider`: LLM provider (default: `openai`)
 - `--model`: Model name
-- `--temperature`: Sampling temperature
 - `--task-ids`: Optional list of specific task IDs to run
 - `--start-index`: Start index for trace slicing
-- `--end-index`: End index for trace slicing (omit to run all)
+- `--end-index`: End index for trace slicing (omit to run all, or -1)
 
 ---
 
@@ -88,7 +83,7 @@ python run_task_generator.py \
 python build_trace_v2.py \
   --graph_json_path graphs/airline_adjacency_matrix_0.0.json
 
-python run_task_generator.py \
+python tracer2/generate_verify.py \
   --env airline \
   --trace-path output/traces/airline_adjacency_matrix_0.0_traces.json
 ```
