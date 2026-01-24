@@ -8,7 +8,7 @@ import utilsv2 as utils
 from utilsv2 import TRACE, Tool, load_graph_tools
 
 
-def main(graph_json_path: str, num_traces: int, walk_steps: list[int]):
+def main(graph_json_path: str, num_traces: int, walk_steps: list[int], extra_turn_prob: float, random_seed: int = 42):
     if not os.path.exists(graph_json_path):
         raise FileNotFoundError(graph_json_path)
     
@@ -17,7 +17,8 @@ def main(graph_json_path: str, num_traces: int, walk_steps: list[int]):
         tools,
         num_walks=num_traces,
         walk_steps=walk_steps,
-        rng=random.Random(42),
+        rng=random.Random(random_seed),
+        extra_turn_prob=extra_turn_prob,
     )
 
     
@@ -40,6 +41,8 @@ if __name__ == "__main__":
     parser.add_argument("--graph_json_path", required=True)
     parser.add_argument("--num-traces", type=int, default=50)
     parser.add_argument("--walk-steps", nargs="+", type=int, default=[2, 3, 4])
+    parser.add_argument("--extra-turn-prob", type=float, default=0.3)
+    parser.add_argument("--random-seed", type=int, default=42)
     args = parser.parse_args()
 
-    main(args.graph_json_path, args.num_traces, walk_steps=args.walk_steps)
+    main(args.graph_json_path, args.num_traces, walk_steps=args.walk_steps, extra_turn_prob=args.extra_turn_prob, random_seed=args.random_seed)

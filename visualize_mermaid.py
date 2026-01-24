@@ -99,10 +99,11 @@ def load_graph_data(path: str):
     adjacency_matrix = unwrap_matrix(adjacency_matrix)
     reason_matrix = unwrap_matrix(reason_matrix)
 
-    return tools, adjacency_matrix, reason_matrix
+    is_root_list = data.get("is_root")
+    return tools, adjacency_matrix, reason_matrix, is_root_list
 
 
-def to_mermaid(tools, adjacency_matrix, reason_matrix, direction: str = "LR") -> str:
+def to_mermaid(tools, adjacency_matrix, reason_matrix, direction: str = "LR", is_root_list=None) -> str:
     """
     Convert graph data into a Mermaid 'graph LR' string.
     """
@@ -115,9 +116,26 @@ def to_mermaid(tools, adjacency_matrix, reason_matrix, direction: str = "LR") ->
     lines = [f"graph {direction}"]
 
     # Nodes
+    # for name, node_id in id_map.items():
+    #     label = sanitize_node_label(str(name), MAX_NODE_LABEL_LEN)
+    #     lines.append(f'  {node_id}["{label}"]')
+
+    # Determine root nodes. JSON may provide either:
+    #  - a top-level `is_root` list aligned with the `tools` order (preferred), or
+    #  - each tool dict contains an `is_root` boolean (legacy).
+    root_names = set()
+    if isinstance(is_root_list, list) and len(is_root_list) == len(tool_names):
+        root_names = {name for name, flag in zip(tool_names, is_root_list) if flag}
+    else:
+        root_names = {t.get("name") for t in tools if t.get("is_root")}
+
     for name, node_id in id_map.items():
         label = sanitize_node_label(str(name), MAX_NODE_LABEL_LEN)
         lines.append(f'  {node_id}["{label}"]')
+        # highlight root nodes with a different fill color (Mermaid 'style' syntax)
+        if name in root_names:
+            # You can change the fill color below to any hex you prefer.
+            lines.append(f'  style {node_id} fill:#ffe599,stroke:#333,stroke-width:1px')
 
     if not adjacency_matrix:
         return "\n".join(lines)
@@ -176,8 +194,8 @@ def main():
         print(f"Processing {path} -> {md_name}")
 
         try:
-            tools, adjacency_matrix, reason_matrix = load_graph_data(path)
-            mermaid_src = to_mermaid(tools, adjacency_matrix, reason_matrix, direction="LR")
+            tools, adjacency_matrix, reason_matrix, is_root_list = load_graph_data(path)
+            mermaid_src = to_mermaid(tools, adjacency_matrix, reason_matrix, direction="LR", is_root_list=is_root_list)
 
             md_content = f"""```mermaid
 {mermaid_src}

@@ -65,6 +65,7 @@ def random_walk(
     walk_steps: List[int] = [1, 3],
     start_tool: Optional[Tool] = None,
     rng: random.Random = None,
+    extra_turn_prob: float = 0.3,
 ) -> TRACE:
     """
     Simple random walk on neighbour graph starting from a given tool.
@@ -110,7 +111,7 @@ def random_walk(
             trace_turn.append(tools[current_idx])
         trace.append(trace_turn)
         trace_turn = []
-        if rng.random() < 0.3:
+        if rng.random() < extra_turn_prob:
             start_tools = [t for t in tools if t.is_root and t.idx not in visited]
             if not start_tools:
                 break
@@ -128,6 +129,7 @@ def build_random_walks(
     num_walks: int,
     walk_steps: List[int] = [1, 3],
     rng: Optional[random.Random] = None,
+    extra_turn_prob: float = 0.3,
 ) -> List[TRACE]:
     """
     Build multiple random-walk TRACEs on the tool graph.
@@ -137,7 +139,7 @@ def build_random_walks(
 
     traces: List[TRACE] = []
     for _ in range(num_walks):
-        trace = random_walk(tools, walk_steps=walk_steps, rng=rng)
+        trace = random_walk(tools, walk_steps=walk_steps, rng=rng, extra_turn_prob=extra_turn_prob)
         traces.append(trace)
 
     return traces

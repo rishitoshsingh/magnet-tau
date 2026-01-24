@@ -146,7 +146,7 @@ def cancelled_flights(date: str) -> list[dict]:
                 "status": "cancelled",
                 "details": day,
             })
-        random.shuffle(result)
+    random.shuffle(result)
     return result
 
 @tool
