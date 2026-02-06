@@ -8,8 +8,10 @@ from typing import Any, Dict, List, Optional, Tuple, Type
 
 from tracer2.agents.chat_react_agent import ChatReActAgent
 from tracer2.envs.tool import Tool
-from tracer2.prompts.task_generator_airline import SYSTEM_PROMPT, USER_PROMPT
+from tracer2.prompts.task_generator_airline import SYSTEM_PROMPT as AIRLINE_SYSTEM_PROMPT
+from tracer2.prompts.task_generator_airline import USER_PROMPT as AIRLINE_USER_PROMPT
 from tracer2.types import (
+    Action,
     RESPOND_ACTION_FIELD_NAME,
     RESPOND_ACTION_NAME,
     EnvInfo,
@@ -185,7 +187,7 @@ class _ReActToolEnv:
             else:
                 observation = (
                     "Error: invalid final output. Use respond with content set to ONLY a JSON object "
-                    "matching TracerAgentOutput: {user_id, instructions, story, persona}. "
+                    "matching TracerAgentOutput: {user_id, instructions, story, actions}. "
                     f"Validation error: {err}"
                 )
                 done = False
@@ -213,6 +215,8 @@ class TraceTaskGeneratorAgent:
         data_load_func,
         model: str,
         provider: str,
+        system_prompt: str | None = None,
+        user_prompt: str | None = None,
         temperature: float = 0.2,
         max_steps: int = 200,
         max_parse_attempts: int = 3,
@@ -225,10 +229,14 @@ class TraceTaskGeneratorAgent:
         self.max_steps = max_steps
         self.max_parse_attempts = max_parse_attempts
 
+        system_prompt_final = system_prompt if system_prompt is not None else AIRLINE_SYSTEM_PROMPT
+        user_prompt_final = user_prompt if user_prompt is not None else AIRLINE_USER_PROMPT
+        self._user_prompt_template = user_prompt_final
+
         generator_wiki = (
-            SYSTEM_PROMPT
+            system_prompt_final
             + "\n\nWhen you are ready to finish, use Action with name='respond' and arguments {\"content\": <JSON>}."
-            + "\nThat JSON MUST match TracerAgentOutput exactly: {user_id, instructions, story, persona}."
+            + "\nThat JSON MUST match TracerAgentOutput exactly: {user_id, instructions, story}."
             + "\nDo not include any text outside the JSON."
         )
 
@@ -250,7 +258,9 @@ class TraceTaskGeneratorAgent:
         feedback = verifier_feedback or ""
         requirements = _format_requirements_summary(trace)
 
-        user_prompt = USER_PROMPT.format(trace=json.dumps(trace, indent=2), feedback=feedback)
+        user_prompt = self._user_prompt_template.format(
+            trace=json.dumps(trace, indent=2), feedback=feedback
+        )
         user_prompt += (
             "\n\nREQUIREMENTS_SUMMARY (must satisfy these):\n"
             + requirements
@@ -310,12 +320,13 @@ class TraceTaskGeneratorAgent:
             try:
                 data = json.loads(cur)
                 parsed = TracerAgentOutput.model_validate(data)
+                actions = [Action.model_validate(a) for a in (parsed.actions or [])]
                 return GeneratedTaskCandidate(
                     user_id=parsed.user_id,
                     instructions=parsed.instructions,
                     story=parsed.story,
-                    persona=parsed.persona,
                     action_trace=trace,
+                    actions=actions,
                     attempt=attempt,
                     verifier_feedback=verifier_feedback,
                 )

@@ -1,5 +1,6 @@
 import json
 from typing import Any, Dict
+import random
 
 from tracer2.envs.tool import Tool
 
@@ -13,9 +14,17 @@ class GetDelayedFlights(Tool):
         """
         Find flights that experienced a departure delay on a given date.
         """
-        flights = data["flights"]
+        flights, reservations = data["flights"], data["reservations"]
+
+        # Flights that appear in any reservation (flight_number, date)
+        flights_with_reservations = set()
+        for res in reservations.values():
+            for seg in res.get("flights", []):
+                fn, d = seg.get("flight_number"), seg.get("date")
+                if fn and d:
+                    flights_with_reservations.add((fn, d))
+
         result = []
-        import random
         from datetime import datetime
         for flight_id, info in flights.items():
             day = info.get("dates", {}).get(date)
@@ -39,6 +48,11 @@ class GetDelayedFlights(Tool):
             if actual_dt <= scheduled_dt:
                 continue
 
+            # Skip flights that have any reservations
+            flight_number = info.get("flight_number", flight_id)
+            if (flight_number, date) in flights_with_reservations:
+                continue
+
             delay_minutes = int(
                 (actual_dt - scheduled_dt).total_seconds() // 60
             )
@@ -57,6 +71,7 @@ class GetDelayedFlights(Tool):
             )
 
         random.shuffle(result)
+        
         return json.dumps(result)
     @staticmethod
     def get_info() -> Dict[str, Any]:

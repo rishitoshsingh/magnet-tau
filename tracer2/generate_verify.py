@@ -60,25 +60,39 @@ def _build_airline_env(
     env.terminate_tools = ["transfer_to_human_agents"]
     return env
 
-
-def _combine_instruction(user_id: str, instructions: List[str], persona: Dict[str, Any]) -> str:
-    """Create a single 2nd-person instruction with persona guidance and goals."""
-
-    emo = persona.get("emotional_state", "calm") if isinstance(persona, dict) else "calm"
-    urg = persona.get("urgency", "medium") if isinstance(persona, dict) else "medium"
-    style = persona.get("communication_style", "cooperative") if isinstance(persona, dict) else "cooperative"
-
-    persona_line = (
-        f"You are feeling {emo}, this is a {urg} urgency situation, and you tend to be {style} in how you communicate."
+def _build_retail_env(
+    task: Task, user_strategy: str, user_model: str, user_provider: str, tools_mode: str
+) -> Env:
+    from tracer2.envs.retail import tools as retail_tools
+    from tracer2.envs.retail.data import load_data
+    from tracer2.envs.retail.reverse_tools import ALL_TOOLS as REVERSE_TOOLS
+    from tracer2.envs.retail.rules import RULES
+    from tracer2.envs.retail.wiki import WIKI
+    env = Env(
+        data_load_func=load_data,
+        tools=retail_tools.ALL_TOOLS if tools_mode == "forward" else REVERSE_TOOLS,
+        tasks=[task],
+        wiki=WIKI,
+        rules=RULES,
+        user_strategy=user_strategy,
+        user_model=user_model,
+        user_provider=user_provider,
+        task_index=0,
+        enable_reward=False,
     )
+    # Match MockRetailDomainEnv termination behavior
+    env.terminate_tools = ["transfer_to_human_agents"]
+    return env
 
+def _combine_instruction(user_id: str, instructions: List[str]) -> str:
+    """Create a single 2nd-person instruction with the goals."""
     if len(instructions) == 1:
         goals = f"You want: {instructions[0]}"
     else:
         goal_lines = [f"{i+1}. {inst}" for i, inst in enumerate(instructions)]
         goals = "You want to accomplish these, in order:\n" + "\n".join(goal_lines)
 
-    return f"You are {user_id}. {persona_line} {goals}"
+    return f"You are {user_id}. {goals}"
 
 
 def parse_args():
@@ -88,8 +102,8 @@ def parse_args():
     p.add_argument(
         "--env",
         default="airline",
-        choices=["airline"],
-        help="Domain env (airline only for now).",
+        choices=["airline", "retail"],
+        help="Domain env.",
     )
     p.add_argument(
         "--trace-path",
@@ -148,18 +162,29 @@ def main():
     out_p = Path(output_path)
     out_p.parent.mkdir(parents=True, exist_ok=True)
 
-    if args.env != "airline":
-        raise ValueError("Only airline is supported by this script right now.")
+    # Select env-specific data loader, tools, prompts, and env builder
+    if args.env == "airline":
+        from tracer2.envs.airline.data import load_data
+        from tracer2.envs.airline.reverse_tools import ALL_TOOLS as REVERSE_TOOLS
+        from tracer2.prompts.task_generator_airline import SYSTEM_PROMPT, USER_PROMPT
 
-    # Generator uses airline reverse tools + airline dataset
-    from tracer2.envs.airline.data import load_data
-    from tracer2.envs.airline.reverse_tools import ALL_TOOLS as REVERSE_TOOLS
+        build_env = _build_airline_env
+    elif args.env == "retail":
+        from tracer2.envs.retail.data import load_data
+        from tracer2.envs.retail.reverse_tools import ALL_TOOLS as REVERSE_TOOLS
+        from tracer2.prompts.task_generator_retail import SYSTEM_PROMPT, USER_PROMPT
+
+        build_env = _build_retail_env
+    else:
+        raise ValueError(f"Unsupported env: {args.env}")
 
     generator = TraceTaskGeneratorAgent(
         tools=REVERSE_TOOLS,
         data_load_func=load_data,
         model=args.generator_model,
         provider=args.generator_model_provider,
+        system_prompt=SYSTEM_PROMPT,
+        user_prompt=USER_PROMPT,
         temperature=args.generator_temperature,
     )
 
@@ -193,8 +218,8 @@ def main():
             (
                 candidate,
                 generator_messages,
-                generator_tool_actions,
-                generator_tool_history,
+                _,
+                _,
             ) = generator.generate(trace=trace, attempt=attempt, verifier_feedback=feedback)
 
             print(f"\n{'='*60}")
@@ -207,17 +232,16 @@ def main():
             combined_instruction = _combine_instruction(
                 user_id=candidate.user_id,
                 instructions=candidate.instructions,
-                persona=candidate.persona.model_dump(),
             )
 
             # Step 2: Verify - just attempt to solve the task
             task = Task(
                 user_id=candidate.user_id,
                 instruction=candidate.instructions,
-                actions=[],
+                actions=candidate.actions or [],
                 outputs=[],
             )
-            env = _build_airline_env(
+            env = build_env(
                 task=task,
                 user_strategy=args.user_strategy,
                 user_model=args.user_model,
@@ -261,11 +285,9 @@ def main():
                         "instructions": candidate.instructions,
                         "instruction": combined_instruction,
                         "story": candidate.story,
-                        "persona": candidate.persona.model_dump(),
                         "action_trace": candidate.action_trace,
+                        "ground_truth_actions": [a.model_dump() for a in (candidate.actions or [])],
                         "generator_traj": generator_messages,
-                        "generator_tool_actions": generator_tool_actions,
-                        "generator_tool_history": generator_tool_history,
                         "verifier_report": verifier_report,
                         "verified_tool_actions": verified_tool_actions,
                     }
@@ -281,11 +303,9 @@ def main():
                     "instructions": candidate.instructions,
                     "instruction": combined_instruction,
                     "story": candidate.story,
-                    "persona": candidate.persona.model_dump(),
                     "action_trace": candidate.action_trace,
+                    "ground_truth_actions": [a.model_dump() for a in (candidate.actions or [])],
                     "generator_traj": generator_messages,
-                    "generator_tool_actions": generator_tool_actions,
-                    "generator_tool_history": generator_tool_history,
                     "verifier_report": verifier_report,
                     "verified_tool_actions": verified_tool_actions,
                     "failed": True,

@@ -10,10 +10,17 @@ from .get_reservation_details import GetReservationDetails
 from .get_reservation_ids_for_flight import GetReservationIdsForFlight
 from .get_todays_date import GetTodaysDate
 from .get_user_details import GetUserDetails
+from .get_user_ids_with_n_reservations import GetUserIdsWithNReservations
+from .update_reservation_passengers import UpdateReservationPassengers
+from .update_reservation_flights import UpdateReservationFlights
+from .update_reservation_baggages import UpdateReservationBaggages
+from .cancel_reservation import CancelReservation
+from .book_reservation import BookReservation
+from .calculate import Calculate
 from .think import Think
 
 ALL_TOOLS = [
-    GetAllUserIds,
+    # GetAllUserIds,
     GetCancelledFlights,
     GetDelayedFlights,
     GetFlightDetails,
@@ -23,5 +30,12 @@ ALL_TOOLS = [
     GetEarliestFlightDate,
     GetLatestBookableFlightDate,
     GetTodaysDate,
+    GetUserIdsWithNReservations,
+    # UpdateReservationPassengers,
+    # UpdateReservationFlights,
+    # UpdateReservationBaggages,
+    # CancelReservation,
+    # BookReservation,
+    Calculate,
     Think,
 ]

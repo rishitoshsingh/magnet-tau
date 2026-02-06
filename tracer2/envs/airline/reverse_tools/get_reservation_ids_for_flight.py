@@ -24,6 +24,8 @@ class GetReservationIdsForFlight(Tool):
                     break
         import random
         random.shuffle(result)
+        if not result:
+            return json.dumps(f"No reservation IDs found for flight {flight_id} on date {date}.")
         return json.dumps(result)
 
     @staticmethod

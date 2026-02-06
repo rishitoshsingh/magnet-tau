@@ -33,13 +33,13 @@ class TracerAgentOutput(BaseModel):
 
     `trace` is a list of TURNs: [[TURN1],[TURN2],...]. The generator must emit one
     instruction per TURN, each containing all required params needed to execute
-    that TURN's tool calls.
+    that TURN's tool calls. `actions` is a flat list of ground-truth Action (name, kwargs).
     """
 
     user_id: str
     instructions: List[str]
     story: str
-    persona: Persona
+    actions: List["Action"]
 
 
 class Action(BaseModel):
@@ -47,13 +47,17 @@ class Action(BaseModel):
     kwargs: Dict[str, Any]
 
 
+# Type alias for list of Action (use where a list of Action is needed; Action itself is unchanged)
+Actions = List[Action]
+
+
 class GeneratedTaskCandidate(BaseModel):
     # Candidate produced by the generator agent from a tool trace
     user_id: str
     instructions: List[str]
     story: str
-    persona: Persona
     action_trace: Any  # raw trace JSON
+    actions: Actions = []  # list of Action (name, kwargs)
     attempt: int = 0
     verifier_feedback: Optional[str] = None
 
@@ -67,7 +71,7 @@ class VerificationReport(BaseModel):
     unknown_actions: List[Dict[str, Any]]
     critique: str
     transcript: List[Dict[str, Any]]
-    actions: List[Action]
+    actions: Actions = []  # list of Action (name, kwargs)
 
 
 RESPOND_ACTION_NAME = "respond"

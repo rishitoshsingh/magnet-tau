@@ -1,5 +1,6 @@
 import json
 from typing import Any, Dict
+import random
 
 from tracer2.envs.tool import Tool
 
@@ -15,7 +16,6 @@ class GetCancelledFlights(Tool):
         """
         flights = data["flights"]
         result = []
-        import random
         from datetime import datetime
         for flight_id, info in flights.items():
             day = info.get("dates", None).get(date)

@@ -1,8 +1,8 @@
 import json
 from typing import Any, Dict
+import random
 
 from tracer2.envs.tool import Tool
-import random
 
 
 class GetAllUserIds(Tool):
