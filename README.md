@@ -56,24 +56,21 @@ output/traces/<graph_name>_traces.json
 
 ## 2️⃣ Generate tasks from traces
 
-Run `run_task_generator.py` using the traces produced in step 1.
+Before running the generator, update `tracer2/config/generator_config.json` with the correct environment, trace path, model settings, and any index range you want to use.
 
 ```bash
-python tracer2/generate_verify.py \
-  --trace-path output/traces/<graph_name>_traces.json \
-  --start-index 0 \
-  --end-index -1
+python -m tracer2.generator --config tracer2/config/generator_config.json
 ```
 
-**Arguments**
+**Config fields**
 
 - `--env`: Environment (`airline` or `retail`)
-- `--trace-path`: Path to the traces JSON file
-- `--model-provider`: LLM provider (default: `openai`)
-- `--model`: Model name
-- `--task-ids`: Optional list of specific task IDs to run
-- `--start-index`: Start index for trace slicing
-- `--end-index`: End index for trace slicing (omit to run all, or -1)
+- `trace_path`: Path to the traces JSON file
+- `generator_model_provider`: LLM provider (default: `openai`)
+- `generator_model`: Model name
+- `task_ids`: Optional list of specific task IDs to run
+- `start_index`: Start index for trace slicing
+- `end_index`: End index for trace slicing
 
 ---
 
@@ -83,9 +80,8 @@ python tracer2/generate_verify.py \
 python build_trace_v2.py \
   --graph_json_path graphs/airline_adjacency_matrix_0.0.json
 
-python tracer2/generate_verify.py \
-  --env airline \
-  --trace-path output/traces/airline_adjacency_matrix_0.0_traces.json
+# First update tracer2/config/generator_config.json
+python -m tracer2.generator --config tracer2/config/generator_config.json
 ```
 
 ---

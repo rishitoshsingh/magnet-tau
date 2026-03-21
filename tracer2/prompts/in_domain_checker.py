@@ -28,6 +28,10 @@ Important guidance:
 - If the request is missing key information, has invalid parameters, or the replay shows entity/argument failures that point to incomplete task construction, classify it as `malformed`.
 - After attempting the task, use your own judgment to classify its difficulty as `easy`, `medium`, or `hard`.
 - Difficulty should be based on the replayed tool path: number of tool calls, whether they mostly read data or changed data, whether multiple dependent state-changing steps were needed, and whether errors/validation complexity suggest a harder task.
+- Difficulty hint:
+  - A single tool call is usually `easy`.
+  - Around 5 tool calls in a dependent sequence can already be `hard`.
+  - More than 2 write/data-changing tool calls is also a strong sign the task should be `hard`.
 - Do not use a fixed rubric. Use the task you actually solved and explain your reasoning briefly.
 
 Your job:
