@@ -16,10 +16,10 @@ import litellm
 
 litellm.drop_params = True
 
+from tracer2.agents.in_domain_checker_agent import InDomainCheckerAgent
 from tracer2.agents.task_generator_agent import TraceTaskGeneratorAgent
 from tracer2.agents.task_post_processor_agent import TaskPostProcessorAgent
 from tracer2.envs.base import Env
-from tracer2.envs.user import UserStrategy
 from tracer2.types import Task
 
 
@@ -34,7 +34,7 @@ def _default_output_path(trace_path: str) -> str:
 
 
 def _build_airline_env(
-    task: Task, user_strategy: str, user_model: str, user_provider: str, tools_mode: str
+    task: Task, tools_mode: str
 ) -> Env:
     from tracer2.envs.airline import tools as airline_tools
     from tracer2.envs.airline.data import load_data
@@ -48,9 +48,9 @@ def _build_airline_env(
         tasks=[task],
         wiki=WIKI,
         rules=RULES,
-        user_strategy=user_strategy,
-        user_model=user_model,
-        user_provider=user_provider,
+        user_strategy="instruction",
+        user_model="gpt-4o",
+        user_provider=None,
         task_index=0,
         enable_reward=True,
     )
@@ -59,7 +59,7 @@ def _build_airline_env(
 
 
 def _build_retail_env(
-    task: Task, user_strategy: str, user_model: str, user_provider: str, tools_mode: str
+    task: Task, tools_mode: str
 ) -> Env:
     from tracer2.envs.retail import tools as retail_tools
     from tracer2.envs.retail.data import load_data
@@ -73,9 +73,9 @@ def _build_retail_env(
         tasks=[task],
         wiki=WIKI,
         rules=RULES,
-        user_strategy=user_strategy,
-        user_model=user_model,
-        user_provider=user_provider,
+        user_strategy="instruction",
+        user_model="gpt-4o",
+        user_provider=None,
         task_index=0,
         enable_reward=True,
     )
@@ -93,9 +93,20 @@ def _combine_instruction(user_id: str, instructions: List[str]) -> str:
     return f"You are {user_id}. {goals}"
 
 
+def _load_config_defaults(config_path: str) -> Dict[str, Any]:
+    """Load a JSON config file. Keys should match argparse dest names (e.g. trace_path, generator_model)."""
+    with open(config_path, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+
 def parse_args():
     p = argparse.ArgumentParser(
         description="Generate tasks from traces, build env, and compute reward via env.calculate_reward()."
+    )
+    p.add_argument(
+        "--config",
+        default=None,
+        help="Path to JSON config file. Config keys override script defaults; CLI overrides config.",
     )
     p.add_argument(
         "--env",
@@ -113,13 +124,10 @@ def parse_args():
     p.add_argument("--generator-model-provider", default="openai")
     p.add_argument("--generator-model", default="gpt-5.2")
     p.add_argument("--generator-temperature", type=float, default=0.2)
-
-    p.add_argument("--user-model-provider", default="openai")
-    p.add_argument("--user-model", default="gpt-4o")
     p.add_argument(
-        "--user-strategy",
-        default="llm",
-        choices=[u.value for u in UserStrategy],
+        "--api-base",
+        default=None,
+        help="Optional base URL for the LLM API (e.g. https://your-vllm-host/v1 for hosted vLLM).",
     )
 
     p.add_argument("--start-index", "--start-idx", type=int, default=0)
@@ -131,7 +139,19 @@ def parse_args():
         default=3,
         help="Number of tasks to generate per trace (default: 3).",
     )
+    p.add_argument(
+        "--print-thoughts",
+        action="store_true",
+        help="Print ReAct Thought lines and think-tool content from the generator agent.",
+    )
 
+    # First pass: get --config if present
+    args_pre, _ = p.parse_known_args()
+    if args_pre.config is not None:
+        cfg = _load_config_defaults(args_pre.config)
+        for action in p._actions:
+            if action.dest != "config" and action.dest in cfg:
+                action.default = cfg[action.dest]
     return p.parse_args()
 
 
@@ -156,18 +176,31 @@ def main():
     out_p.parent.mkdir(parents=True, exist_ok=True)
 
     # Select env-specific data loader, tools, prompts, and env builder (same as generate_verify)
+    preference_system_prompt = None
+    format_preference_user_prompt = None
+    forward_tools = None
     if args.env == "airline":
         from tracer2.envs.airline.data import load_data
         from tracer2.envs.airline.reverse_tools import ALL_TOOLS as REVERSE_TOOLS
+        from tracer2.envs.airline import tools as airline_tools_module
         from tracer2.prompts.task_generator_airline import SYSTEM_PROMPT, USER_PROMPT
 
         build_env = _build_airline_env
+        forward_tools = airline_tools_module.ALL_TOOLS
     elif args.env == "retail":
         from tracer2.envs.retail.data import load_data
         from tracer2.envs.retail.reverse_tools import ALL_TOOLS as REVERSE_TOOLS
+        from tracer2.envs.retail import tools as retail_tools_module
         from tracer2.prompts.task_generator_retail import SYSTEM_PROMPT, USER_PROMPT
+        from tracer2.prompts.task_preference_retail import (
+            PREFERENCE_SYSTEM_PROMPT as RETAIL_PREFERENCE_SYSTEM_PROMPT,
+            format_preference_user_prompt as retail_format_preference_user_prompt,
+        )
 
         build_env = _build_retail_env
+        preference_system_prompt = RETAIL_PREFERENCE_SYSTEM_PROMPT
+        format_preference_user_prompt = retail_format_preference_user_prompt
+        forward_tools = retail_tools_module.ALL_TOOLS
     else:
         raise ValueError(f"Unsupported env: {args.env}")
 
@@ -179,12 +212,22 @@ def main():
         system_prompt=SYSTEM_PROMPT,
         user_prompt=USER_PROMPT,
         temperature=args.generator_temperature,
+        api_base=args.api_base,
+        print_thoughts=getattr(args, "print_thoughts", False),
     )
 
     post_processor = TaskPostProcessorAgent(
         model=args.generator_model,
         provider=args.generator_model_provider,
         temperature=0.0,
+        api_base=args.api_base,
+    )
+
+    in_domain_checker = InDomainCheckerAgent(
+        model=args.generator_model,
+        provider=args.generator_model_provider,
+        temperature=0.0,
+        api_base=args.api_base,
     )
 
     if args.task_ids is not None and len(args.task_ids) > 0:
@@ -230,9 +273,6 @@ def main():
                 )
                 env = build_env(
                     task=task,
-                    user_strategy=args.user_strategy,
-                    user_model=args.user_model,
-                    user_provider=args.user_model_provider,
                     tools_mode="forward",
                 )
 
@@ -256,15 +296,60 @@ def main():
                 # Step 4: Preference agent rewrites instructions to preference form (same tools as generator); add new keys only
                 try:
                     preference_instructions, preference_traj = post_processor.add_preference_instructions(
-                        candidate, load_data, REVERSE_TOOLS
+                        candidate,
+                        load_data,
+                        REVERSE_TOOLS,
+                        preference_system_prompt=preference_system_prompt,
+                        format_preference_user_prompt=format_preference_user_prompt,
                     )
                     if preference_instructions is not None:
                         result_dict["preference_instructions"] = preference_instructions
-                        print(f"  [preference] added {len(preference_instructions)} preference instructions")
+                        if preference_instructions:
+                            result_dict["preference_instruction"] = preference_instructions[0]
+                        print(f"  [preference] added 1 combined preference instruction (customer-only)")
                     result_dict["preference_traj"] = preference_traj
                 except Exception as pref_err:
                     print(f"  [preference] skip: {pref_err}")
                     result_dict["preference_traj"] = []
+                # Step 5: Solvability checker — use forward tools to test the task and estimate difficulty
+                try:
+                    task_analysis = in_domain_checker.check_in_domain(
+                        domain=args.env,
+                        env=env,
+                        instruction=result_dict["instruction"],
+                        ground_truth_actions=result_dict["ground_truth_actions"],
+                        preferred_output=result_dict.get("preference_instructions"),
+                        num_instructions=len(candidate.instructions),
+                    )
+                    result_dict["in_domain"] = task_analysis.get("in_domain")
+                    result_dict["in_domain_reason"] = task_analysis.get("in_domain_reason")
+                    result_dict["solvable"] = task_analysis.get("solvable")
+                    result_dict["not_solvable"] = task_analysis.get("not_solvable")
+                    result_dict["solvable_reason"] = task_analysis.get("solvable_reason")
+                    result_dict["difficulty"] = task_analysis.get("difficulty")
+                    result_dict["difficulty_reason"] = task_analysis.get("difficulty_reason")
+                    result_dict["task_checker_traj"] = task_analysis.get("trajectory", [])
+                    result_dict["task_checker_action_replay"] = task_analysis.get("action_replay", [])
+                    if task_analysis.get("solvable") is not None:
+                        print(
+                            "  [task_check] "
+                            f"in_domain={task_analysis.get('in_domain')} "
+                            f"solvable={task_analysis.get('solvable')} "
+                            f"not_solvable={task_analysis.get('not_solvable')} "
+                            f"difficulty={task_analysis.get('difficulty')} "
+                            f"— {task_analysis.get('solvable_reason') or ''}"
+                        )
+                except Exception as id_err:
+                    print(f"  [task_check] skip: {id_err}")
+                    result_dict["in_domain"] = None
+                    result_dict["in_domain_reason"] = None
+                    result_dict["solvable"] = None
+                    result_dict["not_solvable"] = None
+                    result_dict["solvable_reason"] = None
+                    result_dict["difficulty"] = None
+                    result_dict["difficulty_reason"] = None
+                    result_dict["task_checker_traj"] = []
+                    result_dict["task_checker_action_replay"] = []
                 batch_candidates.append((candidate, run, result_dict))
                 print(f"  ✓ Success idx={idx} run={run}")
 

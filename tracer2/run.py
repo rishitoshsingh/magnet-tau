@@ -76,10 +76,15 @@ def run(config: RunConfig) -> List[EnvRunResult]:
 
             print(f"Running task {idx}")
             try:
-                res = agent.solve(
+                solve_kw: Dict[str, Any] = dict(
                     env=isolated_env,
                     task_index=idx,
                 )
+                if config.agent_strategy in ("react", "act") and getattr(
+                    config, "print_thoughts", False
+                ):
+                    solve_kw["print_thoughts"] = True
+                res = agent.solve(**solve_kw)
                 result = EnvRunResult(
                     task_id=idx,
                     reward=res.reward,

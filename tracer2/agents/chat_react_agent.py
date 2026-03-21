@@ -24,7 +24,9 @@ class ChatReActAgent(Agent):
         provider: str,
         use_reasoning: bool = True,
         temperature: float = 0.0,
+        api_base: Optional[str] = None,
     ) -> None:
+        print(f"Initializing ChatReActAgent with model={model}, provider={provider}, use_reasoning={use_reasoning}, temperature={temperature}, api_base={api_base}")
         instruction = REACT_INSTRUCTION if use_reasoning else ACT_INSTRUCTION
         self.prompt = (
             wiki + "\n#Available tools\n" + json.dumps(tools_info) + instruction
@@ -34,6 +36,7 @@ class ChatReActAgent(Agent):
         self.temperature = temperature
         self.use_reasoning = use_reasoning
         self.tools_info = tools_info
+        self.api_base = api_base
     def _extract_first_action(self, content: str) -> Optional[Tuple[Dict[str, Any], int]]:
         """Best-effort extraction of the first valid Action JSON object from a ReAct-style message.
 
@@ -114,14 +117,23 @@ class ChatReActAgent(Agent):
     def generate_next_step(
         self, messages: List[Dict[str, Any]]
     ) -> Tuple[Dict[str, Any], Action, float]:
-        res = completion(
-            model=self.model,
-            custom_llm_provider=self.provider,
-            messages=messages,
-            temperature=self.temperature,
-        )
+        completion_kwargs: Dict[str, Any] = {
+            "model": self.model,
+            "messages": messages,
+            "temperature": self.temperature,
+        }
+
+        # Only pass provider when not using a custom api_base
+        if self.api_base is None:
+            completion_kwargs["custom_llm_provider"] = self.provider
+        else:
+            completion_kwargs["api_base"] = self.api_base
+
+        res = completion(**completion_kwargs)
         message = res.choices[0].message
         content = message.content or ""
+
+        cost = (getattr(res, "_hidden_params", None) or {}).get("response_cost") or 0.0
 
         action_info = self._extract_first_action(content)
         if not action_info:
@@ -129,7 +141,7 @@ class ChatReActAgent(Agent):
                 name=RESPOND_ACTION_NAME,
                 kwargs={RESPOND_ACTION_FIELD_NAME: content.strip()},
             )
-            return message.model_dump(), action, res._hidden_params["response_cost"]
+            return message.model_dump(), action, cost
 
         action_parsed, action_end = action_info
         # Normalize the logged content to the first executed Thought/Action block.
@@ -138,18 +150,45 @@ class ChatReActAgent(Agent):
 
         name = action_parsed.get("name")
         arguments = action_parsed.get("arguments")
-        if not isinstance(name, str) or not isinstance(arguments, dict):
+        if not isinstance(name, str):
             action = Action(
                 name=RESPOND_ACTION_NAME,
                 kwargs={RESPOND_ACTION_FIELD_NAME: content.strip()},
             )
-            return message_dict, action, res._hidden_params["response_cost"]
+            return message_dict, action, cost
+        if isinstance(arguments, str):
+            try:
+                arguments = json.loads(arguments)
+            except Exception:
+                arguments = {}
+        if not isinstance(arguments, dict):
+            action = Action(
+                name=RESPOND_ACTION_NAME,
+                kwargs={RESPOND_ACTION_FIELD_NAME: content.strip()},
+            )
+            return message_dict, action, cost
+
+        # Ensure respond content is always a string (APIs may return parsed dict)
+        if name == RESPOND_ACTION_NAME and RESPOND_ACTION_FIELD_NAME in arguments:
+            raw = arguments[RESPOND_ACTION_FIELD_NAME]
+            if isinstance(raw, dict):
+                arguments = {**arguments, RESPOND_ACTION_FIELD_NAME: json.dumps(raw)}
 
         action = Action(name=name, kwargs=arguments)
-        return message_dict, action, res._hidden_params["response_cost"]
+        return message_dict, action, cost
+
+    def _extract_thought(self, content: str) -> Optional[str]:
+        """Extract the Thought line(s) from ReAct-style content (between Thought: and Action:)."""
+        if "Thought:" not in content or "Action:" not in content:
+            return None
+        start = content.find("Thought:") + len("Thought:")
+        end = content.find("Action:", start)
+        if end == -1:
+            return None
+        return content[start:end].strip() or None
 
     def solve(
-        self, env: Env, task_index: Optional[int] = None, max_num_steps: int = 30
+        self, env: Env, task_index: Optional[int] = None, max_num_steps: int = 30, print_thoughts: bool = False
     ) -> SolveResult:
         response = env.reset(task_index=task_index)
         reward = 0.0
@@ -159,8 +198,19 @@ class ChatReActAgent(Agent):
         ]
         total_cost = 0.0
         info = {}
-        for _ in range(max_num_steps):
+        for step in range(max_num_steps):
             message, action, cost = self.generate_next_step(messages)
+            if print_thoughts:
+                content = (message.get("content") or "").strip()
+                thought = self._extract_thought(content)
+                if thought:
+                    print(f"[Step {step + 1}] Thought: {thought}")
+                if action.name == "think":
+                    think_text = action.kwargs.get("thought", "")
+                    if think_text:
+                        print(f"[Step {step + 1}] Think tool: {think_text}")
+            else:
+                print(f"[Step {step + 1}] Action: {action.name}, Arguments: {action.kwargs}")
             response = env.step(action)
             obs = response.observation
             reward = response.reward

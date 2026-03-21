@@ -208,14 +208,26 @@ def main() -> None:
     new_tasks = load_tasks(tasks_json_path)
     print(f"Loaded {len(new_tasks)} new tasks from {tasks_json_path}")
 
-    # Extract fields from new tasks. If actions/outputs exist, preserve them.
+    # Extract fields from new tasks. Only include tasks with solvable/in_domain set to True; use preference_instruction for instruction.
     processed_tasks: List[Dict[str, Any]] = []
+    skipped_not_in_domain = 0
+    skipped_no_preference = 0
     for task in new_tasks:
+        solvable = task.get("solvable")
+        if solvable is None:
+            solvable = task.get("in_domain")
+        if solvable is not True:
+            skipped_not_in_domain += 1
+            continue
+
         user_id = task.get("user_id")
-        instruction = task.get("instruction")
+        # Use preference_instruction (combined customer-facing preference); fallback to first element of preference_instructions list
+        instruction = task.get("preference_instruction")
+        if not instruction and isinstance(task.get("preference_instructions"), list) and len(task["preference_instructions"]) > 0:
+            instruction = task["preference_instructions"][0]
 
         if not user_id or not instruction:
-            print(f"Warning: Task missing user_id or instruction, skipping")
+            skipped_no_preference += 1
             continue
 
         # Use ground_truth_actions (from generator/generate_verify) or actions
@@ -227,6 +239,9 @@ def main() -> None:
             "actions": actions,
             "outputs": task.get("outputs", []) or [],
         })
+
+    if skipped_not_in_domain or skipped_no_preference:
+        print(f"Skipped {skipped_not_in_domain} tasks (solvable/in_domain is not True), {skipped_no_preference} tasks (missing user_id or preference_instruction)")
 
     if not processed_tasks:
         print("No valid tasks to append. Exiting.")

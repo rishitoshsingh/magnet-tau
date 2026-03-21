@@ -1,156 +1,163 @@
 <html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
 
-<head>
-    <meta charset="utf-8">
-
-    <script src="lib/bindings/utils.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css"
-        integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js"
-        integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
-
-    <center>
-        <h1></h1>
-    </center>
-
-    <!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
 <script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous" />
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
-        crossorigin="anonymous"></script>
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
 
 
-    <center>
-        <h1></h1>
-    </center>
-    <style type="text/css">
-        #mynetwork {
-            width: 100%;
-            height: 1200px;
-            background-color: #ffffff;
-            border: 1px solid lightgray;
-            position: relative;
-            float: left;
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 800px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "green", "id": "CancelPendingOrder", "label": "CancelPendingOrder", "shape": "dot", "title": "A customer can directly ask \u201cplease cancel my order #\u2026,\u201d and can typically provide the order_id and one of the allowed reasons (\u0027no longer needed\u0027/\u0027ordered by mistake\u0027) in the first message (authentication is assumed handled). The agent can then proceed to cancellation after the required explicit confirmation."}, {"color": "#97c2fc", "id": "ExchangeDeliveredOrderItems", "label": "ExchangeDeliveredOrderItems", "shape": "dot"}, {"color": "green", "id": "GetOrderDetails", "label": "GetOrderDetails", "shape": "dot", "title": "A customer often starts support by asking \u201cWhere\u2019s my order?\u201d or \u201cWhat\u2019s the status of order #\u2026?\u201d and can provide the human-facing order_id. After authentication (assumed handled), the agent can call this immediately to retrieve status, items, address, and payment history."}, {"color": "#97c2fc", "id": "GetProductDetails", "label": "GetProductDetails", "shape": "dot"}, {"color": "green", "id": "ListAllProductTypes", "label": "ListAllProductTypes", "shape": "dot", "title": "A customer can reasonably start by asking what kinds of products the store sells (browse the catalog). This function needs no inputs and returns a human-readable list of product names and product_ids, making it a viable first action after authentication."}, {"color": "green", "id": "ModifyPendingOrderAddress", "label": "ModifyPendingOrderAddress", "shape": "dot", "title": "A customer can initiate contact to fix a shipping address for a specific pending order, providing order_id and the corrected address fields (address1,address2,city,state,country,zip). Authentication is an assumed prerequisite, and the tool itself performs the primary single-step action (with user confirmation handled in the turn)."}, {"color": "#97c2fc", "id": "ModifyPendingOrderItems", "label": "ModifyPendingOrderItems", "shape": "dot"}, {"color": "#97c2fc", "id": "ModifyPendingOrderPayment", "label": "ModifyPendingOrderPayment", "shape": "dot"}, {"color": "#97c2fc", "id": "ModifyUserAddress", "label": "ModifyUserAddress", "shape": "dot"}, {"color": "#97c2fc", "id": "ReturnDeliveredOrderItems", "label": "ReturnDeliveredOrderItems", "shape": "dot"}]);
+                  edges = new vis.DataSet([{"arrows": "to", "from": "CancelPendingOrder", "label": "Common follow-up is the customer asking \u2026", "title": "Common follow-up is the customer asking to verify the cancellation/refund status; the agent can re-fetch the order to confirm it shows status \u0027cancelled\u0027 and the refund entry. Inputs: order_id.", "to": "GetOrderDetails"}, {"arrows": "to", "from": "ExchangeDeliveredOrderItems", "label": "After requesting an exchange, the custom\u2026", "title": "After requesting an exchange, the customer often asks to confirm the new status, exchanged items, or payment difference; the agent would fetch the latest record. Needs user input: order_id.", "to": "GetOrderDetails"}, {"arrows": "to", "from": "ExchangeDeliveredOrderItems", "label": "If the customer wants a different size/c\u2026", "title": "If the customer wants a different size/color and isn\u2019t sure which variants exist or are in stock, the agent may look up the product\u2019s variants to guide selection after the exchange request (or if the exchange failed). Needs user input: product_id (from the order\u2019s items).", "to": "GetProductDetails"}, {"arrows": "to", "from": "ExchangeDeliveredOrderItems", "label": "If the user changes their mind right aft\u2026", "title": "If the user changes their mind right after requesting an exchange (or asks to return instead), the agent may proceed to a return request for the same delivered order (assuming policy allows one action; otherwise it may error). Needs user inputs: order_id, item_ids to return, payment_method_id for refund.", "to": "ReturnDeliveredOrderItems"}, {"arrows": "to", "from": "GetOrderDetails", "label": "After viewing order status/details, the \u2026", "title": "After viewing order status/details, the customer may ask to cancel if it\u2019s still pending; the agent uses the same order context to proceed. Inputs needed from user: order_id, cancellation reason (\u0027no longer needed\u0027/\u0027ordered by mistake\u0027), and explicit confirmation yes/no.", "to": "CancelPendingOrder"}, {"arrows": "to", "from": "GetOrderDetails", "label": "After checking the order is delivered an\u2026", "title": "After checking the order is delivered and reviewing items, a common next step is processing an exchange request. Inputs needed from user: order_id, item_ids to exchange, new_item_ids (matching products), payment_method_id, and explicit confirmation yes/no.", "to": "ExchangeDeliveredOrderItems"}, {"arrows": "to", "from": "GetOrderDetails", "label": "If the order is delivered and the user w\u2026", "title": "If the order is delivered and the user wants a refund for some items, the agent would check details then start a return. Inputs needed from user: order_id, item_ids to return, payment_method_id for refund (original or existing gift card), and explicit confirmation yes/no.", "to": "GetProductDetails"}, {"arrows": "to", "from": "GetOrderDetails", "label": "If the customer is looking up an order i\u2026", "title": "If the customer is looking up an order in order to change where it ships (and the order is pending), the next step is modifying the address. Inputs needed from user: order_id and full new address fields (address1, address2, city, state, country, zip) plus explicit confirmation yes/no.", "to": "ModifyPendingOrderAddress"}, {"arrows": "to", "from": "GetOrderDetails", "label": "If the order is pending and the customer\u2026", "title": "If the order is pending and the customer wants a different size/color/etc., the agent would review the current items then modify them. Inputs needed from user: order_id, item_ids to change, new_item_ids, payment_method_id for price difference, and explicit confirmation yes/no.", "to": "ModifyPendingOrderItems"}, {"arrows": "to", "from": "GetOrderDetails", "label": "After viewing payment history and confir\u2026", "title": "After viewing payment history and confirming the order is eligible (pending with one original payment), the customer may ask to change payment method. Inputs needed from user: order_id, new payment_method_id, and explicit confirmation yes/no.", "to": "ModifyPendingOrderPayment"}, {"arrows": "to", "from": "GetOrderDetails", "label": "After confirming an order is delivered a\u2026", "title": "After confirming an order is delivered and which items were received, a common next step is initiating a return. Inputs needed from user: order_id, item_ids, payment_method_id for refund, and explicit confirmation yes/no.", "to": "ReturnDeliveredOrderItems"}, {"arrows": "to", "from": "ListAllProductTypes", "label": "After seeing the catalog list, a common \u2026", "title": "After seeing the catalog list, a common next step is the customer picks a product and asks what sizes/colors are available; the agent would call this with product_id (chosen from the list).", "to": "GetProductDetails"}, {"arrows": "to", "from": "ListAllProductTypes", "label": "If the user is browsing product types to\u2026", "title": "If the user is browsing product types to find the right product to swap to (e.g., \u201cwhat products do you have?\u201d then \u201cshow me the T\u2011Shirt options\u201d), the agent would next call GetProductDetails using product_id.", "to": "ModifyPendingOrderAddress"}, {"arrows": "to", "from": "ModifyPendingOrderAddress", "label": "After changing the shipping address, a c\u2026", "title": "After changing the shipping address, a common follow-up is the user deciding to cancel the same pending order instead. Agent would use order_id and ask the user for the cancellation reason (\u0027no longer needed\u0027/\u0027ordered by mistake\u0027) plus confirmation.", "to": "CancelPendingOrder"}, {"arrows": "to", "from": "ModifyPendingOrderAddress", "label": "After modifying the address, the agent m\u2026", "title": "After modifying the address, the agent may immediately verify the update/status with the customer by re-fetching the order. Needs order_id.", "to": "GetOrderDetails"}, {"arrows": "to", "from": "ModifyPendingOrderAddress", "label": "After an address change, the customer ma\u2026", "title": "After an address change, the customer may also want to change the payment method on the same pending order. Needs order_id and the new payment_method_id (from user profile) plus confirmation.", "to": "ModifyPendingOrderPayment"}, {"arrows": "to", "from": "ModifyPendingOrderAddress", "label": "A frequent follow-up is the customer ask\u2026", "title": "A frequent follow-up is the customer asking to also update their default/profile address so future orders use it. Needs user_id and the full new address fields (address1,address2,city,state,country,zip) plus confirmation.", "to": "ModifyUserAddress"}, {"arrows": "to", "from": "ModifyPendingOrderItems", "label": "After modifying items, a common follow-u\u2026", "title": "After modifying items, a common follow-up is the customer deciding to cancel the order anyway (e.g., changed their mind). Agent would use cancel with user-provided order_id and reason (\u0027no longer needed\u0027 or \u0027ordered by mistake\u0027), plus explicit confirmation.", "to": "CancelPendingOrder"}, {"arrows": "to", "from": "ModifyPendingOrderItems", "label": "After modifying items, the agent may nee\u2026", "title": "After modifying items, the agent may need to re-check and show the updated order summary (items, totals/payment history, status) for customer reassurance or to answer questions. Requires order_id.", "to": "GetOrderDetails"}, {"arrows": "to", "from": "ModifyPendingOrderItems", "label": "If the customer asks what other sizes/co\u2026", "title": "If the customer asks what other sizes/colors are available for the product they just swapped, the agent would look up variants and availability. Requires product_id (from the updated order\u2019s items) or the user stating which product they mean.", "to": "GetProductDetails"}, {"arrows": "to", "from": "ModifyPendingOrderItems", "label": "Customer may also want to update the shi\u2026", "title": "Customer may also want to update the shipping address after changing items (still a pending-order modification flow). Requires order_id plus the new address fields (address1, address2, city, state, country, zip) and explicit confirmation.", "to": "ModifyPendingOrderAddress"}, {"arrows": "to", "from": "ModifyPendingOrderItems", "label": "If the price difference or payment impli\u2026", "title": "If the price difference or payment implications lead the customer to want a different payment method (or the chosen method failed and they pick another), modifying payment is a plausible next step. Requires order_id and new payment_method_id (from user profile), plus explicit confirmation.", "to": "ModifyPendingOrderPayment"}, {"arrows": "to", "from": "ModifyPendingOrderPayment", "label": "After changing payment, the user may dec\u2026", "title": "After changing payment, the user may decide they just want to cancel the pending order instead. Agent would use order_id and ask for cancellation reason (\u0027no longer needed\u0027/\u0027ordered by mistake\u0027) and explicit confirmation.", "to": "CancelPendingOrder"}, {"arrows": "to", "from": "ModifyPendingOrderPayment", "label": "After modifying payment, a common next s\u2026", "title": "After modifying payment, a common next step is to verify the updated order/payment history or confirm the order is still pending. Agent would use order_id.", "to": "GetOrderDetails"}, {"arrows": "to", "from": "ModifyPendingOrderPayment", "label": "Users often bundle changes: after updati\u2026", "title": "Users often bundle changes: after updating payment they may also want to update the shipping address for the same pending order. Agent would use order_id plus the new address fields (address1, address2, city, state, country, zip) and explicit confirmation.", "to": "ModifyPendingOrderAddress"}, {"arrows": "to", "from": "ModifyPendingOrderPayment", "label": "Users may next request changing item opt\u2026", "title": "Users may next request changing item options on the same pending order (size/color etc.) after fixing payment. Agent would use order_id, item_ids, new_item_ids, and payment_method_id for any price difference, plus explicit confirmation (and remind it can be done only once).", "to": "ModifyPendingOrderItems"}, {"arrows": "to", "from": "ModifyUserAddress", "label": "After updating the user\u2019s default addres\u2026", "title": "After updating the user\u2019s default address, the customer may immediately ask to cancel an order that was shipping to the old address. Agent would use this after getting the order_id and cancellation reason (no longer needed/ordered by mistake) and confirming.", "to": "CancelPendingOrder"}, {"arrows": "to", "from": "ModifyUserAddress", "label": "After changing the default address, the \u2026", "title": "After changing the default address, the customer might realize a delivered order went to the wrong place and ask to exchange items instead. Agent would need order_id, item_ids, new_item_ids, and payment_method_id (plus user confirmation).", "to": "ExchangeDeliveredOrderItems"}, {"arrows": "to", "from": "ModifyUserAddress", "label": "A common follow-up to changing the defau\u2026", "title": "A common follow-up to changing the default address is the customer asking \u201cCan you update my open order too?\u201d Agent would fetch the order status/details first using order_id to decide whether address modification is allowed.", "to": "GetOrderDetails"}, {"arrows": "to", "from": "ModifyUserAddress", "label": "After updating the default address, the \u2026", "title": "After updating the default address, the customer often wants the shipping address on a specific pending order updated as well. Agent would need order_id and the new address fields (address1, address2, city, state, country, zip) and confirmation.", "to": "ListAllProductTypes"}, {"arrows": "to", "from": "ModifyUserAddress", "label": "After changing the default address, the \u2026", "title": "After changing the default address, the customer may also want to change items on a still-pending order (often prompted by reviewing their profile/orders). Agent would need order_id, item_ids, new_item_ids, and payment_method_id (with explicit confirmation and \u201conly once\u201d reminder).", "to": "ModifyPendingOrderAddress"}, {"arrows": "to", "from": "ModifyUserAddress", "label": "A related follow-up is the customer also\u2026", "title": "A related follow-up is the customer also wanting to update payment for a pending order while they\u2019re updating account details. Agent would need order_id and the new payment_method_id, with explicit confirmation.", "to": "ModifyPendingOrderItems"}, {"arrows": "to", "from": "ModifyUserAddress", "label": "After updating the default address, the \u2026", "title": "After updating the default address, the customer may ask to browse products or confirm product IDs for an upcoming modification/exchange. Agent could list product types with no extra inputs, but it\u2019s still a plausible next step if they\u2019re about to change order items.", "to": "ReturnDeliveredOrderItems"}, {"arrows": "to", "from": "ReturnDeliveredOrderItems", "label": "If the customer changes their mind from \u2026", "title": "If the customer changes their mind from return to exchange (or wants an exchange for other items) right after discussing a return, the agent may proceed to an exchange request for that delivered order. Inputs needed: order_id, item_ids, new_item_ids, payment_method_id.", "to": "ExchangeDeliveredOrderItems"}, {"arrows": "to", "from": "ReturnDeliveredOrderItems", "label": "A common follow-up to a return request (\u2026", "title": "A common follow-up to a return request (or a return failure) is to re-check the order status/items/payment_history to confirm what was returned and what refund method was used. Input needed: order_id.", "to": "GetOrderDetails"}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
         }
-    </style>
-</head>
-
-
-<body>
-    <div class="card" style="width: 100%">
-
-
-        <div id="mynetwork" class="card-body"></div>
-    </div>
-
-
-
-
-    <script type="text/javascript">
-
-        // initialize global variables.
-        var edges;
-        var nodes;
-        var allNodes;
-        var allEdges;
-        var nodeColors;
-        var originalNodes;
-        var network;
-        var container;
-        var options, data;
-        var filter = {
-            item: '',
-            property: '',
-            value: []
-        };
-
-
-
-
-
-        // This method is responsible for drawing the graph, returns the drawn network
-        function drawGraph() {
-            var container = document.getElementById('mynetwork');
-
-
-
-            // parsing and collecting nodes and edges from the python
-            nodes = new vis.DataSet([{ "color": "green", "id": "CancelPendingOrder", "label": "CancelPendingOrder", "shape": "dot", "title": "A customer can directly ask \u201cplease cancel my order #\u2026,\u201d and can typically provide the order_id and one of the allowed reasons (\u0027no longer needed\u0027/\u0027ordered by mistake\u0027) in the first message (authentication is assumed handled). The agent can then proceed to cancellation after the required explicit confirmation." }, { "color": "#97c2fc", "id": "ExchangeDeliveredOrderItems", "label": "ExchangeDeliveredOrderItems", "shape": "dot" }, { "color": "green", "id": "GetOrderDetails", "label": "GetOrderDetails", "shape": "dot", "title": "A customer often starts support by asking \u201cWhere\u2019s my order?\u201d or \u201cWhat\u2019s the status of order #\u2026?\u201d and can provide the human-facing order_id. After authentication (assumed handled), the agent can call this immediately to retrieve status, items, address, and payment history." }, { "color": "#97c2fc", "id": "GetProductDetails", "label": "GetProductDetails", "shape": "dot" }, { "color": "green", "id": "ListAllProductTypes", "label": "ListAllProductTypes", "shape": "dot", "title": "A customer can reasonably start by asking what kinds of products the store sells (browse the catalog). This function needs no inputs and returns a human-readable list of product names and product_ids, making it a viable first action after authentication." }, { "color": "green", "id": "ModifyPendingOrderAddress", "label": "ModifyPendingOrderAddress", "shape": "dot", "title": "A customer can initiate contact to fix a shipping address for a specific pending order, providing order_id and the corrected address fields (address1,address2,city,state,country,zip). Authentication is an assumed prerequisite, and the tool itself performs the primary single-step action (with user confirmation handled in the turn)." }, { "color": "#97c2fc", "id": "ModifyPendingOrderItems", "label": "ModifyPendingOrderItems", "shape": "dot" }, { "color": "#97c2fc", "id": "ModifyPendingOrderPayment", "label": "ModifyPendingOrderPayment", "shape": "dot" }, { "color": "#97c2fc", "id": "ModifyUserAddress", "label": "ModifyUserAddress", "shape": "dot" }, { "color": "#97c2fc", "id": "ReturnDeliveredOrderItems", "label": "ReturnDeliveredOrderItems", "shape": "dot" }]);
-            edges = new vis.DataSet([{ "arrows": "to", "from": "CancelPendingOrder", "label": "Common follow-up is the customer asking \u2026", "title": "Common follow-up is the customer asking to verify the cancellation/refund status; the agent can re-fetch the order to confirm it shows status \u0027cancelled\u0027 and the refund entry. Inputs: order_id.", "to": "GetOrderDetails" }, { "arrows": "to", "from": "ExchangeDeliveredOrderItems", "label": "After requesting an exchange, the custom\u2026", "title": "After requesting an exchange, the customer often asks to confirm the new status, exchanged items, or payment difference; the agent would fetch the latest record. Needs user input: order_id.", "to": "GetOrderDetails" }, { "arrows": "to", "from": "ExchangeDeliveredOrderItems", "label": "If the customer wants a different size/c\u2026", "title": "If the customer wants a different size/color and isn\u2019t sure which variants exist or are in stock, the agent may look up the product\u2019s variants to guide selection after the exchange request (or if the exchange failed). Needs user input: product_id (from the order\u2019s items).", "to": "GetProductDetails" }, { "arrows": "to", "from": "ExchangeDeliveredOrderItems", "label": "If the user changes their mind right aft\u2026", "title": "If the user changes their mind right after requesting an exchange (or asks to return instead), the agent may proceed to a return request for the same delivered order (assuming policy allows one action; otherwise it may error). Needs user inputs: order_id, item_ids to return, payment_method_id for refund.", "to": "ReturnDeliveredOrderItems" }, { "arrows": "to", "from": "GetOrderDetails", "label": "After viewing order status/details, the \u2026", "title": "After viewing order status/details, the customer may ask to cancel if it\u2019s still pending; the agent uses the same order context to proceed. Inputs needed from user: order_id, cancellation reason (\u0027no longer needed\u0027/\u0027ordered by mistake\u0027), and explicit confirmation yes/no.", "to": "CancelPendingOrder" }, { "arrows": "to", "from": "GetOrderDetails", "label": "After checking the order is delivered an\u2026", "title": "After checking the order is delivered and reviewing items, a common next step is processing an exchange request. Inputs needed from user: order_id, item_ids to exchange, new_item_ids (matching products), payment_method_id, and explicit confirmation yes/no.", "to": "ExchangeDeliveredOrderItems" }, { "arrows": "to", "from": "GetOrderDetails", "label": "If the order is delivered and the user w\u2026", "title": "If the order is delivered and the user wants a refund for some items, the agent would check details then start a return. Inputs needed from user: order_id, item_ids to return, payment_method_id for refund (original or existing gift card), and explicit confirmation yes/no.", "to": "GetProductDetails" }, { "arrows": "to", "from": "GetOrderDetails", "label": "If the customer is looking up an order i\u2026", "title": "If the customer is looking up an order in order to change where it ships (and the order is pending), the next step is modifying the address. Inputs needed from user: order_id and full new address fields (address1, address2, city, state, country, zip) plus explicit confirmation yes/no.", "to": "ModifyPendingOrderAddress" }, { "arrows": "to", "from": "GetOrderDetails", "label": "If the order is pending and the customer\u2026", "title": "If the order is pending and the customer wants a different size/color/etc., the agent would review the current items then modify them. Inputs needed from user: order_id, item_ids to change, new_item_ids, payment_method_id for price difference, and explicit confirmation yes/no.", "to": "ModifyPendingOrderItems" }, { "arrows": "to", "from": "GetOrderDetails", "label": "After viewing payment history and confir\u2026", "title": "After viewing payment history and confirming the order is eligible (pending with one original payment), the customer may ask to change payment method. Inputs needed from user: order_id, new payment_method_id, and explicit confirmation yes/no.", "to": "ModifyPendingOrderPayment" }, { "arrows": "to", "from": "GetOrderDetails", "label": "After confirming an order is delivered a\u2026", "title": "After confirming an order is delivered and which items were received, a common next step is initiating a return. Inputs needed from user: order_id, item_ids, payment_method_id for refund, and explicit confirmation yes/no.", "to": "ReturnDeliveredOrderItems" }, { "arrows": "to", "from": "ListAllProductTypes", "label": "After seeing the catalog list, a common \u2026", "title": "After seeing the catalog list, a common next step is the customer picks a product and asks what sizes/colors are available; the agent would call this with product_id (chosen from the list).", "to": "GetProductDetails" }, { "arrows": "to", "from": "ListAllProductTypes", "label": "If the user is browsing product types to\u2026", "title": "If the user is browsing product types to find the right product to swap to (e.g., \u201cwhat products do you have?\u201d then \u201cshow me the T\u2011Shirt options\u201d), the agent would next call GetProductDetails using product_id.", "to": "ModifyPendingOrderAddress" }, { "arrows": "to", "from": "ModifyPendingOrderAddress", "label": "After changing the shipping address, a c\u2026", "title": "After changing the shipping address, a common follow-up is the user deciding to cancel the same pending order instead. Agent would use order_id and ask the user for the cancellation reason (\u0027no longer needed\u0027/\u0027ordered by mistake\u0027) plus confirmation.", "to": "CancelPendingOrder" }, { "arrows": "to", "from": "ModifyPendingOrderAddress", "label": "After modifying the address, the agent m\u2026", "title": "After modifying the address, the agent may immediately verify the update/status with the customer by re-fetching the order. Needs order_id.", "to": "GetOrderDetails" }, { "arrows": "to", "from": "ModifyPendingOrderAddress", "label": "After an address change, the customer ma\u2026", "title": "After an address change, the customer may also want to change the payment method on the same pending order. Needs order_id and the new payment_method_id (from user profile) plus confirmation.", "to": "ModifyPendingOrderPayment" }, { "arrows": "to", "from": "ModifyPendingOrderAddress", "label": "A frequent follow-up is the customer ask\u2026", "title": "A frequent follow-up is the customer asking to also update their default/profile address so future orders use it. Needs user_id and the full new address fields (address1,address2,city,state,country,zip) plus confirmation.", "to": "ModifyUserAddress" }, { "arrows": "to", "from": "ModifyPendingOrderItems", "label": "After modifying items, a common follow-u\u2026", "title": "After modifying items, a common follow-up is the customer deciding to cancel the order anyway (e.g., changed their mind). Agent would use cancel with user-provided order_id and reason (\u0027no longer needed\u0027 or \u0027ordered by mistake\u0027), plus explicit confirmation.", "to": "CancelPendingOrder" }, { "arrows": "to", "from": "ModifyPendingOrderItems", "label": "After modifying items, the agent may nee\u2026", "title": "After modifying items, the agent may need to re-check and show the updated order summary (items, totals/payment history, status) for customer reassurance or to answer questions. Requires order_id.", "to": "GetOrderDetails" }, { "arrows": "to", "from": "ModifyPendingOrderItems", "label": "If the customer asks what other sizes/co\u2026", "title": "If the customer asks what other sizes/colors are available for the product they just swapped, the agent would look up variants and availability. Requires product_id (from the updated order\u2019s items) or the user stating which product they mean.", "to": "GetProductDetails" }, { "arrows": "to", "from": "ModifyPendingOrderItems", "label": "Customer may also want to update the shi\u2026", "title": "Customer may also want to update the shipping address after changing items (still a pending-order modification flow). Requires order_id plus the new address fields (address1, address2, city, state, country, zip) and explicit confirmation.", "to": "ModifyPendingOrderAddress" }, { "arrows": "to", "from": "ModifyPendingOrderItems", "label": "If the price difference or payment impli\u2026", "title": "If the price difference or payment implications lead the customer to want a different payment method (or the chosen method failed and they pick another), modifying payment is a plausible next step. Requires order_id and new payment_method_id (from user profile), plus explicit confirmation.", "to": "ModifyPendingOrderPayment" }, { "arrows": "to", "from": "ModifyPendingOrderPayment", "label": "After changing payment, the user may dec\u2026", "title": "After changing payment, the user may decide they just want to cancel the pending order instead. Agent would use order_id and ask for cancellation reason (\u0027no longer needed\u0027/\u0027ordered by mistake\u0027) and explicit confirmation.", "to": "CancelPendingOrder" }, { "arrows": "to", "from": "ModifyPendingOrderPayment", "label": "After modifying payment, a common next s\u2026", "title": "After modifying payment, a common next step is to verify the updated order/payment history or confirm the order is still pending. Agent would use order_id.", "to": "GetOrderDetails" }, { "arrows": "to", "from": "ModifyPendingOrderPayment", "label": "Users often bundle changes: after updati\u2026", "title": "Users often bundle changes: after updating payment they may also want to update the shipping address for the same pending order. Agent would use order_id plus the new address fields (address1, address2, city, state, country, zip) and explicit confirmation.", "to": "ModifyPendingOrderAddress" }, { "arrows": "to", "from": "ModifyPendingOrderPayment", "label": "Users may next request changing item opt\u2026", "title": "Users may next request changing item options on the same pending order (size/color etc.) after fixing payment. Agent would use order_id, item_ids, new_item_ids, and payment_method_id for any price difference, plus explicit confirmation (and remind it can be done only once).", "to": "ModifyPendingOrderItems" }, { "arrows": "to", "from": "ModifyUserAddress", "label": "After updating the user\u2019s default addres\u2026", "title": "After updating the user\u2019s default address, the customer may immediately ask to cancel an order that was shipping to the old address. Agent would use this after getting the order_id and cancellation reason (no longer needed/ordered by mistake) and confirming.", "to": "CancelPendingOrder" }, { "arrows": "to", "from": "ModifyUserAddress", "label": "After changing the default address, the \u2026", "title": "After changing the default address, the customer might realize a delivered order went to the wrong place and ask to exchange items instead. Agent would need order_id, item_ids, new_item_ids, and payment_method_id (plus user confirmation).", "to": "ExchangeDeliveredOrderItems" }, { "arrows": "to", "from": "ModifyUserAddress", "label": "A common follow-up to changing the defau\u2026", "title": "A common follow-up to changing the default address is the customer asking \u201cCan you update my open order too?\u201d Agent would fetch the order status/details first using order_id to decide whether address modification is allowed.", "to": "GetOrderDetails" }, { "arrows": "to", "from": "ModifyUserAddress", "label": "After updating the default address, the \u2026", "title": "After updating the default address, the customer often wants the shipping address on a specific pending order updated as well. Agent would need order_id and the new address fields (address1, address2, city, state, country, zip) and confirmation.", "to": "ListAllProductTypes" }, { "arrows": "to", "from": "ModifyUserAddress", "label": "After changing the default address, the \u2026", "title": "After changing the default address, the customer may also want to change items on a still-pending order (often prompted by reviewing their profile/orders). Agent would need order_id, item_ids, new_item_ids, and payment_method_id (with explicit confirmation and \u201conly once\u201d reminder).", "to": "ModifyPendingOrderAddress" }, { "arrows": "to", "from": "ModifyUserAddress", "label": "A related follow-up is the customer also\u2026", "title": "A related follow-up is the customer also wanting to update payment for a pending order while they\u2019re updating account details. Agent would need order_id and the new payment_method_id, with explicit confirmation.", "to": "ModifyPendingOrderItems" }, { "arrows": "to", "from": "ModifyUserAddress", "label": "After updating the default address, the \u2026", "title": "After updating the default address, the customer may ask to browse products or confirm product IDs for an upcoming modification/exchange. Agent could list product types with no extra inputs, but it\u2019s still a plausible next step if they\u2019re about to change order items.", "to": "ReturnDeliveredOrderItems" }, { "arrows": "to", "from": "ReturnDeliveredOrderItems", "label": "If the customer changes their mind from \u2026", "title": "If the customer changes their mind from return to exchange (or wants an exchange for other items) right after discussing a return, the agent may proceed to an exchange request for that delivered order. Inputs needed: order_id, item_ids, new_item_ids, payment_method_id.", "to": "ExchangeDeliveredOrderItems" }, { "arrows": "to", "from": "ReturnDeliveredOrderItems", "label": "A common follow-up to a return request (\u2026", "title": "A common follow-up to a return request (or a return failure) is to re-check the order status/items/payment_history to confirm what was returned and what refund method was used. Input needed: order_id.", "to": "GetOrderDetails" }]);
-
-            nodeColors = {};
-            allNodes = nodes.get({ returnType: "Object" });
-            for (nodeId in allNodes) {
-                nodeColors[nodeId] = allNodes[nodeId].color;
-            }
-            allEdges = edges.get({ returnType: "Object" });
-            // adding nodes and edges to the graph
-            data = { nodes: nodes, edges: edges };
-
-            var options = {
-                "configure": {
-                    "enabled": false
-                },
-                "edges": {
-                    "color": {
-                        "inherit": true
-                    },
-                    "smooth": {
-                        "enabled": true,
-                        "type": "dynamic"
-                    }
-                },
-                "interaction": {
-                    "dragNodes": true,
-                    "hideEdgesOnDrag": false,
-                    "hideNodesOnDrag": false
-                },
-                "physics": {
-                    "barnesHut": {
-                        "avoidOverlap": 0,
-                        "centralGravity": 0.3,
-                        "damping": 0.09,
-                        "gravitationalConstant": -80000,
-                        "springConstant": 0.001,
-                        "springLength": 250
-                    },
-                    "enabled": true,
-                    "stabilization": {
-                        "enabled": true,
-                        "fit": true,
-                        "iterations": 1000,
-                        "onlyDynamicEdges": false,
-                        "updateInterval": 50
-                    }
-                }
-            };
-
-
-
-
-
-
-            network = new vis.Network(container, data, options);
-
-
-
-
-
-
-
-
-
-
-            return network;
-
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "barnesHut": {
+            "avoidOverlap": 0,
+            "centralGravity": 0.3,
+            "damping": 0.09,
+            "gravitationalConstant": -80000,
+            "springConstant": 0.001,
+            "springLength": 250
+        },
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
         }
-        drawGraph();
-    </script>
-</body>
+    }
+};
 
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
 </html>

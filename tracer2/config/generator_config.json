@@ -1,0 +1,14 @@
+{
+  "env": "airline",
+  "trace_path": "output/traces/airline_adjacency_matrix_hard_traces.json",
+  "output_path": null,
+  "generator_model_provider": "openai",
+  "generator_model": "gpt-4.1",
+  "generator_temperature": 0.2,
+  "api_base": null,
+  "start_index": 0,
+  "end_index": 10,
+  "task_ids": null,
+  "tasks_per_trace": 1,
+  "print_thoughts": "false"
+}

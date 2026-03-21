@@ -154,3 +154,4 @@ class RunConfig(BaseModel):
     shuffle: int = 0
     user_strategy: str = "llm"
     few_shot_displays_path: Optional[str] = None
+    print_thoughts: bool = False  # print ReAct Thought lines and think-tool content (react/act only)

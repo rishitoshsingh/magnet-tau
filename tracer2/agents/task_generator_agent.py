@@ -99,6 +99,58 @@ def _format_requirements_summary(trace: Any) -> str:
     return json.dumps(summary, indent=2)
 
 
+def _normalize_respond_content(content: Any) -> str:
+    """Ensure respond content is a string suitable for JSON validation.
+
+    - If content is already a dict (e.g. from API-parsed JSON), serialize it.
+    - If content is a string that wraps Thought/Action around the real JSON,
+      extract the inner respond 'content' from the Action block.
+    """
+    if isinstance(content, dict):
+        return json.dumps(content)
+    if not isinstance(content, str):
+        return str(content)
+    s = content.strip()
+    # Try parsing as-is (valid TracerAgentOutput JSON)
+    try:
+        json.loads(s)
+        return s
+    except Exception:
+        pass
+    # Try to extract Action block with name=respond and use its arguments.content
+    if "Action:" in s:
+        start = s.find("Action:")
+        brace = s.find("{", start)
+        if brace != -1:
+            depth = 0
+            for i in range(brace, len(s)):
+                if s[i] == "{":
+                    depth += 1
+                elif s[i] == "}":
+                    depth -= 1
+                    if depth == 0:
+                        try:
+                            action_obj = json.loads(s[brace : i + 1])
+                            if isinstance(action_obj, dict) and action_obj.get("name") == RESPOND_ACTION_NAME:
+                                args = action_obj.get("arguments")
+                                if isinstance(args, dict):
+                                    inner = args.get(RESPOND_ACTION_FIELD_NAME)
+                                elif isinstance(args, str):
+                                    try:
+                                        args = json.loads(args)
+                                        inner = args.get(RESPOND_ACTION_FIELD_NAME) if isinstance(args, dict) else None
+                                    except Exception:
+                                        inner = None
+                                else:
+                                    inner = None
+                                if inner is not None:
+                                    return json.dumps(inner) if isinstance(inner, dict) else str(inner)
+                        except Exception:
+                            pass
+                        break
+    return s
+
+
 class _ReActToolEnv:
     """Minimal env for ReAct-style tool use during task generation.
 
@@ -177,7 +229,8 @@ class _ReActToolEnv:
         info = EnvInfo(task=self.task, source=action.name)
 
         if action.name == RESPOND_ACTION_NAME:
-            content = action.kwargs.get(RESPOND_ACTION_FIELD_NAME, "")
+            raw_content = action.kwargs.get(RESPOND_ACTION_FIELD_NAME, "")
+            content = _normalize_respond_content(raw_content)
             ok, err = self._validate_final_output(content)
             if ok:
                 self.final_response = content
@@ -220,6 +273,8 @@ class TraceTaskGeneratorAgent:
         temperature: float = 0.2,
         max_steps: int = 200,
         max_parse_attempts: int = 3,
+        api_base: Optional[str] = None,
+        print_thoughts: bool = False,
     ) -> None:
         self.tools = tools
         self.data_load_func = data_load_func
@@ -228,6 +283,7 @@ class TraceTaskGeneratorAgent:
         self.temperature = _sanitize_temperature(model, temperature)
         self.max_steps = max_steps
         self.max_parse_attempts = max_parse_attempts
+        self.print_thoughts = print_thoughts
 
         system_prompt_final = system_prompt if system_prompt is not None else AIRLINE_SYSTEM_PROMPT
         user_prompt_final = user_prompt if user_prompt is not None else AIRLINE_USER_PROMPT
@@ -236,18 +292,21 @@ class TraceTaskGeneratorAgent:
         generator_wiki = (
             system_prompt_final
             + "\n\nWhen you are ready to finish, use Action with name='respond' and arguments {\"content\": <JSON>}."
-            + "\nThat JSON MUST match TracerAgentOutput exactly: {user_id, instructions, story}."
+            + "\nThat JSON MUST match TracerAgentOutput exactly: {user_id, instructions, story, actions}."
             + "\nDo not include any text outside the JSON."
         )
 
-        self._react_agent = ChatReActAgent(
-            tools_info=[tool.get_info() for tool in tools],
-            wiki=generator_wiki,
-            model=model,
-            provider=provider,
-            use_reasoning=True,
-            temperature=self.temperature,
-        )
+        react_kwargs: Dict[str, Any] = {
+            "tools_info": [tool.get_info() for tool in tools],
+            "wiki": generator_wiki,
+            "model": model,
+            "provider": provider,
+            "use_reasoning": True,
+            "temperature": self.temperature,
+        }
+        if api_base is not None:
+            react_kwargs["api_base"] = api_base
+        self._react_agent = ChatReActAgent(**react_kwargs)
 
     def generate(
         self,
@@ -277,7 +336,12 @@ class TraceTaskGeneratorAgent:
         )
 
         try:
-            res = self._react_agent.solve(env=env, task_index=0, max_num_steps=self.max_steps)
+            res = self._react_agent.solve(
+                env=env,
+                task_index=0,
+                max_num_steps=self.max_steps,
+                print_thoughts=self.print_thoughts,
+            )
         except Exception as e:
             if _looks_like_invalid_prompt_error(e):
                 sanitized_user_prompt = _sanitize_generator_prompt(sanitized_user_prompt)
@@ -287,7 +351,12 @@ class TraceTaskGeneratorAgent:
                     initial_observation=sanitized_user_prompt,
                     trace=trace,
                 )
-                res = self._react_agent.solve(env=env, task_index=0, max_num_steps=self.max_steps)
+                res = self._react_agent.solve(
+                    env=env,
+                    task_index=0,
+                    max_num_steps=self.max_steps,
+                    print_thoughts=self.print_thoughts,
+                )
             else:
                 raise
 

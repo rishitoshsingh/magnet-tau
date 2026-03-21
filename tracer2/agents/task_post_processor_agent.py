@@ -9,9 +9,9 @@ from typing import Any, Dict, List, Optional, Tuple, Type
 
 from tracer2.agents.chat_react_agent import ChatReActAgent
 from tracer2.envs.tool import Tool
-from tracer2.prompts.task_preference import (
-    PREFERENCE_SYSTEM_PROMPT,
-    format_preference_user_prompt,
+from tracer2.prompts.task_preference_airline import (
+    PREFERENCE_SYSTEM_PROMPT as DEFAULT_PREFERENCE_SYSTEM_PROMPT,
+    format_preference_user_prompt as default_format_preference_user_prompt,
 )
 from tracer2.types import (
     Action,
@@ -27,7 +27,7 @@ from tracer2.types import (
 
 class _PreferenceToolEnv:
     """Minimal env for ReAct-style tool use when rewriting instructions to preference form.
-    Same tools and data as task generator; validates final output as JSON with preference_instructions.
+    Same tools and data as task generator; validates final output as JSON with preference_instruction (single combined string).
     """
 
     def __init__(
@@ -65,19 +65,13 @@ class _PreferenceToolEnv:
             data = json.loads(content)
         except Exception as e:
             return False, f"Invalid JSON: {e}"
-        if not isinstance(data, dict) or "preference_instructions" not in data:
-            return False, "JSON must contain key 'preference_instructions'"
-        prefs = data["preference_instructions"]
-        if not isinstance(prefs, list):
-            return False, "'preference_instructions' must be a list of strings"
-        if len(prefs) != self.expected_num_instructions:
-            return (
-                False,
-                f"preference_instructions length {len(prefs)} must equal number of input instructions {self.expected_num_instructions}.",
-            )
-        for i, p in enumerate(prefs):
-            if not isinstance(p, str):
-                return False, f"preference_instructions[{i}] must be a string"
+        if not isinstance(data, dict) or "preference_instruction" not in data:
+            return False, "JSON must contain key 'preference_instruction' (single combined string)"
+        pref = data["preference_instruction"]
+        if not isinstance(pref, str):
+            return False, "'preference_instruction' must be a string"
+        if not pref.strip():
+            return False, "'preference_instruction' must be non-empty"
         return True, ""
 
     def step(self, action: Action) -> EnvResponse:
@@ -87,7 +81,8 @@ class _PreferenceToolEnv:
         info = EnvInfo(task=self.task, source=action.name)
 
         if action.name == RESPOND_ACTION_NAME:
-            content = action.kwargs.get(RESPOND_ACTION_FIELD_NAME, "")
+            raw_content = action.kwargs.get(RESPOND_ACTION_FIELD_NAME, "")
+            content = json.dumps(raw_content) if isinstance(raw_content, dict) else raw_content
             ok, err = self._validate_final_output(content)
             if ok:
                 self.final_response = content
@@ -96,8 +91,8 @@ class _PreferenceToolEnv:
                 info.source = "respond"
             else:
                 observation = (
-                    "Error: output must be ONLY a JSON object with key 'preference_instructions' "
-                    "(list of strings, same length as input instructions). "
+                    "Error: output must be ONLY a JSON object with key 'preference_instruction' "
+                    "(one combined string). "
                     f"Validation error: {err}"
                 )
                 info.source = "respond_invalid"
@@ -126,10 +121,12 @@ class TaskPostProcessorAgent:
         model: Optional[str] = None,
         provider: Optional[str] = None,
         temperature: float = 0.0,
+        api_base: Optional[str] = None,
     ):
         self.model = model
         self.provider = provider
         self.temperature = temperature
+        self.api_base = api_base
 
     def process(
         self,
@@ -145,12 +142,16 @@ class TaskPostProcessorAgent:
         data_load_func,
         tools: List[Type[Tool]],
         max_steps: int = 50,
+        preference_system_prompt: Optional[str] = None,
+        format_preference_user_prompt=None,
     ) -> Tuple[Optional[List[str]], List[Dict[str, Any]]]:
         """Rewrite the candidate's instructions into preference form using the same tools as the generator.
 
-        Uses tools to look up details (e.g. flight time, cabin) and produces preference-style
-        instructions (e.g. "I want to fly in the evening") when there are options. Does not
-        modify the candidate.
+        Uses tools to look up details (e.g. flight time, cabin; or order/product details for retail)
+        and produces preference-style instructions when there are options. Does not modify the candidate.
+
+        preference_system_prompt: optional domain-specific system prompt (default: airline).
+        format_preference_user_prompt: optional function (story, instructions) -> str (default: airline).
 
         Returns:
             (preference_instructions list or None, trajectory messages from the ReAct run).
@@ -161,9 +162,13 @@ class TaskPostProcessorAgent:
         if self.model is None or self.provider is None:
             return empty
 
-        initial_observation = format_preference_user_prompt(
-            candidate.story or "", candidate.instructions
+        system_prompt = (
+            preference_system_prompt if preference_system_prompt is not None else DEFAULT_PREFERENCE_SYSTEM_PROMPT
         )
+        format_fn = (
+            format_preference_user_prompt if format_preference_user_prompt is not None else default_format_preference_user_prompt
+        )
+        initial_observation = format_fn(candidate.story or "", candidate.instructions)
 
         env = _PreferenceToolEnv(
             data_load_func=data_load_func,
@@ -173,18 +178,21 @@ class TaskPostProcessorAgent:
         )
 
         wiki = (
-            PREFERENCE_SYSTEM_PROMPT
+            system_prompt
             + "\n\nWhen you are ready to finish, use Action with name='respond' and arguments {\"content\": <JSON>}."
         )
 
-        react_agent = ChatReActAgent(
-            tools_info=[t.get_info() for t in tools],
-            wiki=wiki,
-            model=self.model,
-            provider=self.provider,
-            use_reasoning=True,
-            temperature=self.temperature,
-        )
+        react_kwargs: Dict[str, Any] = {
+            "tools_info": [t.get_info() for t in tools],
+            "wiki": wiki,
+            "model": self.model,
+            "provider": self.provider,
+            "use_reasoning": True,
+            "temperature": self.temperature,
+        }
+        if self.api_base is not None:
+            react_kwargs["api_base"] = self.api_base
+        react_agent = ChatReActAgent(**react_kwargs)
 
         try:
             res = react_agent.solve(env=env, task_index=0, max_num_steps=max_steps)
@@ -197,9 +205,10 @@ class TaskPostProcessorAgent:
 
         try:
             data = json.loads(env.final_response)
-            prefs = data.get("preference_instructions")
-            if isinstance(prefs, list) and len(prefs) == len(candidate.instructions):
-                return ([str(p) for p in prefs], trajectory)
+            combined = data.get("preference_instruction")
+            if isinstance(combined, str) and combined.strip():
+                # Return as list of one element for backward compatibility (preference_instructions)
+                return ([combined.strip()], trajectory)
         except Exception:
             pass
         return (None, trajectory)

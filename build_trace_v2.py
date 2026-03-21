@@ -42,7 +42,7 @@ if __name__ == "__main__":
     parser.add_argument("--num-traces", type=int, default=50)
     parser.add_argument("--walk-steps", nargs="+", type=int, default=[2, 3, 4])
     parser.add_argument("--extra-turn-prob", type=float, default=0.3)
-    parser.add_argument("--random-seed", type=int, default=42)
+    parser.add_argument("--random-seed", type=int, default=10)
     args = parser.parse_args()
-
+    print(args)
     main(args.graph_json_path, args.num_traces, walk_steps=args.walk_steps, extra_turn_prob=args.extra_turn_prob, random_seed=args.random_seed)

@@ -16,7 +16,6 @@ graph LR
   style n8 fill:#ffe599,stroke:#333,stroke-width:1px
   n9["ReturnDeliveredOrderItems"]
   n1 --> n2
-  n1 --> n3
   n1 --> n9
   n2 --> n0
   n2 --> n1
@@ -24,22 +23,22 @@ graph LR
   n2 --> n5
   n2 --> n6
   n2 --> n7
-  n2 --> n8
   n2 --> n9
   n3 --> n1
   n3 --> n2
+  n3 --> n4
   n3 --> n6
+  n3 --> n7
   n3 --> n9
   n4 --> n3
-  n4 --> n5
   n5 --> n0
   n5 --> n2
   n5 --> n6
   n5 --> n7
   n5 --> n8
+  n6 --> n0
   n6 --> n2
   n6 --> n3
-  n6 --> n4
   n6 --> n5
   n6 --> n7
   n7 --> n0
@@ -47,6 +46,8 @@ graph LR
   n7 --> n5
   n7 --> n6
   n7 --> n8
+  n8 --> n0
+  n8 --> n1
   n8 --> n5
   n8 --> n6
   n8 --> n7

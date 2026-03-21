@@ -274,7 +274,7 @@ def make_llm(provider: str, model_name: str, temperature: float, base_url: str |
 
     if provider == "openai":
         # Hard-restrict to gpt-4o / gpt-5 if you want
-        if model_name not in {"gpt-4o", "gpt-5", "gpt-5.1", "gpt-5.2"}:
+        if model_name not in {"gpt-4.1", "gpt-4o", "gpt-5", "gpt-5.1", "gpt-5.2"}:
             raise ValueError("For provider 'openai', model must be one of: gpt-4o, gpt-5, gpt-5.1")
 
         return ChatOpenAI(
