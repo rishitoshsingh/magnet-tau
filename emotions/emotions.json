@@ -1,0 +1,279 @@
+{
+    "categories": [
+        {
+            "category": "happy",
+            "sub_categories": [
+                {
+                    "name": "optimistic",
+                    "definition": "A positive, hopeful state in which the person expects good outcomes and pays more attention to possibilities than risks."
+                },
+                {
+                    "name": "excited",
+                    "definition": "A high-energy positive state marked by strong anticipation, enthusiasm, and eagerness about what is about to happen."
+                },
+                {
+                    "name": "playful",
+                    "definition": "A light, fun-seeking state where the person is inclined toward humor, teasing, joking, or casual interaction."
+                },
+                {
+                    "name": "content",
+                    "definition": "A calm, satisfied state in which the person feels at ease with the current situation and is not strongly driven to seek more."
+                },
+                {
+                    "name": "interested",
+                    "definition": "An engaged, attentive state where the person is mentally focused and wants to follow, understand, or participate in what is happening."
+                },
+                {
+                    "name": "energetic",
+                    "definition": "A vigorous, activated state where the person feels mentally or physically ready to act, move quickly, and stay engaged."
+                },
+                {
+                    "name": "cheerful",
+                    "definition": "A bright, upbeat emotional state marked by warmth, positivity, and an easy tendency toward pleasant expression."
+                },
+                {
+                    "name": "creative",
+                    "definition": "An open, imaginative state in which the person naturally thinks in novel, flexible, or unconventional ways."
+                },
+                {
+                    "name": "hopeful",
+                    "definition": "A forward-looking emotional state where the person believes improvement or a desired outcome is still possible."
+                },
+                {
+                    "name": "joyful",
+                    "definition": "An intense positive state of delight, pleasure, or emotional uplift that is stronger and more exuberant than ordinary happiness."
+                },
+                {
+                    "name": "curious",
+                    "definition": "An exploratory state driven by a strong desire to learn, discover, ask questions, or understand something more deeply."
+                },
+                {
+                    "name": "amused",
+                    "definition": "A lightly entertained state in which the person finds something funny, charming, or pleasantly enjoyable."
+                }
+            ]
+        },
+        {
+            "category": "scared",
+            "sub_categories": [
+                {
+                    "name": "weak",
+                    "definition": "A vulnerable state where the person feels low in strength, resilience, or capacity to handle pressure or difficulty."
+                },
+                {
+                    "name": "insecure",
+                    "definition": "A self-doubting state in which the person feels uncertain about their worth, ability, acceptance, or social standing."
+                },
+                {
+                    "name": "confused",
+                    "definition": "A state of unclear understanding where the person does not fully grasp what is happening, what something means, or what to do next."
+                },
+                {
+                    "name": "inadequate",
+                    "definition": "A state of feeling not good enough, unqualified, or unable to meet expectations, standards, or demands."
+                },
+                {
+                    "name": "anxious",
+                    "definition": "A tense, worried state focused on possible future problems, uncertainty, or negative outcomes that have not happened yet."
+                },
+                {
+                    "name": "embarrassed",
+                    "definition": "A self-conscious discomfort that arises when the person feels exposed, awkward, or negatively judged by others."
+                },
+                {
+                    "name": "overwhelmed",
+                    "definition": "A strained state where demands, information, or emotions feel too large to process or manage effectively."
+                },
+                {
+                    "name": "helpless",
+                    "definition": "A powerless state in which the person believes they have little control, influence, or ability to improve the situation."
+                },
+                {
+                    "name": "perplexed",
+                    "definition": "A deeper and more sustained form of puzzlement where the person struggles to make sense of something that feels difficult to interpret."
+                },
+                {
+                    "name": "nervous",
+                    "definition": "An uneasy, jittery state that appears when the person anticipates uncertainty, evaluation, risk, or something intimidating."
+                },
+                {
+                    "name": "worried",
+                    "definition": "A concern-focused state in which the person keeps thinking about what could go wrong or what problem may develop."
+                },
+                {
+                    "name": "bewildered",
+                    "definition": "A strongly disoriented form of confusion where the person feels lost, thrown off, or unable to find a clear mental footing."
+                },
+                {
+                    "name": "discouraged",
+                    "definition": "A deflated state in which setbacks, difficulty, or lack of progress reduce the person's confidence, drive, or willingness to continue."
+                }
+            ]
+        },
+        {
+            "category": "sad",
+            "sub_categories": [
+                {
+                    "name": "remorseful",
+                    "definition": "A regret-filled state in which the person feels sorrow, responsibility, and self-reproach about something they have done."
+                },
+                {
+                    "name": "apathetic",
+                    "definition": "A low-engagement state marked by diminished interest, enthusiasm, or emotional investment in what is happening."
+                },
+                {
+                    "name": "lonely",
+                    "definition": "A painful state of feeling emotionally or socially disconnected, unsupported, or without meaningful companionship."
+                },
+                {
+                    "name": "depressed",
+                    "definition": "A heavy, low-mood state marked by emptiness, reduced motivation, and diminished ability to feel pleasure or interest."
+                },
+                {
+                    "name": "indifferent",
+                    "definition": "A detached state in which the person feels little emotional reaction, concern, or personal stake in the matter."
+                },
+                {
+                    "name": "embarrassed",
+                    "definition": "A moment of awkward self-consciousness in which the person feels uncomfortable about how they may appear to others."
+                },
+                {
+                    "name": "guilty",
+                    "definition": "A distress-based state where the person believes they have done something wrong and feels moral responsibility for it."
+                },
+                {
+                    "name": "ashamed",
+                    "definition": "A painful self-judging state in which the person feels flawed, diminished, or unworthy in the eyes of others."
+                },
+                {
+                    "name": "bored",
+                    "definition": "A disengaged state caused by low stimulation, low novelty, or lack of meaningful interest in the current situation."
+                },
+                {
+                    "name": "devastated",
+                    "definition": "An extreme grief-stricken state of emotional collapse that follows major loss, shock, or deeply painful news."
+                },
+                {
+                    "name": "disappointed",
+                    "definition": "A let-down state that occurs when hopes, expectations, or desired outcomes are not fulfilled."
+                },
+                {
+                    "name": "miserable",
+                    "definition": "A deeply unhappy state of ongoing distress in which discomfort, sadness, or suffering feels broad and hard to escape."
+                }
+            ]
+        },
+        {
+            "category": "angry",
+            "sub_categories": [
+                {
+                    "name": "annoyed",
+                    "definition": "A mild anger state in which the person feels bothered, inconvenienced, or irritated by something unpleasant or repetitive."
+                },
+                {
+                    "name": "sarcastic",
+                    "definition": "A guarded, often irritated state expressed through irony, mockery, or cutting remarks rather than direct warmth or sincerity."
+                },
+                {
+                    "name": "stressed",
+                    "definition": "A pressured state in which demands, time constraints, or ongoing problems create tension, mental strain, and reduced patience."
+                },
+                {
+                    "name": "distant",
+                    "definition": "An emotionally withdrawn state where the person pulls back from warmth, openness, or connection with others."
+                },
+                {
+                    "name": "hurt",
+                    "definition": "A pained emotional state caused by feeling rejected, insulted, dismissed, or mistreated by someone else."
+                },
+                {
+                    "name": "angry",
+                    "definition": "A strong hostile state marked by displeasure, opposition, and a readiness to confront a person, action, or situation."
+                },
+                {
+                    "name": "frustrated",
+                    "definition": "An irritated state caused by blocked goals, repeated obstacles, or the sense that effort is not leading to progress."
+                },
+                {
+                    "name": "irritated",
+                    "definition": "A touchy, agitated state where the person is easily bothered and reacts sharply to small triggers or annoyances."
+                },
+                {
+                    "name": "furious",
+                    "definition": "An intense, near-explosive state of anger in which self-restraint is strained and emotional control may be close to breaking."
+                },
+                {
+                    "name": "jealous",
+                    "definition": "A resentful, comparison-focused state in which the person feels upset that someone else has attention, status, affection, or advantages they want."
+                }
+            ]
+        },
+        {
+            "category": "calm",
+            "sub_categories": [
+                {
+                    "name": "thankful",
+                    "definition": "A warm appreciative state in which the person feels grateful for help, kindness, support, or a positive outcome."
+                },
+                {
+                    "name": "pensive",
+                    "definition": "A reflective, inward-looking state where the person is quietly thinking through something serious, meaningful, or complex."
+                },
+                {
+                    "name": "relief",
+                    "definition": "A releasing state in which tension eases because a threat, burden, uncertainty, or worry has passed or lessened."
+                },
+                {
+                    "name": "secure",
+                    "definition": "A grounded state of feeling safe, protected, and emotionally stable, without immediate fear of loss or harm."
+                },
+                {
+                    "name": "serene",
+                    "definition": "A deeply peaceful and untroubled state where the person feels steady, undisturbed, and free from agitation."
+                },
+                {
+                    "name": "loving",
+                    "definition": "A warm caring state marked by affection, tenderness, and a genuine desire for closeness or another person's well-being."
+                },
+                {
+                    "name": "relaxed",
+                    "definition": "An at-ease state in which physical and mental tension are low and the person does not feel pressed or guarded."
+                }
+            ]
+        },
+        {
+            "category": "strong",
+            "sub_categories": [
+                {
+                    "name": "proud",
+                    "definition": "A self-respecting state of satisfaction that comes from achievement, effort, identity, or something valued in oneself or others."
+                },
+                {
+                    "name": "confident",
+                    "definition": "An assured state in which the person trusts their judgment, ability, or capacity to handle the situation effectively."
+                },
+                {
+                    "name": "appreciated",
+                    "definition": "A valued state in which the person feels seen, recognized, and positively acknowledged by others."
+                },
+                {
+                    "name": "empowered",
+                    "definition": "An agentic state where the person feels capable, authorized, and able to make decisions or take meaningful action."
+                },
+                {
+                    "name": "respected",
+                    "definition": "A dignified state in which the person feels others regard them seriously, treat them fairly, and acknowledge their worth."
+                }
+            ]
+        },
+        {
+            "category": "surprised",
+            "sub_categories": [
+                {
+                    "name": "surprised",
+                    "definition": "A sudden reactive state triggered by unexpected information or events, which may feel positive, negative, or simply startling depending on context."
+                }
+            ]
+        }
+    ]
+}
