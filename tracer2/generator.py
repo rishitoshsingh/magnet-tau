@@ -83,6 +83,31 @@ def _build_retail_env(
     return env
 
 
+def _build_telecom_env(
+    task: Task, tools_mode: str
+) -> Env:
+    from tracer2.envs.telecom import tools as telecom_tools
+    from tracer2.envs.telecom.data import load_data
+    from tracer2.envs.telecom.reverse_tools import ALL_TOOLS as REVERSE_TOOLS
+    from tracer2.envs.telecom.rules import RULES
+    from tracer2.envs.telecom.wiki import WIKI
+
+    env = Env(
+        data_load_func=load_data,
+        tools=telecom_tools.ALL_TOOLS if tools_mode == "forward" else REVERSE_TOOLS,
+        tasks=[task],
+        wiki=WIKI,
+        rules=RULES,
+        user_strategy="instruction",
+        user_model="llama4-scout-17b",
+        user_provider=None,
+        task_index=0,
+        enable_reward=True,
+    )
+    env.terminate_tools = ["transfer_to_human_support"]
+    return env
+
+
 def _combine_instruction(user_id: str, instructions: List[str]) -> str:
     """Create a single 2nd-person instruction with the goals (same as generate_verify)."""
     if len(instructions) == 1:
@@ -111,7 +136,7 @@ def parse_args():
     p.add_argument(
         "--env",
         default="airline",
-        choices=["airline", "retail"],
+        choices=["airline", "retail", "telecom"],
         help="Domain env.",
     )
     p.add_argument(
@@ -201,6 +226,14 @@ def main():
         preference_system_prompt = RETAIL_PREFERENCE_SYSTEM_PROMPT
         format_preference_user_prompt = retail_format_preference_user_prompt
         forward_tools = retail_tools_module.ALL_TOOLS
+    elif args.env == "telecom":
+        from tracer2.envs.telecom.data import load_data
+        from tracer2.envs.telecom.reverse_tools import ALL_TOOLS as REVERSE_TOOLS
+        from tracer2.envs.telecom import tools as telecom_tools_module
+        from tracer2.prompts.task_generator_telecom import SYSTEM_PROMPT, USER_PROMPT
+
+        build_env = _build_telecom_env
+        forward_tools = telecom_tools_module.ALL_TOOLS
     else:
         raise ValueError(f"Unsupported env: {args.env}")
 
