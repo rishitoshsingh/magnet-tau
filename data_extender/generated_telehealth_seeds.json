@@ -1,0 +1,518 @@
+{
+    "cases": [
+        {
+            "metadata": {
+                "category": "telemetry_compliance",
+                "summary": "New pediatric patient with asthma introduced to telehealth platform; receives connected inhaler and coaching appointment to monitor usage compliance. Initial telemetry shows missed doses; follow-up record documents intervention."
+            },
+            "patients": [
+                {
+                    "patient_id": "leo_mendoza_2023",
+                    "name": {
+                        "first_name": "Leo",
+                        "last_name": "Mendoza"
+                    },
+                    "demographics": {
+                        "date_of_birth": "2018-04-12",
+                        "gender": "Male",
+                        "phone": "+1-555-324-1123",
+                        "email": "leo.mendoza.family@example.com"
+                    },
+                    "address": {
+                        "address1": "789 Oakridge Drive",
+                        "address2": "Apt 4B",
+                        "city": "Hillside",
+                        "state": "CA",
+                        "zip": "94107",
+                        "country": "USA"
+                    },
+                    "insurance": {
+                        "provider": "MediCare+",
+                        "policy_number": "MC94837726",
+                        "group_number": "GRP8821"
+                    },
+                    "medical_history": {
+                        "conditions": [
+                            {
+                                "condition": "Asthma",
+                                "diagnosis_date": "2020-06-15",
+                                "severity": "Moderate",
+                                "status": "Active"
+                            }
+                        ],
+                        "allergies": [
+                            {
+                                "allergen": "Pollen",
+                                "reaction": "Wheezing",
+                                "severity": "Moderate"
+                            }
+                        ],
+                        "medications": [
+                            {
+                                "medication_name": "Budesonide/Formoterol Inhaler",
+                                "dosage": "160/4.5 mcg",
+                                "frequency": "Twice daily",
+                                "route": "Inhalation",
+                                "prescribed_by": "dr_kumar_respiratory",
+                                "start_date": "2020-06-15"
+                            }
+                        ],
+                        "family_members": [
+                            {
+                                "relationship": "Mother",
+                                "name": "Sofia Mendoza",
+                                "phone": "+1-555-324-1124",
+                                "email": "sofia.mendoza@example.com"
+                            }
+                        ]
+                    },
+                    "emergency_contact": {
+                        "name": "Sofia Mendoza",
+                        "relationship": "Mother",
+                        "phone": "+1-555-324-1124"
+                    }
+                }
+            ],
+            "providers": [
+                {
+                    "provider_id": "coach_ramirez_telemetry",
+                    "name": {
+                        "first_name": "Diego",
+                        "last_name": "Ramirez"
+                    },
+                    "specialty": "Device Coaching",
+                    "license_number": "DC-TELEM-8832",
+                    "credentials": [
+                        "CDE",
+                        "CHT"
+                    ],
+                    "contact": {
+                        "email": "d.ramirez@telehealthhub.org",
+                        "phone": "+1-555-888-3321"
+                    },
+                    "schedule": {
+                        "monday": [
+                            "09:00",
+                            "10:00",
+                            "11:00",
+                            "14:00",
+                            "15:00"
+                        ],
+                        "tuesday": [
+                            "09:00",
+                            "10:00",
+                            "11:00",
+                            "14:00",
+                            "15:00"
+                        ],
+                        "wednesday": [
+                            "09:00",
+                            "10:00",
+                            "11:00",
+                            "14:00"
+                        ],
+                        "thursday": [
+                            "09:00",
+                            "10:00",
+                            "11:00",
+                            "14:00",
+                            "15:00"
+                        ],
+                        "friday": [
+                            "09:00",
+                            "10:00",
+                            "11:00",
+                            "14:00"
+                        ]
+                    },
+                    "consultation_fee": 75,
+                    "languages": [
+                        "English",
+                        "Spanish"
+                    ],
+                    "years_experience": 9
+                }
+            ],
+            "appointments": [
+                {
+                    "appointment_id": "appt_leo_device_setup_001",
+                    "patient_id": "leo_mendoza_2023",
+                    "provider_id": "coach_ramirez_telemetry",
+                    "date": "2023-11-20",
+                    "time": "10:00",
+                    "duration_minutes": 30,
+                    "type": "Virtual",
+                    "status": "Completed",
+                    "chief_complaint": "Initial setup and training for connected inhaler device",
+                    "notes": "Demonstrated proper inhaler use and app connectivity. Addressed family questions about data privacy.",
+                    "insurance_authorization": "AUTH-8832771",
+                    "copay_amount": 0,
+                    "meeting_link": "https://telehealthhub.org/meet/leo-mendoza-setup"
+                },
+                {
+                    "appointment_id": "appt_leo_followup_coaching_002",
+                    "patient_id": "leo_mendoza_2023",
+                    "provider_id": "coach_ramirez_telemetry",
+                    "date": "2023-11-27",
+                    "time": "10:00",
+                    "duration_minutes": 20,
+                    "type": "Virtual",
+                    "status": "Scheduled",
+                    "chief_complaint": "Review of inhaler usage compliance from telemetry data",
+                    "notes": "Plan to discuss missed morning doses and reinforce adherence strategies.",
+                    "insurance_authorization": "AUTH-8832772",
+                    "copay_amount": 0,
+                    "meeting_link": "https://telehealthhub.org/meet/leo-mendoza-followup"
+                }
+            ],
+            "medical_records": [
+                {
+                    "record_id": "rec_leo_device_setup_001",
+                    "appointment_id": "appt_leo_device_setup_001",
+                    "patient_id": "leo_mendoza_2023",
+                    "provider_id": "coach_ramirez_telemetry",
+                    "date": "2023-11-20",
+                    "type": "Device Setup",
+                    "subjective": "Patient and mother report occasional wheezing during physical activity. Mother expresses concern about remembering daily maintenance dose.",
+                    "objective": "Observed inhaler technique; minor coordination issue corrected during session.",
+                    "assessment": "Moderate persistent asthma with suboptimal adherence to maintenance inhaler.",
+                    "plan": "Deploy connected inhaler for 7-day monitoring. Schedule follow-up to review compliance data.",
+                    "prescriptions": [],
+                    "notes": [
+                        {
+                            "timestamp": "2023-11-20T10:25:00Z",
+                            "author": "coach_ramirez_telemetry",
+                            "content": "Patient successfully paired inhaler with mobile app. Mother confirmed ability to view usage history."
+                        }
+                    ]
+                },
+                {
+                    "record_id": "rec_leo_telemetry_review_002",
+                    "appointment_id": "appt_leo_followup_coaching_002",
+                    "patient_id": "leo_mendoza_2023",
+                    "provider_id": "coach_ramirez_telemetry",
+                    "date": "2023-11-27",
+                    "type": "Compliance Review",
+                    "subjective": "Mother reports child forgets morning dose on school days.",
+                    "objective": "Telemetry data shows 40% adherence over past 7 days; all evening doses taken, only 3 of 7 morning doses.",
+                    "assessment": "Non-adherence limited to morning routine due to time pressure.",
+                    "plan": "Recommend placing inhaler next to toothbrush. Enable app reminder at 7:00 AM. Continue monitoring for 14 days.",
+                    "prescriptions": [],
+                    "notes": []
+                }
+            ],
+            "telemetry_inventory": [
+                {
+                    "device_id": "inhaler_99328475",
+                    "device_type": "Connected Inhaler",
+                    "status": "Deployed",
+                    "last_audit": "2023-11-19",
+                    "assigned_to": "leo_mendoza_2023",
+                    "notes": "Budesonide/Formoterol model; calibrated on 2023-11-18"
+                }
+            ],
+            "telemetry_uploads": [
+                {
+                    "device_id": "inhaler_99328475",
+                    "date": "2023-11-25",
+                    "usage_hours": 22,
+                    "synced_at": "2023-11-25T23:45:12Z",
+                    "event": "sync",
+                    "alerts": [
+                        "Missed morning dose on 2023-11-21",
+                        "Missed morning dose on 2023-11-22",
+                        "Missed morning dose on 2023-11-23",
+                        "Missed morning dose on 2023-11-24"
+                    ]
+                }
+            ],
+            "regimen_plans": [],
+            "medication_suppliers": {},
+            "drug_interactions": {}
+        },
+        {
+            "metadata": {
+                "category": "telemetry_compliance",
+                "summary": "New pediatric patient with asthma enrolled in telehealth monitoring program; includes device assignment, coaching appointment, and early compliance anomaly detection."
+            },
+            "patients": [
+                {
+                    "patient_id": "leo_mendoza_6743",
+                    "name": {
+                        "first_name": "Leo",
+                        "last_name": "Mendoza"
+                    },
+                    "demographics": {
+                        "date_of_birth": "2017-05-12",
+                        "gender": "Male",
+                        "phone": "+1-555-309-7743",
+                        "email": "leo.mendoza.family@healthmail.com"
+                    },
+                    "address": {
+                        "address1": "789 Oakridge Blvd",
+                        "address2": "Apt 3B",
+                        "city": "Austin",
+                        "state": "TX",
+                        "zip": "78701",
+                        "country": "USA"
+                    },
+                    "insurance": {
+                        "provider": "BlueCross BlueShield",
+                        "policy_number": "BC88475532"
+                    },
+                    "medical_history": {
+                        "conditions": [
+                            {
+                                "condition": "Asthma, moderate persistent",
+                                "diagnosed_date": "2020-03-15",
+                                "status": "Active"
+                            }
+                        ],
+                        "allergies": [
+                            "Dust mites",
+                            "Pollen"
+                        ],
+                        "medications": [
+                            {
+                                "medication": "Budesonide/Formoterol Inhaler",
+                                "dosage": "160/4.5 mcg",
+                                "frequency": "Twice daily",
+                                "prescribed_date": "2023-01-10",
+                                "prescribing_provider": "dr_kumar_respiratory"
+                            },
+                            {
+                                "medication": "Montelukast",
+                                "dosage": "5 mg",
+                                "frequency": "Once daily",
+                                "prescribed_date": "2023-01-10",
+                                "prescribing_provider": "dr_kumar_respiratory"
+                            }
+                        ]
+                    },
+                    "emergency_contact": {
+                        "name": "Sofia Mendoza",
+                        "relationship": "Mother",
+                        "phone": "+1-555-309-7744"
+                    }
+                }
+            ],
+            "providers": [
+                {
+                    "provider_id": "coach_torres_telemetry",
+                    "name": {
+                        "first_name": "Luis",
+                        "last_name": "Torres"
+                    },
+                    "specialty": "Device Coaching",
+                    "license_number": "DC-TX-99214",
+                    "credentials": [
+                        "RRT",
+                        "CDE"
+                    ],
+                    "contact": {
+                        "email": "luis.torres@telehealthhub.org",
+                        "phone": "+1-555-200-9187"
+                    },
+                    "schedule": {
+                        "monday": [
+                            "08:00",
+                            "09:00",
+                            "10:00",
+                            "11:00",
+                            "14:00",
+                            "15:00"
+                        ],
+                        "tuesday": [
+                            "08:00",
+                            "09:00",
+                            "10:00",
+                            "11:00",
+                            "14:00",
+                            "15:00"
+                        ],
+                        "wednesday": [
+                            "08:00",
+                            "09:00",
+                            "10:00",
+                            "11:00",
+                            "14:00"
+                        ],
+                        "thursday": [
+                            "08:00",
+                            "09:00",
+                            "10:00",
+                            "11:00",
+                            "14:00",
+                            "15:00"
+                        ],
+                        "friday": [
+                            "08:00",
+                            "09:00",
+                            "10:00",
+                            "11:00"
+                        ]
+                    },
+                    "consultation_fee": 75,
+                    "languages": [
+                        "English",
+                        "Spanish"
+                    ],
+                    "years_experience": 10
+                }
+            ],
+            "appointments": [
+                {
+                    "appointment_id": "appt_leo_coach_torres_001",
+                    "patient_id": "leo_mendoza_6743",
+                    "provider_id": "coach_torres_telemetry",
+                    "date": "2023-11-27",
+                    "time": "09:00",
+                    "duration_minutes": 30,
+                    "type": "Video",
+                    "status": "Completed",
+                    "chief_complaint": "Initial telehealth device setup and asthma action plan review",
+                    "notes": "Patient and mother present. Completed SmartInhaler training. Discussed daily routine integration.",
+                    "insurance_authorization": "PENDING",
+                    "copay_amount": 0,
+                    "meeting_link": "https://telehealthhub.org/meet/leo-mendoza-0900"
+                }
+            ],
+            "medical_records": [
+                {
+                    "record_id": "rec_leo_appt_001",
+                    "appointment_id": "appt_leo_coach_torres_001",
+                    "patient_id": "leo_mendoza_6743",
+                    "provider_id": "coach_torres_telemetry",
+                    "date": "2023-11-27",
+                    "type": "Device Coaching Note",
+                    "subjective": "Patient reports occasional nighttime wheezing (2–3x/week). Mother confirms adherence challenges with evening inhaler use due to homework schedule.",
+                    "objective": "SmartInhaler connected successfully. Baseline adherence at 62% over past 30 days (per pharmacy refill data). Device confirmed synced to mobile app.",
+                    "assessment": "Moderate asthma with suboptimal adherence. Likely behavioral rather than technical barrier.",
+                    "plan": "Initiate SmartInhaler telemetry monitoring. Schedule weekly check-ins for first month. Adjust evening dose time to 7:30 PM post-dinner. Share asthma action plan PDF with school nurse.",
+                    "prescriptions": [],
+                    "notes": [
+                        {
+                            "author": "coach_torres_telemetry",
+                            "timestamp": "2023-11-27T09:28:12Z",
+                            "content": "Patient engaged and tech-savvy. Mother appreciative of automated reminders."
+                        }
+                    ]
+                }
+            ],
+            "telemetry_inventory": [
+                {
+                    "device_id": "smartinhaler_99102",
+                    "device_type": "Smart Inhaler Sensor",
+                    "status": "Assigned",
+                    "last_audit": "2023-11-25",
+                    "assigned_to": "leo_mendoza_6743",
+                    "notes": "Budesonide/Formoterol compatibility confirmed. Shipped 2023-11-25, delivered 2023-11-26"
+                },
+                {
+                    "device_id": "env_sensor_4401",
+                    "device_type": "Ambient Air Quality Monitor",
+                    "status": "Assigned",
+                    "last_audit": "2023-11-25",
+                    "assigned_to": "leo_mendoza_6743",
+                    "notes": "Deployed in bedroom. Calibrated 2023-11-26"
+                }
+            ],
+            "telemetry_uploads": [
+                {
+                    "device_id": "smartinhaler_99102",
+                    "date": "2023-11-27",
+                    "usage_hours": 23.5,
+                    "synced_at": "2023-11-27T23:45:00Z",
+                    "event": "Daily sync",
+                    "alerts": [
+                        "Missed evening dose (2023-11-27 19:30)"
+                    ]
+                },
+                {
+                    "device_id": "env_sensor_4401",
+                    "date": "2023-11-27",
+                    "usage_hours": 24,
+                    "synced_at": "2023-11-27T23:59:00Z",
+                    "event": "Daily sync",
+                    "alerts": [
+                        "Elevated PM2.5 levels (45 µg/m³) detected 2023-11-27 21:15–22:30, correlated with nearby wildfire smoke"
+                    ]
+                }
+            ],
+            "regimen_plans": [
+                {
+                    "patient_id": "leo_mendoza_6743",
+                    "current_regimen": {
+                        "medications": [
+                            {
+                                "medication": "Budesonide/Formoterol Inhaler",
+                                "dosage": "160/4.5 mcg",
+                                "frequency": "Twice daily",
+                                "timing": [
+                                    "07:30",
+                                    "19:30"
+                                ]
+                            },
+                            {
+                                "medication": "Montelukast",
+                                "dosage": "5 mg",
+                                "frequency": "Once daily",
+                                "timing": [
+                                    "20:00"
+                                ]
+                            }
+                        ]
+                    },
+                    "optimized_regimens": [
+                        {
+                            "option_id": "opt_reg_001A",
+                            "rationale": "Align evening doses to reduce missed events. Add reminder cascade.",
+                            "medications": [
+                                {
+                                    "medication": "Budesonide/Formoterol Inhaler",
+                                    "dosage": "160/4.5 mcg",
+                                    "frequency": "Twice daily",
+                                    "timing": [
+                                        "07:30",
+                                        "19:30"
+                                    ],
+                                    "reminders": [
+                                        {
+                                            "type": "Push Notification",
+                                            "offset_minutes": -15,
+                                            "channel": "Mobile App"
+                                        },
+                                        {
+                                            "type": "SMS",
+                                            "offset_minutes": 0,
+                                            "channel": "Guardian Phone"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "medication": "Montelukast",
+                                    "dosage": "5 mg",
+                                    "frequency": "Once daily",
+                                    "timing": [
+                                        "19:45"
+                                    ],
+                                    "reminders": [
+                                        {
+                                            "type": "Voice Call",
+                                            "offset_minutes": 0,
+                                            "channel": "Home Phone"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "expected_compliance": "85-90%",
+                            "monitoring_duration_days": 30
+                        }
+                    ]
+                }
+            ],
+            "medication_suppliers": {},
+            "drug_interactions": {}
+        }
+    ]
+}

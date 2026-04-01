@@ -1,0 +1,218 @@
+{
+    "sarah_johnson_1234": {
+        "patient_id": "sarah_johnson_1234",
+        "current_regimen": {
+            "components": [
+                {
+                    "medication": "Metformin",
+                    "dosage": "500mg",
+                    "daily_dose": 2,
+                    "monthly_units": 60,
+                    "unit_type": "tablet",
+                    "preferred_brand": "Glucophage",
+                    "supplier": "PharmaCo USA",
+                    "unit_cost_usd": 0.45
+                },
+                {
+                    "medication": "Lisinopril",
+                    "dosage": "10mg",
+                    "daily_dose": 1,
+                    "monthly_units": 30,
+                    "unit_type": "tablet",
+                    "preferred_brand": "Prinivil",
+                    "supplier": "MedSupply Inc",
+                    "unit_cost_usd": 0.3
+                }
+            ],
+            "pill_burden": {
+                "tablets_per_day": 3,
+                "devices_per_month": 0
+            },
+            "notes": [
+                "Taking medications twice daily",
+                "No reported side effects",
+                "Good adherence per patient report"
+            ]
+        },
+        "optimized_regimens": [
+            {
+                "name": "Extended Release Option",
+                "focus": "Reduced pill burden with extended-release formulation",
+                "components": [
+                    {
+                        "medication": "Metformin ER",
+                        "dosage": "1000mg",
+                        "daily_dose": 1,
+                        "monthly_units": 30,
+                        "unit_type": "tablet",
+                        "preferred_brand": "Glucophage XR",
+                        "supplier": "PharmaCo USA",
+                        "unit_cost_usd": 0.85
+                    },
+                    {
+                        "medication": "Lisinopril",
+                        "dosage": "10mg",
+                        "daily_dose": 1,
+                        "monthly_units": 30,
+                        "unit_type": "tablet",
+                        "preferred_brand": "Prinivil",
+                        "supplier": "MedSupply Inc",
+                        "unit_cost_usd": 0.3
+                    }
+                ],
+                "pill_burden": {
+                    "tablets_per_day": 2,
+                    "devices_per_month": 0
+                },
+                "synergy_notes": [
+                    "Single daily Metformin dose improves adherence",
+                    "Reduced GI side effects with extended release",
+                    "Same efficacy as current regimen"
+                ]
+            },
+            {
+                "name": "Cost-Optimized Generic",
+                "focus": "Lower cost with generic alternatives",
+                "components": [
+                    {
+                        "medication": "Metformin",
+                        "dosage": "500mg",
+                        "daily_dose": 2,
+                        "monthly_units": 60,
+                        "unit_type": "tablet",
+                        "preferred_brand": "Generic",
+                        "supplier": "ValueMeds Direct",
+                        "unit_cost_usd": 0.18
+                    },
+                    {
+                        "medication": "Lisinopril",
+                        "dosage": "10mg",
+                        "daily_dose": 1,
+                        "monthly_units": 30,
+                        "unit_type": "tablet",
+                        "preferred_brand": "Generic",
+                        "supplier": "ValueMeds Direct",
+                        "unit_cost_usd": 0.12
+                    }
+                ],
+                "pill_burden": {
+                    "tablets_per_day": 3,
+                    "devices_per_month": 0
+                },
+                "synergy_notes": [
+                    "Significant cost savings",
+                    "Same active ingredients as brand",
+                    "FDA-approved bioequivalent formulations"
+                ]
+            }
+        ]
+    },
+    "nadia_abbasi_tracer_0001": {
+        "patient_id": "nadia_abbasi_tracer_0001",
+        "current_regimen": {
+            "components": [
+                {
+                    "medication": "Metformin",
+                    "dosage": "500mg",
+                    "daily_dose": 2,
+                    "monthly_units": 60,
+                    "unit_type": "tablet",
+                    "preferred_brand": "Generic",
+                    "supplier": "Clinical sourcing pending",
+                    "unit_cost_usd": 8.5
+                },
+                {
+                    "medication": "Lisinopril",
+                    "dosage": "10mg",
+                    "daily_dose": 1,
+                    "monthly_units": 30,
+                    "unit_type": "tablet",
+                    "preferred_brand": "Lisipril-M",
+                    "supplier": "Mumbai Cardio Pharma",
+                    "unit_cost_usd": 2.8
+                }
+            ],
+            "pill_burden": {
+                "tablets_per_day": 3,
+                "devices_per_month": 0
+            },
+            "notes": [
+                "Patient currently fills Metformin and Lisinopril separately each month",
+                "Monthly cost: Metformin $510, Lisinopril $84",
+                "Reports occasional missed doses due to separate refill dates"
+            ]
+        },
+        "optimized_regimens": [
+            {
+                "name": "Cost-Synchronized Generic Fill",
+                "focus": "Aligns fill schedules for both medications to a single monthly pharmacy visit while maintaining current formulary brands",
+                "components": [
+                    {
+                        "medication": "Metformin",
+                        "dosage": "500mg",
+                        "daily_dose": 2,
+                        "monthly_units": 60,
+                        "unit_type": "tablet",
+                        "preferred_brand": "Generic",
+                        "supplier": "Clinical sourcing pending",
+                        "unit_cost_usd": 8.5
+                    },
+                    {
+                        "medication": "Lisinopril",
+                        "dosage": "10mg",
+                        "daily_dose": 1,
+                        "monthly_units": 30,
+                        "unit_type": "tablet",
+                        "preferred_brand": "Lisipril-M",
+                        "supplier": "Mumbai Cardio Pharma",
+                        "unit_cost_usd": 2.8
+                    }
+                ],
+                "pill_burden": {
+                    "tablets_per_day": 3,
+                    "devices_per_month": 0
+                },
+                "synergy_notes": [
+                    "Reduces pharmacy visits from two to one per month, improving convenience",
+                    "No change in medication cost but minimizes out-of-pocket expenses associated with multiple trips",
+                    "Uses existing insurance coverage without requiring prior authorization"
+                ]
+            },
+            {
+                "name": "Adherence Packaging Option",
+                "focus": "Provides medications in a unit-dose adherence blister pack to simplify daily regimen",
+                "components": [
+                    {
+                        "medication": "Metformin",
+                        "dosage": "500mg",
+                        "daily_dose": 2,
+                        "monthly_units": 60,
+                        "unit_type": "tablet",
+                        "preferred_brand": "Generic",
+                        "supplier": "Clinical sourcing pending",
+                        "unit_cost_usd": 8.5
+                    },
+                    {
+                        "medication": "Lisinopril",
+                        "dosage": "10mg",
+                        "daily_dose": 1,
+                        "monthly_units": 30,
+                        "unit_type": "tablet",
+                        "preferred_brand": "Lisipril-M",
+                        "supplier": "Mumbai Cardio Pharma",
+                        "unit_cost_usd": 2.8
+                    }
+                ],
+                "pill_burden": {
+                    "tablets_per_day": 3,
+                    "devices_per_month": 0
+                },
+                "synergy_notes": [
+                    "Unit-dose blister packaging organizes AM/PM doses for both medications in one container",
+                    "Reduces risk of missed doses by simplifying daily routine",
+                    "Maintains therapeutic equivalence with current regimen while improving adherence"
+                ]
+            }
+        ]
+    }
+}

@@ -1,0 +1,990 @@
+{
+    "cases": [
+        {
+            "metadata": {
+                "blueprint_id": "scheduling_provider_tracer_001",
+                "category": "scheduling_provider",
+                "summary": "Deterministic provider-matching follow-up booking."
+            },
+            "patients": [],
+            "providers": [],
+            "appointments": [
+                {
+                    "appointment_id": "APPT_tracer_059",
+                    "patient_id": "avery_morgan_tracer_0001",
+                    "provider_id": "dr_saito_cardiology",
+                    "date": "2025-12-01",
+                    "time": "07:30",
+                    "duration_minutes": 30,
+                    "type": "follow_up",
+                    "status": "scheduled",
+                    "chief_complaint": "Follow-up for atrial fibrillation management",
+                    "notes": "Scheduled per provider recommendation. Patient instructed to have INR checked prior to visit and bring results.",
+                    "insurance_authorization": "AUTH_TRACER_059",
+                    "copay_amount": 45.0,
+                    "meeting_link": "https://telehealth.healthcenter.com/room/APPT_tracer_059"
+                }
+            ],
+            "medical_records": [
+                {
+                    "record_id": "REC_tracer_030",
+                    "appointment_id": "APPT_tracer_059",
+                    "patient_id": "avery_morgan_tracer_0001",
+                    "provider_id": "dr_saito_cardiology",
+                    "date": "2025-12-01",
+                    "type": "follow_up_note",
+                    "subjective": "Patient reports occasional palpitations but no chest pain, SOB, or syncope. Adherent to Warfarin and Atorvastatin.",
+                    "objective": "Patient profile includes Atrial Fibrillation, Hyperlipidemia.",
+                    "assessment": "Stable atrial fibrillation and hyperlipidemia on current regimen.",
+                    "plan": "Continue current medications. INR to be checked in 4 weeks. Follow-up appointment in 3 months.",
+                    "prescriptions": [],
+                    "notes": []
+                }
+            ],
+            "telemetry_inventory": [],
+            "telemetry_uploads": [],
+            "regimen_plans": [],
+            "medication_suppliers": {},
+            "drug_interactions": {}
+        },
+        {
+            "metadata": {
+                "blueprint_id": "scheduling_provider_tracer_002",
+                "category": "scheduling_provider",
+                "summary": "Deterministic provider-matching follow-up booking."
+            },
+            "patients": [],
+            "providers": [],
+            "appointments": [
+                {
+                    "appointment_id": "APPT_tracer_060",
+                    "patient_id": "nadia_abbasi_tracer_0001",
+                    "provider_id": "camila_ortega_primary_care_tracer_0001",
+                    "date": "2025-12-01",
+                    "time": "09:00",
+                    "duration_minutes": 30,
+                    "type": "follow_up",
+                    "status": "scheduled",
+                    "chief_complaint": "Follow-up for blood pressure and diabetes management",
+                    "notes": "Automated matching to primary care provider for chronic condition follow-up. Patient notified via email and SMS.",
+                    "insurance_authorization": "AUTH_TRACER_060",
+                    "copay_amount": 35.0,
+                    "meeting_link": "https://telehealth.healthcenter.com/room/APPT_tracer_060"
+                }
+            ],
+            "medical_records": [
+                {
+                    "record_id": "REC_tracer_031",
+                    "appointment_id": "APPT_tracer_060",
+                    "patient_id": "nadia_abbasi_tracer_0001",
+                    "provider_id": "camila_ortega_primary_care_tracer_0001",
+                    "date": "2025-12-01",
+                    "type": "follow_up_note",
+                    "subjective": "Patient reports consistent adherence to medications. Home BP readings average 135-140/85-90 mmHg. Fasting glucose 140-160 mg/dL. Denies chest pain, SOB, or dizziness.",
+                    "objective": "Patient profile includes Hypertension, Type 2 Diabetes.",
+                    "assessment": "Stable hypertension and type 2 diabetes without acute complications.",
+                    "plan": "Continue current medications. Schedule next follow-up in 3 months. Repeat HbA1c and basic metabolic panel in 3 months.",
+                    "prescriptions": [],
+                    "notes": []
+                }
+            ],
+            "telemetry_inventory": [],
+            "telemetry_uploads": [],
+            "regimen_plans": [],
+            "medication_suppliers": {},
+            "drug_interactions": {}
+        },
+        {
+            "metadata": {
+                "blueprint_id": "scheduling_provider_tracer_003",
+                "category": "scheduling_provider",
+                "summary": "Deterministic provider-matching follow-up booking."
+            },
+            "patients": [],
+            "providers": [],
+            "appointments": [
+                {
+                    "appointment_id": "APPT_tracer_061",
+                    "patient_id": "avery_morgan_tracer_0001",
+                    "provider_id": "dr_smith_cardiology",
+                    "date": "2025-11-30",
+                    "time": "16:00",
+                    "duration_minutes": 30,
+                    "type": "follow_up",
+                    "status": "scheduled",
+                    "chief_complaint": "Follow-up for atrial fibrillation and hyperlipidemia management",
+                    "notes": "Scheduled telehealth follow-up. Patient instructed to review INR logs and current medications prior to visit. Virtual link confirmed via email.",
+                    "insurance_authorization": "AUTH_TRACER_061",
+                    "copay_amount": 45.0,
+                    "meeting_link": "https://telehealth.healthcenter.com/room/APPT_tracer_061"
+                }
+            ],
+            "medical_records": [
+                {
+                    "record_id": "REC_tracer_032",
+                    "appointment_id": "APPT_tracer_061",
+                    "patient_id": "avery_morgan_tracer_0001",
+                    "provider_id": "dr_smith_cardiology",
+                    "date": "2025-11-30",
+                    "type": "follow_up_note",
+                    "subjective": "Reports no palpitations, dizziness, or shortness of breath. Taking Warfarin and Atorvastatin consistently without side effects.",
+                    "objective": "Patient profile includes Atrial Fibrillation, Hyperlipidemia.",
+                    "assessment": "Atrial fibrillation stable on therapeutic anticoagulation. Hyperlipidemia well-controlled with current statin therapy.",
+                    "plan": "Continue Warfarin 5mg daily and Atorvastatin 20mg daily. Schedule monthly INR monitoring. Next cardiology follow-up in 6 months.",
+                    "prescriptions": [],
+                    "notes": []
+                }
+            ],
+            "telemetry_inventory": [],
+            "telemetry_uploads": [],
+            "regimen_plans": [],
+            "medication_suppliers": {},
+            "drug_interactions": {}
+        },
+        {
+            "metadata": {
+                "blueprint_id": "supplier_update_tracer_004",
+                "category": "supplier_update",
+                "summary": "Supplier update case with deterministic cheapest-supplier picks."
+            },
+            "patients": [],
+            "providers": [],
+            "appointments": [
+                {
+                    "appointment_id": "APPT_tracer_062",
+                    "patient_id": "jordan_patel_tracer_0001",
+                    "provider_id": "dr_chen_primary_care",
+                    "date": "2025-12-01",
+                    "time": "11:00",
+                    "duration_minutes": 30,
+                    "type": "medication_review",
+                    "status": "scheduled",
+                    "chief_complaint": "Concerned about high medication costs for inhalers",
+                    "notes": "Review cost-saving options for respiratory medications; patient expressed financial concerns. Copay confirmed at $25.",
+                    "insurance_authorization": "AUTH_TRACER_062",
+                    "copay_amount": 25.0,
+                    "meeting_link": "https://telehealth.healthcenter.com/room/APPT_tracer_062"
+                }
+            ],
+            "medical_records": [
+                {
+                    "record_id": "REC_tracer_033",
+                    "appointment_id": "APPT_tracer_062",
+                    "patient_id": "jordan_patel_tracer_0001",
+                    "provider_id": "dr_chen_primary_care",
+                    "date": "2025-12-01",
+                    "type": "medication_supply_note",
+                    "subjective": "Patient reports difficulty affording current Fluticasone and Montelukast, costing over $25 monthly.",
+                    "objective": "Compared existing medications against the supplier catalog and selected the lowest-cost safe options.",
+                    "assessment": "Cost analysis shows safe, equivalent alternatives available at lower cost from Indian suppliers.",
+                    "plan": "Approve switch to Lotus Respiratory's Flohale (Fluticasone) and Lotus Breath's BreathFree (Montelukast); update pharmacy records.",
+                    "prescriptions": [
+                        {
+                            "medication": "Fluticasone Inhaler",
+                            "dosage": "110mcg",
+                            "frequency": "twice daily",
+                            "supplier": {
+                                "company": "Lotus Respiratory",
+                                "brand_name": "Flohale",
+                                "price_usd": 7.1,
+                                "country": "India"
+                            }
+                        },
+                        {
+                            "medication": "Montelukast",
+                            "dosage": "10mg",
+                            "frequency": "once daily",
+                            "supplier": {
+                                "company": "Lotus Breath",
+                                "brand_name": "BreathFree",
+                                "price_usd": 3.05,
+                                "country": "India"
+                            }
+                        }
+                    ],
+                    "notes": []
+                }
+            ],
+            "telemetry_inventory": [],
+            "telemetry_uploads": [],
+            "regimen_plans": [],
+            "medication_suppliers": {},
+            "drug_interactions": {}
+        },
+        {
+            "metadata": {
+                "blueprint_id": "supplier_update_tracer_005",
+                "category": "supplier_update",
+                "summary": "Supplier update case with deterministic cheapest-supplier picks."
+            },
+            "patients": [],
+            "providers": [],
+            "appointments": [
+                {
+                    "appointment_id": "APPT_tracer_063",
+                    "patient_id": "nadia_abbasi_tracer_0001",
+                    "provider_id": "dr_garcia_primary",
+                    "date": "2025-11-30",
+                    "time": "09:30",
+                    "duration_minutes": 30,
+                    "type": "medication_review",
+                    "status": "scheduled",
+                    "chief_complaint": "Concerned about medication costs and possible switch to more affordable options",
+                    "notes": "Scheduled for medication review to discuss cost-saving supplier options. Patient to bring current medication bottles for comparison. Follow-up to confirm new prescriptions.",
+                    "insurance_authorization": "AUTH_TRACER_063",
+                    "copay_amount": 35.0,
+                    "meeting_link": "https://telehealth.healthcenter.com/room/APPT_tracer_063"
+                }
+            ],
+            "medical_records": [
+                {
+                    "record_id": "REC_tracer_034",
+                    "appointment_id": "APPT_tracer_063",
+                    "patient_id": "nadia_abbasi_tracer_0001",
+                    "provider_id": "dr_garcia_primary",
+                    "date": "2025-11-30",
+                    "type": "medication_supply_note",
+                    "subjective": "Patient reports difficulty affording current medications, especially lisinopril. Expresses willingness to switch to lower-cost alternatives if safe.",
+                    "objective": "Compared existing medications against the supplier catalog and selected the lowest-cost safe options.",
+                    "assessment": "Patient's current medications reviewed for cost-saving opportunities. Lisinopril identified as having a significantly cheaper equivalent from an approved international supplier without compromising safety.",
+                    "plan": "Switch lisinopril to Mumbai Cardio Pharma's Lisipril-M (10mg) at $2.80/month. Continue metformin as no cheaper alternative found. Provide new prescription and supplier information.",
+                    "prescriptions": [
+                        {
+                            "medication": "Metformin",
+                            "dosage": "500mg",
+                            "frequency": "twice daily"
+                        },
+                        {
+                            "medication": "Lisinopril",
+                            "dosage": "10mg",
+                            "frequency": "once daily",
+                            "supplier": {
+                                "company": "Mumbai Cardio Pharma",
+                                "brand_name": "Lisipril-M",
+                                "price_usd": 2.8,
+                                "country": "India"
+                            }
+                        }
+                    ],
+                    "notes": []
+                }
+            ],
+            "telemetry_inventory": [],
+            "telemetry_uploads": [],
+            "regimen_plans": [],
+            "medication_suppliers": {},
+            "drug_interactions": {}
+        },
+        {
+            "metadata": {
+                "blueprint_id": "drug_interaction_tracer_006",
+                "category": "drug_interaction",
+                "summary": "Drug interaction review with deterministic risk facts."
+            },
+            "patients": [],
+            "providers": [],
+            "appointments": [
+                {
+                    "appointment_id": "APPT_tracer_064",
+                    "patient_id": "avery_morgan_tracer_0001",
+                    "provider_id": "dr_thompson_cardiology",
+                    "date": "2025-12-01",
+                    "time": "10:00",
+                    "duration_minutes": 45,
+                    "type": "specialist_consultation",
+                    "status": "scheduled",
+                    "chief_complaint": "Concern about starting new sleep medication with current antidepressant",
+                    "notes": "Scheduled for drug interaction review regarding proposed Zolpidem addition to current Bupropion regimen. Patient instructed to bring current medication list.",
+                    "insurance_authorization": "AUTH_TRACER_064",
+                    "copay_amount": 45.0,
+                    "meeting_link": "https://telehealth.healthcenter.com/room/APPT_tracer_064"
+                }
+            ],
+            "medical_records": [
+                {
+                    "record_id": "REC_tracer_035",
+                    "appointment_id": "APPT_tracer_064",
+                    "patient_id": "avery_morgan_tracer_0001",
+                    "provider_id": "dr_thompson_cardiology",
+                    "date": "2025-12-01",
+                    "type": "interaction_review_note",
+                    "subjective": "Patient reports difficulty falling asleep for past 2 weeks, currently taking Bupropion for depression without issues. Denies palpitations or chest pain.",
+                    "objective": "Interaction review for Bupropion + Zolpidem: severity=low, risk_score=2, action=No significant interaction expected; observe for insomnia or agitation.",
+                    "assessment": "Low-risk interaction between Bupropion and Zolpidem; no significant pharmacokinetic interaction expected but monitor for additive CNS effects.",
+                    "plan": "Proceed with Zolpidem at lowest dose; monitor for insomnia exacerbation or agitation. Follow up in 2 weeks via telehealth.",
+                    "prescriptions": [
+                        {
+                            "medication": "Bupropion",
+                            "dosage": "per current regimen",
+                            "frequency": "as prescribed"
+                        },
+                        {
+                            "medication": "Zolpidem",
+                            "dosage": "proposed addition",
+                            "frequency": "as prescribed"
+                        }
+                    ],
+                    "notes": []
+                }
+            ],
+            "telemetry_inventory": [],
+            "telemetry_uploads": [],
+            "regimen_plans": [],
+            "medication_suppliers": {},
+            "drug_interactions": {}
+        },
+        {
+            "metadata": {
+                "blueprint_id": "drug_interaction_tracer_007",
+                "category": "drug_interaction",
+                "summary": "Drug interaction review with deterministic risk facts."
+            },
+            "patients": [],
+            "providers": [],
+            "appointments": [
+                {
+                    "appointment_id": "APPT_tracer_065",
+                    "patient_id": "avery_morgan_tracer_0001",
+                    "provider_id": "owen_shaw_cardiology_tracer_0001",
+                    "date": "2025-12-01",
+                    "time": "10:00",
+                    "duration_minutes": 45,
+                    "type": "specialist_consultation",
+                    "status": "scheduled",
+                    "chief_complaint": "Concerns about adding sleep medication to current antidepressant",
+                    "notes": "Scheduled for drug interaction review. Patient to bring current medication list. Follow-up in 4 weeks if new symptoms arise.",
+                    "insurance_authorization": "AUTH_TRACER_065",
+                    "copay_amount": 45.0,
+                    "meeting_link": "https://telehealth.healthcenter.com/room/APPT_tracer_065"
+                }
+            ],
+            "medical_records": [
+                {
+                    "record_id": "REC_tracer_036",
+                    "appointment_id": "APPT_tracer_065",
+                    "patient_id": "avery_morgan_tracer_0001",
+                    "provider_id": "owen_shaw_cardiology_tracer_0001",
+                    "date": "2025-12-01",
+                    "type": "interaction_review_note",
+                    "subjective": "Patient reports chronic insomnia and is considering adding Zolpidem to current regimen. Currently taking Bupropion. Denies recent agitation but notes occasional restlessness.",
+                    "objective": "Interaction review for Bupropion + Zolpidem: severity=low, risk_score=2, action=No significant interaction expected; observe for insomnia or agitation.",
+                    "assessment": "Low-severity drug interaction (risk score 2) between Bupropion and Zolpidem; no significant interaction expected per review. Monitor for insomnia or agitation.",
+                    "plan": "Approve Zolpidem 5mg as needed for sleep. Advise patient to monitor for increased insomnia or agitation and report any concerns. Schedule follow-up in 2 weeks.",
+                    "prescriptions": [
+                        {
+                            "medication": "Bupropion",
+                            "dosage": "per current regimen",
+                            "frequency": "as prescribed"
+                        },
+                        {
+                            "medication": "Zolpidem",
+                            "dosage": "proposed addition",
+                            "frequency": "as prescribed"
+                        }
+                    ],
+                    "notes": []
+                }
+            ],
+            "telemetry_inventory": [],
+            "telemetry_uploads": [],
+            "regimen_plans": [],
+            "medication_suppliers": {},
+            "drug_interactions": {}
+        },
+        {
+            "metadata": {
+                "blueprint_id": "telemetry_compliance_tracer_008",
+                "category": "telemetry_compliance",
+                "summary": "Telemetry compliance episode with deterministic uploads and audit facts."
+            },
+            "patients": [],
+            "providers": [],
+            "appointments": [
+                {
+                    "appointment_id": "APPT_tracer_066",
+                    "patient_id": "avery_morgan_tracer_0001",
+                    "provider_id": "coach_riley_telemetry",
+                    "date": "2025-12-01",
+                    "time": "09:00",
+                    "duration_minutes": 40,
+                    "type": "device_coaching",
+                    "status": "scheduled",
+                    "chief_complaint": "Having trouble remembering to sync my heart monitor",
+                    "notes": "Review device usage patterns; troubleshoot sync issues; provide Spanish-language instructions per patient preference.",
+                    "insurance_authorization": "AUTH_TRACER_066",
+                    "copay_amount": 20.0,
+                    "meeting_link": "https://telehealth.healthcenter.com/room/APPT_tracer_066"
+                },
+                {
+                    "appointment_id": "APPT_tracer_067",
+                    "patient_id": "avery_morgan_tracer_0001",
+                    "provider_id": "dr_saito_cardiology",
+                    "date": "2025-12-03",
+                    "time": "07:30",
+                    "duration_minutes": 45,
+                    "type": "follow_up",
+                    "status": "scheduled",
+                    "chief_complaint": "Still worried about missing syncs with my heart monitor",
+                    "notes": "Review telemetry compliance progress; discuss AFib management; address patient concerns about device use.",
+                    "insurance_authorization": "AUTH_TRACER_067",
+                    "copay_amount": 45.0,
+                    "meeting_link": "https://telehealth.healthcenter.com/room/APPT_tracer_067"
+                }
+            ],
+            "medical_records": [
+                {
+                    "record_id": "REC_tracer_037",
+                    "appointment_id": "APPT_tracer_066",
+                    "patient_id": "avery_morgan_tracer_0001",
+                    "provider_id": "coach_riley_telemetry",
+                    "date": "2025-12-01",
+                    "type": "telemetry_compliance_note",
+                    "subjective": "Forgot to sync on 11/28 and had trouble wearing it all night on 11/27 due to discomfort",
+                    "objective": "Telemetry review for device CARDIA_tracer_451 (Cardiac Event Monitor); 7-day window includes one missing upload and one below-threshold night.",
+                    "assessment": "Suboptimal telemetry compliance: one day with no upload (11/28) and one day with usage below threshold (5.9 hours on 11/27)",
+                    "plan": "Reinforce proper device use; schedule daily sync reminders; reassess in 7 days.",
+                    "prescriptions": [],
+                    "notes": []
+                }
+            ],
+            "telemetry_inventory": [],
+            "telemetry_uploads": [
+                {
+                    "device_id": "CARDIA_tracer_451",
+                    "date": "2025-11-25",
+                    "usage_hours": 6.8,
+                    "synced_at": "2025-11-25T06:15:00Z",
+                    "event": "normal",
+                    "alerts": []
+                },
+                {
+                    "device_id": "CARDIA_tracer_451",
+                    "date": "2025-11-26",
+                    "usage_hours": 6.4,
+                    "synced_at": "2025-11-26T06:15:00Z",
+                    "event": "normal",
+                    "alerts": []
+                },
+                {
+                    "device_id": "CARDIA_tracer_451",
+                    "date": "2025-11-27",
+                    "usage_hours": 5.9,
+                    "synced_at": "2025-11-27T06:15:00Z",
+                    "event": "normal",
+                    "alerts": []
+                },
+                {
+                    "device_id": "CARDIA_tracer_451",
+                    "date": "2025-11-28",
+                    "usage_hours": 0.0,
+                    "synced_at": null,
+                    "event": "upload_missing",
+                    "alerts": [
+                        "No data received",
+                        "Usage below compliance threshold"
+                    ]
+                },
+                {
+                    "device_id": "CARDIA_tracer_451",
+                    "date": "2025-11-29",
+                    "usage_hours": 6.2,
+                    "synced_at": "2025-11-29T06:15:00Z",
+                    "event": "normal",
+                    "alerts": []
+                },
+                {
+                    "device_id": "CARDIA_tracer_451",
+                    "date": "2025-11-30",
+                    "usage_hours": 6.7,
+                    "synced_at": "2025-11-30T06:15:00Z",
+                    "event": "normal",
+                    "alerts": []
+                },
+                {
+                    "device_id": "CARDIA_tracer_451",
+                    "date": "2025-12-01",
+                    "usage_hours": 7.0,
+                    "synced_at": "2025-12-01T06:15:00Z",
+                    "event": "normal",
+                    "alerts": []
+                }
+            ],
+            "regimen_plans": [],
+            "medication_suppliers": {},
+            "drug_interactions": {}
+        },
+        {
+            "metadata": {
+                "blueprint_id": "telemetry_compliance_tracer_009",
+                "category": "telemetry_compliance",
+                "summary": "Telemetry compliance episode with deterministic uploads and audit facts."
+            },
+            "patients": [],
+            "providers": [],
+            "appointments": [
+                {
+                    "appointment_id": "APPT_tracer_068",
+                    "patient_id": "jordan_patel_tracer_0001",
+                    "provider_id": "riley_stone_device_coaching_tracer_0001",
+                    "date": "2025-12-01",
+                    "time": "08:00",
+                    "duration_minutes": 40,
+                    "type": "device_coaching",
+                    "status": "scheduled",
+                    "chief_complaint": "Trouble connecting CPAP machine every night",
+                    "notes": "Scheduled device coaching session to review data uploads and troubleshoot connectivity issues. Focus on improving compliance.",
+                    "insurance_authorization": "AUTH_TRACER_068",
+                    "copay_amount": 25.0,
+                    "meeting_link": "https://telehealth.healthcenter.com/room/APPT_tracer_068"
+                },
+                {
+                    "appointment_id": "APPT_tracer_069",
+                    "patient_id": "jordan_patel_tracer_0001",
+                    "provider_id": "amelia_quinn_pulmonology_tracer_0001",
+                    "date": "2025-12-03",
+                    "time": "10:00",
+                    "duration_minutes": 45,
+                    "type": "follow_up",
+                    "status": "scheduled",
+                    "chief_complaint": "Feeling fatigued during the day, occasional shortness of breath",
+                    "notes": "Follow-up to review telemetry data from device coaching session and adjust respiratory treatment plan as needed.",
+                    "insurance_authorization": "AUTH_TRACER_069",
+                    "copay_amount": 50.0,
+                    "meeting_link": "https://telehealth.healthcenter.com/room/APPT_tracer_069"
+                }
+            ],
+            "medical_records": [
+                {
+                    "record_id": "REC_tracer_038",
+                    "appointment_id": "APPT_tracer_068",
+                    "patient_id": "jordan_patel_tracer_0001",
+                    "provider_id": "riley_stone_device_coaching_tracer_0001",
+                    "date": "2025-12-01",
+                    "type": "telemetry_compliance_note",
+                    "subjective": "Patient reports travel on 11/28 caused missed session; otherwise using device 6+ hours nightly but sometimes removes mask early.",
+                    "objective": "Telemetry review for device PHILIP_tracer_452 (Philips Trilogy Ventilator); 7-day window includes one missing upload and one below-threshold night.",
+                    "assessment": "Telemetry review confirms one missing upload (11/28) and one night with usage below threshold (11/27).",
+                    "plan": "Reinforce consistent device use; schedule device coaching to address travel barriers and mask comfort issues. Monitor compliance weekly.",
+                    "prescriptions": [],
+                    "notes": []
+                }
+            ],
+            "telemetry_inventory": [],
+            "telemetry_uploads": [
+                {
+                    "device_id": "PHILIP_tracer_452",
+                    "date": "2025-11-25",
+                    "usage_hours": 6.8,
+                    "synced_at": "2025-11-25T06:15:00Z",
+                    "event": "normal",
+                    "alerts": []
+                },
+                {
+                    "device_id": "PHILIP_tracer_452",
+                    "date": "2025-11-26",
+                    "usage_hours": 6.4,
+                    "synced_at": "2025-11-26T06:15:00Z",
+                    "event": "normal",
+                    "alerts": []
+                },
+                {
+                    "device_id": "PHILIP_tracer_452",
+                    "date": "2025-11-27",
+                    "usage_hours": 5.9,
+                    "synced_at": "2025-11-27T06:15:00Z",
+                    "event": "normal",
+                    "alerts": []
+                },
+                {
+                    "device_id": "PHILIP_tracer_452",
+                    "date": "2025-11-28",
+                    "usage_hours": 0.0,
+                    "synced_at": null,
+                    "event": "upload_missing",
+                    "alerts": [
+                        "No data received",
+                        "Usage below compliance threshold"
+                    ]
+                },
+                {
+                    "device_id": "PHILIP_tracer_452",
+                    "date": "2025-11-29",
+                    "usage_hours": 6.2,
+                    "synced_at": "2025-11-29T06:15:00Z",
+                    "event": "normal",
+                    "alerts": []
+                },
+                {
+                    "device_id": "PHILIP_tracer_452",
+                    "date": "2025-11-30",
+                    "usage_hours": 6.7,
+                    "synced_at": "2025-11-30T06:15:00Z",
+                    "event": "normal",
+                    "alerts": []
+                },
+                {
+                    "device_id": "PHILIP_tracer_452",
+                    "date": "2025-12-01",
+                    "usage_hours": 7.0,
+                    "synced_at": "2025-12-01T06:15:00Z",
+                    "event": "normal",
+                    "alerts": []
+                }
+            ],
+            "regimen_plans": [],
+            "medication_suppliers": {},
+            "drug_interactions": {}
+        },
+        {
+            "metadata": {
+                "blueprint_id": "telemetry_compliance_tracer_010",
+                "category": "telemetry_compliance",
+                "summary": "Telemetry compliance episode with deterministic uploads and audit facts."
+            },
+            "patients": [],
+            "providers": [],
+            "appointments": [
+                {
+                    "appointment_id": "APPT_tracer_070",
+                    "patient_id": "avery_morgan_tracer_0001",
+                    "provider_id": "coach_riley_telemetry",
+                    "date": "2025-12-01",
+                    "time": "10:00",
+                    "duration_minutes": 40,
+                    "type": "device_coaching",
+                    "status": "scheduled",
+                    "chief_complaint": "Trouble uploading heart monitor data",
+                    "notes": "Device coaching session to address recent non-compliance; focus on sync process and wear time.",
+                    "insurance_authorization": "AUTH_TRACER_070",
+                    "copay_amount": 20.0,
+                    "meeting_link": "https://telehealth.healthcenter.com/room/APPT_tracer_070"
+                },
+                {
+                    "appointment_id": "APPT_tracer_071",
+                    "patient_id": "avery_morgan_tracer_0001",
+                    "provider_id": "dr_smith_cardiology",
+                    "date": "2025-12-03",
+                    "time": "10:00",
+                    "duration_minutes": 45,
+                    "type": "follow_up",
+                    "status": "scheduled",
+                    "chief_complaint": "Follow-up on heart monitor results",
+                    "notes": "Cardiology follow-up to review rhythm data after compliance improvement; assess for arrhythmia events.",
+                    "insurance_authorization": "AUTH_TRACER_071",
+                    "copay_amount": 45.0,
+                    "meeting_link": "https://telehealth.healthcenter.com/room/APPT_tracer_071"
+                }
+            ],
+            "medical_records": [
+                {
+                    "record_id": "REC_tracer_039",
+                    "appointment_id": "APPT_tracer_070",
+                    "patient_id": "avery_morgan_tracer_0001",
+                    "provider_id": "coach_riley_telemetry",
+                    "date": "2025-12-01",
+                    "type": "telemetry_compliance_note",
+                    "subjective": "Patient states they sometimes forget to sync the device in the morning and had a night (11/27) where they removed it early due to discomfort.",
+                    "objective": "Telemetry review for device CARDIA_tracer_451 (Cardiac Event Monitor); 7-day window includes one missing upload and one below-threshold night.",
+                    "assessment": "Telemetry review shows one missed upload (11/28) and one night with inadequate wear time (5.9 hours on 11/27).",
+                    "plan": "1. Reinforce daily sync routine. 2. Adjust device placement for comfort. 3. Recheck adherence in 48 hours.",
+                    "prescriptions": [],
+                    "notes": []
+                }
+            ],
+            "telemetry_inventory": [],
+            "telemetry_uploads": [
+                {
+                    "device_id": "CARDIA_tracer_451",
+                    "date": "2025-11-25",
+                    "usage_hours": 6.8,
+                    "synced_at": "2025-11-25T06:15:00Z",
+                    "event": "normal",
+                    "alerts": []
+                },
+                {
+                    "device_id": "CARDIA_tracer_451",
+                    "date": "2025-11-26",
+                    "usage_hours": 6.4,
+                    "synced_at": "2025-11-26T06:15:00Z",
+                    "event": "normal",
+                    "alerts": []
+                },
+                {
+                    "device_id": "CARDIA_tracer_451",
+                    "date": "2025-11-27",
+                    "usage_hours": 5.9,
+                    "synced_at": "2025-11-27T06:15:00Z",
+                    "event": "normal",
+                    "alerts": []
+                },
+                {
+                    "device_id": "CARDIA_tracer_451",
+                    "date": "2025-11-28",
+                    "usage_hours": 0.0,
+                    "synced_at": null,
+                    "event": "upload_missing",
+                    "alerts": [
+                        "No data received",
+                        "Usage below compliance threshold"
+                    ]
+                },
+                {
+                    "device_id": "CARDIA_tracer_451",
+                    "date": "2025-11-29",
+                    "usage_hours": 6.2,
+                    "synced_at": "2025-11-29T06:15:00Z",
+                    "event": "normal",
+                    "alerts": []
+                },
+                {
+                    "device_id": "CARDIA_tracer_451",
+                    "date": "2025-11-30",
+                    "usage_hours": 6.7,
+                    "synced_at": "2025-11-30T06:15:00Z",
+                    "event": "normal",
+                    "alerts": []
+                },
+                {
+                    "device_id": "CARDIA_tracer_451",
+                    "date": "2025-12-01",
+                    "usage_hours": 7.0,
+                    "synced_at": "2025-12-01T06:15:00Z",
+                    "event": "normal",
+                    "alerts": []
+                }
+            ],
+            "regimen_plans": [],
+            "medication_suppliers": {},
+            "drug_interactions": {}
+        },
+        {
+            "metadata": {
+                "blueprint_id": "regimen_optimization_tracer_011",
+                "category": "regimen_optimization",
+                "summary": "Regimen optimization case with deterministic costed medication components."
+            },
+            "patients": [],
+            "providers": [],
+            "appointments": [
+                {
+                    "appointment_id": "APPT_tracer_072",
+                    "patient_id": "nadia_abbasi_tracer_0001",
+                    "provider_id": "camila_ortega_primary_care_tracer_0001",
+                    "date": "2025-12-01",
+                    "time": "08:00",
+                    "duration_minutes": 35,
+                    "type": "medication_review",
+                    "status": "scheduled",
+                    "chief_complaint": "Trouble affording and managing my diabetes and blood pressure medications",
+                    "notes": "Scheduled for comprehensive medication review to evaluate cost-saving opportunities and simplify regimen. Patient to bring current medication list and insurance card.",
+                    "insurance_authorization": "AUTH_TRACER_072",
+                    "copay_amount": 35.0,
+                    "meeting_link": "https://telehealth.healthcenter.com/room/APPT_tracer_072"
+                }
+            ],
+            "medical_records": [
+                {
+                    "record_id": "REC_tracer_040",
+                    "appointment_id": "APPT_tracer_072",
+                    "patient_id": "nadia_abbasi_tracer_0001",
+                    "provider_id": "camila_ortega_primary_care_tracer_0001",
+                    "date": "2025-12-01",
+                    "type": "regimen_review_note",
+                    "subjective": "Patient reports taking Metformin twice daily and Lisinopril once daily as prescribed, but expresses concern about high monthly medication costs (approximately $600) and occasionally missing doses due to separate refill schedules.",
+                    "objective": "Compiled current regimen costs, pill burden, and two deterministic optimization options for comparison.",
+                    "assessment": "Current regimen is effective for BP and glucose control but presents high out-of-pocket cost and suboptimal adherence due to separate fill schedules.",
+                    "plan": "Present two optimization options to patient: 1) Cost-synchronized generic fill to reduce cost, 2) Adherence packaging to improve compliance. Obtain patient preference and process authorization.",
+                    "prescriptions": [
+                        {
+                            "medication": "Metformin",
+                            "dosage": "500mg",
+                            "frequency": "2x daily"
+                        },
+                        {
+                            "medication": "Lisinopril",
+                            "dosage": "10mg",
+                            "frequency": "1x daily"
+                        }
+                    ],
+                    "notes": []
+                }
+            ],
+            "telemetry_inventory": [],
+            "telemetry_uploads": [],
+            "regimen_plans": [
+                {
+                    "patient_id": "nadia_abbasi_tracer_0001",
+                    "current_regimen": {
+                        "components": [
+                            {
+                                "medication": "Metformin",
+                                "dosage": "500mg",
+                                "daily_dose": 2,
+                                "monthly_units": 60,
+                                "unit_type": "tablet",
+                                "preferred_brand": "Generic",
+                                "supplier": "Clinical sourcing pending",
+                                "unit_cost_usd": 8.5
+                            },
+                            {
+                                "medication": "Lisinopril",
+                                "dosage": "10mg",
+                                "daily_dose": 1,
+                                "monthly_units": 30,
+                                "unit_type": "tablet",
+                                "preferred_brand": "Lisipril-M",
+                                "supplier": "Mumbai Cardio Pharma",
+                                "unit_cost_usd": 2.8
+                            }
+                        ],
+                        "pill_burden": {
+                            "tablets_per_day": 3,
+                            "devices_per_month": 0
+                        },
+                        "notes": [
+                            "Patient currently fills Metformin and Lisinopril separately each month",
+                            "Monthly cost: Metformin $510, Lisinopril $84",
+                            "Reports occasional missed doses due to separate refill dates"
+                        ]
+                    },
+                    "optimized_regimens": [
+                        {
+                            "name": "Cost-Synchronized Generic Fill",
+                            "focus": "Aligns fill schedules for both medications to a single monthly pharmacy visit while maintaining current formulary brands",
+                            "components": [
+                                {
+                                    "medication": "Metformin",
+                                    "dosage": "500mg",
+                                    "daily_dose": 2,
+                                    "monthly_units": 60,
+                                    "unit_type": "tablet",
+                                    "preferred_brand": "Generic",
+                                    "supplier": "Clinical sourcing pending",
+                                    "unit_cost_usd": 8.5
+                                },
+                                {
+                                    "medication": "Lisinopril",
+                                    "dosage": "10mg",
+                                    "daily_dose": 1,
+                                    "monthly_units": 30,
+                                    "unit_type": "tablet",
+                                    "preferred_brand": "Lisipril-M",
+                                    "supplier": "Mumbai Cardio Pharma",
+                                    "unit_cost_usd": 2.8
+                                }
+                            ],
+                            "pill_burden": {
+                                "tablets_per_day": 3,
+                                "devices_per_month": 0
+                            },
+                            "synergy_notes": [
+                                "Reduces pharmacy visits from two to one per month, improving convenience",
+                                "No change in medication cost but minimizes out-of-pocket expenses associated with multiple trips",
+                                "Uses existing insurance coverage without requiring prior authorization"
+                            ]
+                        },
+                        {
+                            "name": "Adherence Packaging Option",
+                            "focus": "Provides medications in a unit-dose adherence blister pack to simplify daily regimen",
+                            "components": [
+                                {
+                                    "medication": "Metformin",
+                                    "dosage": "500mg",
+                                    "daily_dose": 2,
+                                    "monthly_units": 60,
+                                    "unit_type": "tablet",
+                                    "preferred_brand": "Generic",
+                                    "supplier": "Clinical sourcing pending",
+                                    "unit_cost_usd": 8.5
+                                },
+                                {
+                                    "medication": "Lisinopril",
+                                    "dosage": "10mg",
+                                    "daily_dose": 1,
+                                    "monthly_units": 30,
+                                    "unit_type": "tablet",
+                                    "preferred_brand": "Lisipril-M",
+                                    "supplier": "Mumbai Cardio Pharma",
+                                    "unit_cost_usd": 2.8
+                                }
+                            ],
+                            "pill_burden": {
+                                "tablets_per_day": 3,
+                                "devices_per_month": 0
+                            },
+                            "synergy_notes": [
+                                "Unit-dose blister packaging organizes AM/PM doses for both medications in one container",
+                                "Reduces risk of missed doses by simplifying daily routine",
+                                "Maintains therapeutic equivalence with current regimen while improving adherence"
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "medication_suppliers": {},
+            "drug_interactions": {}
+        },
+        {
+            "metadata": {
+                "blueprint_id": "family_coordination_tracer_012",
+                "category": "family_coordination",
+                "summary": "Family coordination case grounded in deterministic household records."
+            },
+            "patients": [],
+            "providers": [],
+            "appointments": [
+                {
+                    "appointment_id": "APPT_tracer_073",
+                    "patient_id": "daniel_morales_tracer_0001",
+                    "provider_id": "dr_nguyen_pediatrics",
+                    "date": "2025-11-29",
+                    "time": "08:30",
+                    "duration_minutes": 50,
+                    "type": "family_consultation",
+                    "status": "scheduled",
+                    "chief_complaint": "Stomach flu symptoms in two children, worried about spreading",
+                    "notes": "Both parents and children (Daniel, Sofia, Mateo) attending; provider fluent in Spanish for family discussion",
+                    "insurance_authorization": "AUTH_TRACER_073",
+                    "copay_amount": 50.0,
+                    "meeting_link": "https://telehealth.healthcenter.com/room/APPT_tracer_073"
+                },
+                {
+                    "appointment_id": "APPT_tracer_074",
+                    "patient_id": "daniel_morales_tracer_0001",
+                    "provider_id": "care_coordinator_ito",
+                    "date": "2025-12-01",
+                    "time": "10:00",
+                    "duration_minutes": 30,
+                    "type": "care_coordination",
+                    "status": "scheduled",
+                    "chief_complaint": "Follow-up on care coordination for children's recovery",
+                    "notes": "Reviewing medication access, school re-entry protocols, and home health needs; care coordinator to confirm resource delivery",
+                    "insurance_authorization": "AUTH_TRACER_074",
+                    "copay_amount": 25.0,
+                    "meeting_link": "https://telehealth.healthcenter.com/room/APPT_tracer_074"
+                }
+            ],
+            "medical_records": [
+                {
+                    "record_id": "REC_tracer_041",
+                    "appointment_id": "APPT_tracer_074",
+                    "patient_id": "daniel_morales_tracer_0001",
+                    "provider_id": "care_coordinator_ito",
+                    "date": "2025-12-01",
+                    "type": "family_coordination_note",
+                    "subjective": "Mother reports Daniel (5yo) and Sofia (3yo) had vomiting/diarrhea x2 days; Mateo (1yo) now symptomatic. Concerned about dehydration and school exposure risks.",
+                    "objective": "Household coordination review for family members: daniel_morales_tracer_0001, sofia_morales_tracer_0001, mateo_morales_tracer_0001. Shared concerns triaged into one pediatric visit and one coordination follow-up.",
+                    "assessment": "Household viral gastroenteritis outbreak confirmed; acute care triaged to pediatric visit, coordination needs to follow-up appointment",
+                    "plan": "Coordinate school nurse clearance for Daniel/Sofia; arrange oral rehydration solution delivery; 48-hour follow-up for Mateo's status",
+                    "prescriptions": [],
+                    "notes": []
+                }
+            ],
+            "telemetry_inventory": [],
+            "telemetry_uploads": [],
+            "regimen_plans": [],
+            "medication_suppliers": {},
+            "drug_interactions": {}
+        }
+    ]
+}

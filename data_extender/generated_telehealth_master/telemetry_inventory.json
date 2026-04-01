@@ -1,0 +1,242 @@
+[
+    {
+        "device_id": "NS-EEG-218",
+        "device_type": "Wearable EEG",
+        "status": "available",
+        "last_audit": "2025-07-20",
+        "assigned_to": null,
+        "notes": "Spare unit ready for dispatch"
+    },
+    {
+        "device_id": "NS-EEG-219",
+        "device_type": "Wearable EEG",
+        "status": "shipped",
+        "last_audit": "2025-07-18",
+        "assigned_to": null,
+        "notes": "In transit to patient"
+    },
+    {
+        "device_id": "NS-EEG-220",
+        "device_type": "Wearable EEG",
+        "status": "missing_overdue",
+        "last_audit": "2025-07-05",
+        "assigned_to": null,
+        "notes": "Flagged missing; escalate replacement"
+    },
+    {
+        "device_id": "NS-EEG-221",
+        "device_type": "Wearable EEG",
+        "status": "inspection",
+        "last_audit": "2025-07-22",
+        "assigned_to": null,
+        "notes": "Awaiting QA sign-off"
+    },
+    {
+        "device_id": "NS-EEG-222",
+        "device_type": "Wearable EEG",
+        "status": "available",
+        "last_audit": "2025-07-23",
+        "assigned_to": null,
+        "notes": "Newly imaged unit"
+    },
+    {
+        "device_id": "NS-EEG-223",
+        "device_type": "Wearable EEG",
+        "status": "available",
+        "last_audit": "2025-07-23",
+        "assigned_to": null,
+        "notes": "Ready for overnight ship"
+    },
+    {
+        "device_id": "NS-EEG-224",
+        "device_type": "Wearable EEG",
+        "status": "maintenance",
+        "last_audit": "2025-07-19",
+        "assigned_to": null,
+        "notes": "Battery calibration pending"
+    },
+    {
+        "device_id": "NS-EEG-225",
+        "device_type": "Wearable EEG",
+        "status": "available",
+        "last_audit": "2025-07-21",
+        "assigned_to": null,
+        "notes": "Tag for seizure protocol"
+    },
+    {
+        "device_id": "NS-EEG-226",
+        "device_type": "Wearable EEG",
+        "status": "available",
+        "last_audit": "2025-07-21",
+        "assigned_to": null,
+        "notes": "Prep for telemetry coaching"
+    },
+    {
+        "device_id": "NS-EEG-228",
+        "device_type": "Wearable EEG",
+        "status": "available",
+        "last_audit": "2025-07-24",
+        "assigned_to": null,
+        "notes": "Cleared for immediate use"
+    },
+    {
+        "device_id": "VC-449",
+        "device_type": "Philips Trilogy Ventilator",
+        "status": "deployed",
+        "last_audit": "2025-06-01",
+        "assigned_to": "jin_park_7284",
+        "notes": "Active home ventilator deployment"
+    },
+    {
+        "device_id": "VC-450",
+        "device_type": "Philips Trilogy Ventilator",
+        "status": "available",
+        "last_audit": "2025-06-03",
+        "assigned_to": null,
+        "notes": "Backup ventilator for compliance swaps"
+    },
+    {
+        "device_id": "NS-EEG-229",
+        "device_type": "Wearable EEG",
+        "status": "available",
+        "last_audit": "2025-07-24",
+        "assigned_to": null,
+        "notes": "Paired with telemetry kit"
+    },
+    {
+        "device_id": "NS-EEG-230",
+        "device_type": "Wearable EEG",
+        "status": "available",
+        "last_audit": "2025-07-25",
+        "assigned_to": null,
+        "notes": "New sensor batch"
+    },
+    {
+        "device_id": "NS-EEG-231",
+        "device_type": "Wearable EEG",
+        "status": "available",
+        "last_audit": "2025-07-25",
+        "assigned_to": null,
+        "notes": "Ready for priority shipping"
+    },
+    {
+        "device_id": "NS-EEG-232",
+        "device_type": "Wearable EEG",
+        "status": "available",
+        "last_audit": "2025-07-25",
+        "assigned_to": null,
+        "notes": "Spare electrodes included"
+    },
+    {
+        "device_id": "NS-EEG-233",
+        "device_type": "Wearable EEG",
+        "status": "available",
+        "last_audit": "2025-07-26",
+        "assigned_to": null,
+        "notes": "Telemetry-ready"
+    },
+    {
+        "device_id": "NS-EEG-234",
+        "device_type": "Wearable EEG",
+        "status": "available",
+        "last_audit": "2025-07-26",
+        "assigned_to": null,
+        "notes": "Passed overnight QA"
+    },
+    {
+        "device_id": "NS-EEG-235",
+        "device_type": "Wearable EEG",
+        "status": "available",
+        "last_audit": "2025-07-27",
+        "assigned_to": null,
+        "notes": "Replacement kit ready"
+    },
+    {
+        "device_id": "NS-EEG-227",
+        "device_type": "Wearable EEG",
+        "status": "inspection",
+        "last_audit": "2025-07-22",
+        "assigned_to": null,
+        "notes": "Surface damage check"
+    },
+    {
+        "device_id": "CARDIA_tracer_451",
+        "device_type": "Cardiac Event Monitor",
+        "status": "deployed",
+        "last_audit": "2026-01-10",
+        "assigned_to": "avery_morgan_tracer_0001",
+        "notes": "Assigned to avery_morgan_tracer_0001 for rhythm_surveillance"
+    },
+    {
+        "device_id": "PHILIP_tracer_452",
+        "device_type": "Philips Trilogy Ventilator",
+        "status": "shipped",
+        "last_audit": "2026-01-11",
+        "assigned_to": "jordan_patel_tracer_0001",
+        "notes": "Assigned to jordan_patel_tracer_0001 for sleep_compliance"
+    },
+    {
+        "device_id": "CARDIA_tracer_453",
+        "device_type": "Cardiac Event Monitor",
+        "status": "available",
+        "last_audit": "2026-01-12",
+        "assigned_to": null,
+        "notes": "Provisioned for rhythm_surveillance"
+    },
+    {
+        "device_id": "PHILIP_tracer_454",
+        "device_type": "Philips Trilogy Ventilator",
+        "status": "inspection",
+        "last_audit": "2026-01-13",
+        "assigned_to": null,
+        "notes": "Provisioned for sleep_compliance"
+    },
+    {
+        "device_id": "CARDIA_tracer_455",
+        "device_type": "Cardiac Event Monitor",
+        "status": "available",
+        "last_audit": "2026-01-14",
+        "assigned_to": null,
+        "notes": "Provisioned for rhythm_surveillance"
+    },
+    {
+        "device_id": "PHILIP_tracer_456",
+        "device_type": "Philips Trilogy Ventilator",
+        "status": "available",
+        "last_audit": "2026-01-15",
+        "assigned_to": null,
+        "notes": "Provisioned for sleep_compliance"
+    },
+    {
+        "device_id": "CARDIA_tracer_457",
+        "device_type": "Cardiac Event Monitor",
+        "status": "inspection",
+        "last_audit": "2026-01-16",
+        "assigned_to": null,
+        "notes": "Provisioned for rhythm_surveillance"
+    },
+    {
+        "device_id": "PHILIP_tracer_458",
+        "device_type": "Philips Trilogy Ventilator",
+        "status": "available",
+        "last_audit": "2026-01-17",
+        "assigned_to": null,
+        "notes": "Provisioned for sleep_compliance"
+    },
+    {
+        "device_id": "CARDIA_tracer_459",
+        "device_type": "Cardiac Event Monitor",
+        "status": "available",
+        "last_audit": "2026-01-18",
+        "assigned_to": null,
+        "notes": "Provisioned for rhythm_surveillance"
+    },
+    {
+        "device_id": "PHILIP_tracer_460",
+        "device_type": "Philips Trilogy Ventilator",
+        "status": "inspection",
+        "last_audit": "2026-01-10",
+        "assigned_to": null,
+        "notes": "Provisioned for sleep_compliance"
+    }
+]

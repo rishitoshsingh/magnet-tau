@@ -1,0 +1,236 @@
+{
+    "family_groups": [
+        {
+            "group_id": "family_group_tracer_001",
+            "theme": "viral_gastroenteritis",
+            "member_patient_ids": [
+                "daniel_morales_tracer_0001",
+                "sofia_morales_tracer_0001",
+                "mateo_morales_tracer_0001"
+            ],
+            "guardian_patient_id": "daniel_morales_tracer_0001"
+        },
+        {
+            "group_id": "family_group_tracer_002",
+            "theme": "developmental_coordination",
+            "member_patient_ids": [
+                "grace_kim_tracer_0001",
+                "mina_kim_tracer_0001",
+                "eli_kim_tracer_0001"
+            ],
+            "guardian_patient_id": "grace_kim_tracer_0001"
+        },
+        {
+            "group_id": "family_group_tracer_003",
+            "theme": "asthma_household",
+            "member_patient_ids": [
+                "jasmine_reed_tracer_0001",
+                "noah_reed_tracer_0001",
+                "ivy_reed_tracer_0001"
+            ],
+            "guardian_patient_id": "jasmine_reed_tracer_0001"
+        }
+    ],
+    "patient_profiles": {
+        "daniel_morales_tracer_0001": {
+            "profile_id": "family_guardian",
+            "preferred_specialty": "Pediatrics",
+            "family_group_index": 0
+        },
+        "sofia_morales_tracer_0001": {
+            "profile_id": "viral_gastroenteritis",
+            "preferred_specialty": "Pediatrics",
+            "family_group_index": 0
+        },
+        "mateo_morales_tracer_0001": {
+            "profile_id": "viral_gastroenteritis",
+            "preferred_specialty": "Pediatrics",
+            "family_group_index": 0
+        },
+        "grace_kim_tracer_0001": {
+            "profile_id": "family_guardian",
+            "preferred_specialty": "Pediatrics",
+            "family_group_index": 1
+        },
+        "mina_kim_tracer_0001": {
+            "profile_id": "developmental_coordination",
+            "preferred_specialty": "Pediatrics",
+            "family_group_index": 1
+        },
+        "eli_kim_tracer_0001": {
+            "profile_id": "developmental_coordination",
+            "preferred_specialty": "Pediatrics",
+            "family_group_index": 1
+        },
+        "jasmine_reed_tracer_0001": {
+            "profile_id": "family_guardian",
+            "preferred_specialty": "Pediatrics",
+            "family_group_index": 2
+        },
+        "noah_reed_tracer_0001": {
+            "profile_id": "asthma_household",
+            "preferred_specialty": "Pediatrics",
+            "family_group_index": 2
+        },
+        "ivy_reed_tracer_0001": {
+            "profile_id": "asthma_household",
+            "preferred_specialty": "Pediatrics",
+            "family_group_index": 2
+        },
+        "nadia_abbasi_tracer_0001": {
+            "profile_id": "cardiometabolic",
+            "preferred_specialty": "Primary Care",
+            "telemetry_program": null
+        },
+        "avery_morgan_tracer_0001": {
+            "profile_id": "atrial_fibrillation",
+            "preferred_specialty": "Cardiology",
+            "telemetry_program": {
+                "device_type": "Cardiac Event Monitor",
+                "program": "rhythm_surveillance"
+            }
+        },
+        "jordan_patel_tracer_0001": {
+            "profile_id": "sleep_compliance",
+            "preferred_specialty": "Pulmonology",
+            "telemetry_program": {
+                "device_type": "Philips Trilogy Ventilator",
+                "program": "sleep_compliance"
+            }
+        }
+    },
+    "provider_ids_by_specialty": {
+        "Primary Care": [
+            "camila_ortega_primary_care_tracer_0001"
+        ],
+        "Cardiology": [
+            "owen_shaw_cardiology_tracer_0001"
+        ],
+        "Pediatrics": [
+            "meera_santos_pediatrics_tracer_0001"
+        ],
+        "Endocrinology": [
+            "hector_lane_endocrinology_tracer_0001"
+        ],
+        "Pulmonology": [
+            "amelia_quinn_pulmonology_tracer_0001"
+        ],
+        "Neurology": [
+            "victor_liao_neurology_tracer_0001"
+        ],
+        "Device Coaching": [
+            "riley_stone_device_coaching_tracer_0001"
+        ],
+        "Care Coordination": [
+            "monica_reyes_care_coordination_tracer_0001"
+        ]
+    },
+    "generated_provider_ids": [
+        "camila_ortega_primary_care_tracer_0001",
+        "owen_shaw_cardiology_tracer_0001",
+        "meera_santos_pediatrics_tracer_0001",
+        "hector_lane_endocrinology_tracer_0001",
+        "amelia_quinn_pulmonology_tracer_0001",
+        "victor_liao_neurology_tracer_0001",
+        "riley_stone_device_coaching_tracer_0001",
+        "monica_reyes_care_coordination_tracer_0001"
+    ],
+    "telemetry_assignments": [
+        {
+            "device_id": "CARDIA_tracer_451",
+            "device_type": "Cardiac Event Monitor",
+            "assigned_to": "avery_morgan_tracer_0001",
+            "program": "rhythm_surveillance",
+            "status": "deployed"
+        },
+        {
+            "device_id": "PHILIP_tracer_452",
+            "device_type": "Philips Trilogy Ventilator",
+            "assigned_to": "jordan_patel_tracer_0001",
+            "program": "sleep_compliance",
+            "status": "shipped"
+        },
+        {
+            "device_id": "CARDIA_tracer_453",
+            "device_type": "Cardiac Event Monitor",
+            "assigned_to": null,
+            "program": "rhythm_surveillance",
+            "status": "available"
+        },
+        {
+            "device_id": "PHILIP_tracer_454",
+            "device_type": "Philips Trilogy Ventilator",
+            "assigned_to": null,
+            "program": "sleep_compliance",
+            "status": "inspection"
+        },
+        {
+            "device_id": "CARDIA_tracer_455",
+            "device_type": "Cardiac Event Monitor",
+            "assigned_to": null,
+            "program": "rhythm_surveillance",
+            "status": "available"
+        },
+        {
+            "device_id": "PHILIP_tracer_456",
+            "device_type": "Philips Trilogy Ventilator",
+            "assigned_to": null,
+            "program": "sleep_compliance",
+            "status": "available"
+        },
+        {
+            "device_id": "CARDIA_tracer_457",
+            "device_type": "Cardiac Event Monitor",
+            "assigned_to": null,
+            "program": "rhythm_surveillance",
+            "status": "inspection"
+        },
+        {
+            "device_id": "PHILIP_tracer_458",
+            "device_type": "Philips Trilogy Ventilator",
+            "assigned_to": null,
+            "program": "sleep_compliance",
+            "status": "available"
+        },
+        {
+            "device_id": "CARDIA_tracer_459",
+            "device_type": "Cardiac Event Monitor",
+            "assigned_to": null,
+            "program": "rhythm_surveillance",
+            "status": "available"
+        },
+        {
+            "device_id": "PHILIP_tracer_460",
+            "device_type": "Philips Trilogy Ventilator",
+            "assigned_to": null,
+            "program": "sleep_compliance",
+            "status": "inspection"
+        }
+    ],
+    "generated_patient_ids": [
+        "daniel_morales_tracer_0001",
+        "sofia_morales_tracer_0001",
+        "mateo_morales_tracer_0001",
+        "grace_kim_tracer_0001",
+        "mina_kim_tracer_0001",
+        "eli_kim_tracer_0001",
+        "jasmine_reed_tracer_0001",
+        "noah_reed_tracer_0001",
+        "ivy_reed_tracer_0001",
+        "nadia_abbasi_tracer_0001",
+        "avery_morgan_tracer_0001",
+        "jordan_patel_tracer_0001"
+    ],
+    "generated_device_ids": [
+        "CARDIA_tracer_451",
+        "PHILIP_tracer_452",
+        "CARDIA_tracer_453",
+        "PHILIP_tracer_454",
+        "CARDIA_tracer_455",
+        "PHILIP_tracer_456",
+        "CARDIA_tracer_457",
+        "PHILIP_tracer_458",
+        "CARDIA_tracer_459",
+        "PHILIP_tracer_460"
+    ]
+}

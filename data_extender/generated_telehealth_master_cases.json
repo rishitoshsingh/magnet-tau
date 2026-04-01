@@ -1,0 +1,1093 @@
+{
+    "cases": [
+        {
+            "metadata": {
+                "category": "deterministic_master_data",
+                "summary": "Deterministically generated telehealth master data additions."
+            },
+            "patients": [
+                {
+                    "patient_id": "daniel_morales_tracer_0001",
+                    "name": {
+                        "first_name": "Daniel",
+                        "last_name": "Morales"
+                    },
+                    "demographics": {
+                        "date_of_birth": "1980-01-10",
+                        "gender": "Male",
+                        "phone": "(555) 882-0200",
+                        "email": "daniel.morales@tracer-health.org"
+                    },
+                    "address": {
+                        "address1": "128 Cedar Grove Ave",
+                        "address2": "",
+                        "city": "Boston",
+                        "state": "MA",
+                        "zip": "02118",
+                        "country": "USA"
+                    },
+                    "insurance": {
+                        "primary": {
+                            "provider": "Aetna",
+                            "policy_number": "AET700001",
+                            "group_number": "AEG101",
+                            "copay_primary": 25.0,
+                            "copay_specialist": 50.0
+                        }
+                    },
+                    "medical_history": {
+                        "conditions": [
+                            "Family care coordination"
+                        ],
+                        "allergies": [],
+                        "medications": []
+                    },
+                    "emergency_contact": {
+                        "name": "Same household contact",
+                        "relationship": "Partner",
+                        "phone": "(555) 885-0500"
+                    }
+                },
+                {
+                    "patient_id": "sofia_morales_tracer_0001",
+                    "name": {
+                        "first_name": "Sofia",
+                        "last_name": "Morales"
+                    },
+                    "demographics": {
+                        "date_of_birth": "2017-04-19",
+                        "gender": "Female",
+                        "phone": "(555) 882-0201",
+                        "email": "sofia.morales@tracer-health.org"
+                    },
+                    "address": {
+                        "address1": "128 Cedar Grove Ave",
+                        "address2": "",
+                        "city": "Boston",
+                        "state": "MA",
+                        "zip": "02118",
+                        "country": "USA"
+                    },
+                    "insurance": {
+                        "primary": {
+                            "provider": "Aetna",
+                            "policy_number": "AET700001",
+                            "group_number": "AEG101",
+                            "copay_primary": 25.0,
+                            "copay_specialist": 50.0
+                        }
+                    },
+                    "medical_history": {
+                        "conditions": [
+                            "Food Sensitivity"
+                        ],
+                        "allergies": [],
+                        "medications": []
+                    },
+                    "emergency_contact": {
+                        "name": "Daniel Morales",
+                        "relationship": "Parent",
+                        "phone": "(555) 882-0200"
+                    }
+                },
+                {
+                    "patient_id": "mateo_morales_tracer_0001",
+                    "name": {
+                        "first_name": "Mateo",
+                        "last_name": "Morales"
+                    },
+                    "demographics": {
+                        "date_of_birth": "2020-08-11",
+                        "gender": "Male",
+                        "phone": "(555) 882-0202",
+                        "email": "mateo.morales@tracer-health.org"
+                    },
+                    "address": {
+                        "address1": "128 Cedar Grove Ave",
+                        "address2": "",
+                        "city": "Boston",
+                        "state": "MA",
+                        "zip": "02118",
+                        "country": "USA"
+                    },
+                    "insurance": {
+                        "primary": {
+                            "provider": "Aetna",
+                            "policy_number": "AET700001",
+                            "group_number": "AEG101",
+                            "copay_primary": 25.0,
+                            "copay_specialist": 50.0
+                        }
+                    },
+                    "medical_history": {
+                        "conditions": [],
+                        "allergies": [],
+                        "medications": []
+                    },
+                    "emergency_contact": {
+                        "name": "Daniel Morales",
+                        "relationship": "Parent",
+                        "phone": "(555) 882-0200"
+                    }
+                },
+                {
+                    "patient_id": "grace_kim_tracer_0001",
+                    "name": {
+                        "first_name": "Grace",
+                        "last_name": "Kim"
+                    },
+                    "demographics": {
+                        "date_of_birth": "1981-02-11",
+                        "gender": "Female",
+                        "phone": "(555) 882-0203",
+                        "email": "grace.kim@tracer-health.org"
+                    },
+                    "address": {
+                        "address1": "441 Sunset Ridge Dr",
+                        "address2": "Unit 3",
+                        "city": "Austin",
+                        "state": "TX",
+                        "zip": "73301",
+                        "country": "USA"
+                    },
+                    "insurance": {
+                        "primary": {
+                            "provider": "Cigna",
+                            "policy_number": "CIG700002",
+                            "group_number": "CIGG102",
+                            "copay_primary": 30.0,
+                            "copay_specialist": 55.0
+                        }
+                    },
+                    "medical_history": {
+                        "conditions": [
+                            "Family care coordination"
+                        ],
+                        "allergies": [],
+                        "medications": []
+                    },
+                    "emergency_contact": {
+                        "name": "Same household contact",
+                        "relationship": "Partner",
+                        "phone": "(555) 885-0501"
+                    }
+                },
+                {
+                    "patient_id": "mina_kim_tracer_0001",
+                    "name": {
+                        "first_name": "Mina",
+                        "last_name": "Kim"
+                    },
+                    "demographics": {
+                        "date_of_birth": "2018-01-06",
+                        "gender": "Female",
+                        "phone": "(555) 882-0204",
+                        "email": "mina.kim@tracer-health.org"
+                    },
+                    "address": {
+                        "address1": "441 Sunset Ridge Dr",
+                        "address2": "Unit 3",
+                        "city": "Austin",
+                        "state": "TX",
+                        "zip": "73301",
+                        "country": "USA"
+                    },
+                    "insurance": {
+                        "primary": {
+                            "provider": "Cigna",
+                            "policy_number": "CIG700002",
+                            "group_number": "CIGG102",
+                            "copay_primary": 30.0,
+                            "copay_specialist": 55.0
+                        }
+                    },
+                    "medical_history": {
+                        "conditions": [
+                            "Autism Spectrum Disorder"
+                        ],
+                        "allergies": [],
+                        "medications": [
+                            {
+                                "name": "Melatonin",
+                                "dosage": "3mg",
+                                "frequency": "at bedtime"
+                            }
+                        ]
+                    },
+                    "emergency_contact": {
+                        "name": "Grace Kim",
+                        "relationship": "Parent",
+                        "phone": "(555) 882-0203"
+                    }
+                },
+                {
+                    "patient_id": "eli_kim_tracer_0001",
+                    "name": {
+                        "first_name": "Eli",
+                        "last_name": "Kim"
+                    },
+                    "demographics": {
+                        "date_of_birth": "2014-10-22",
+                        "gender": "Male",
+                        "phone": "(555) 882-0205",
+                        "email": "eli.kim@tracer-health.org"
+                    },
+                    "address": {
+                        "address1": "441 Sunset Ridge Dr",
+                        "address2": "Unit 3",
+                        "city": "Austin",
+                        "state": "TX",
+                        "zip": "73301",
+                        "country": "USA"
+                    },
+                    "insurance": {
+                        "primary": {
+                            "provider": "Cigna",
+                            "policy_number": "CIG700002",
+                            "group_number": "CIGG102",
+                            "copay_primary": 30.0,
+                            "copay_specialist": 55.0
+                        }
+                    },
+                    "medical_history": {
+                        "conditions": [
+                            "ADHD"
+                        ],
+                        "allergies": [],
+                        "medications": []
+                    },
+                    "emergency_contact": {
+                        "name": "Grace Kim",
+                        "relationship": "Parent",
+                        "phone": "(555) 882-0203"
+                    }
+                },
+                {
+                    "patient_id": "jasmine_reed_tracer_0001",
+                    "name": {
+                        "first_name": "Jasmine",
+                        "last_name": "Reed"
+                    },
+                    "demographics": {
+                        "date_of_birth": "1982-03-12",
+                        "gender": "Male",
+                        "phone": "(555) 882-0206",
+                        "email": "jasmine.reed@tracer-health.org"
+                    },
+                    "address": {
+                        "address1": "85 Harbor View Ln",
+                        "address2": "",
+                        "city": "Seattle",
+                        "state": "WA",
+                        "zip": "98109",
+                        "country": "USA"
+                    },
+                    "insurance": {
+                        "primary": {
+                            "provider": "UnitedHealthcare",
+                            "policy_number": "UHC700003",
+                            "group_number": "UHG103",
+                            "copay_primary": 35.0,
+                            "copay_specialist": 60.0
+                        }
+                    },
+                    "medical_history": {
+                        "conditions": [
+                            "Family care coordination"
+                        ],
+                        "allergies": [],
+                        "medications": []
+                    },
+                    "emergency_contact": {
+                        "name": "Same household contact",
+                        "relationship": "Partner",
+                        "phone": "(555) 885-0502"
+                    }
+                },
+                {
+                    "patient_id": "noah_reed_tracer_0001",
+                    "name": {
+                        "first_name": "Noah",
+                        "last_name": "Reed"
+                    },
+                    "demographics": {
+                        "date_of_birth": "2016-07-14",
+                        "gender": "Male",
+                        "phone": "(555) 882-0207",
+                        "email": "noah.reed@tracer-health.org"
+                    },
+                    "address": {
+                        "address1": "85 Harbor View Ln",
+                        "address2": "",
+                        "city": "Seattle",
+                        "state": "WA",
+                        "zip": "98109",
+                        "country": "USA"
+                    },
+                    "insurance": {
+                        "primary": {
+                            "provider": "UnitedHealthcare",
+                            "policy_number": "UHC700003",
+                            "group_number": "UHG103",
+                            "copay_primary": 35.0,
+                            "copay_specialist": 60.0
+                        }
+                    },
+                    "medical_history": {
+                        "conditions": [
+                            "Asthma"
+                        ],
+                        "allergies": [],
+                        "medications": [
+                            {
+                                "name": "Montelukast",
+                                "dosage": "5mg",
+                                "frequency": "once daily"
+                            }
+                        ]
+                    },
+                    "emergency_contact": {
+                        "name": "Jasmine Reed",
+                        "relationship": "Parent",
+                        "phone": "(555) 882-0206"
+                    }
+                },
+                {
+                    "patient_id": "ivy_reed_tracer_0001",
+                    "name": {
+                        "first_name": "Ivy",
+                        "last_name": "Reed"
+                    },
+                    "demographics": {
+                        "date_of_birth": "2019-03-05",
+                        "gender": "Female",
+                        "phone": "(555) 882-0208",
+                        "email": "ivy.reed@tracer-health.org"
+                    },
+                    "address": {
+                        "address1": "85 Harbor View Ln",
+                        "address2": "",
+                        "city": "Seattle",
+                        "state": "WA",
+                        "zip": "98109",
+                        "country": "USA"
+                    },
+                    "insurance": {
+                        "primary": {
+                            "provider": "UnitedHealthcare",
+                            "policy_number": "UHC700003",
+                            "group_number": "UHG103",
+                            "copay_primary": 35.0,
+                            "copay_specialist": 60.0
+                        }
+                    },
+                    "medical_history": {
+                        "conditions": [
+                            "Allergic Rhinitis"
+                        ],
+                        "allergies": [],
+                        "medications": []
+                    },
+                    "emergency_contact": {
+                        "name": "Jasmine Reed",
+                        "relationship": "Parent",
+                        "phone": "(555) 882-0206"
+                    }
+                },
+                {
+                    "patient_id": "nadia_abbasi_tracer_0001",
+                    "name": {
+                        "first_name": "Nadia",
+                        "last_name": "Abbasi"
+                    },
+                    "demographics": {
+                        "date_of_birth": "1989-02-11",
+                        "gender": "Female",
+                        "phone": "(555) 882-0209",
+                        "email": "nadia.abbasi@tracer-health.org"
+                    },
+                    "address": {
+                        "address1": "909 Magnolia Street",
+                        "address2": "Apt 5C",
+                        "city": "Chicago",
+                        "state": "IL",
+                        "zip": "60611",
+                        "country": "USA"
+                    },
+                    "insurance": {
+                        "primary": {
+                            "provider": "UnitedHealthcare",
+                            "policy_number": "UHC700019",
+                            "group_number": "UHG119",
+                            "copay_primary": 35.0,
+                            "copay_specialist": 65.0
+                        }
+                    },
+                    "medical_history": {
+                        "conditions": [
+                            "Hypertension",
+                            "Type 2 Diabetes"
+                        ],
+                        "allergies": [
+                            "Penicillin"
+                        ],
+                        "medications": [
+                            {
+                                "name": "Metformin",
+                                "dosage": "500mg",
+                                "frequency": "twice daily"
+                            },
+                            {
+                                "name": "Lisinopril",
+                                "dosage": "10mg",
+                                "frequency": "once daily"
+                            }
+                        ]
+                    },
+                    "emergency_contact": {
+                        "name": "Nadia Contact",
+                        "relationship": "Sibling",
+                        "phone": "(555) 886-0650"
+                    }
+                },
+                {
+                    "patient_id": "avery_morgan_tracer_0001",
+                    "name": {
+                        "first_name": "Avery",
+                        "last_name": "Morgan"
+                    },
+                    "demographics": {
+                        "date_of_birth": "1980-03-12",
+                        "gender": "Male",
+                        "phone": "(555) 882-0210",
+                        "email": "avery.morgan@tracer-health.org"
+                    },
+                    "address": {
+                        "address1": "22 Desert Bloom Rd",
+                        "address2": "",
+                        "city": "Phoenix",
+                        "state": "AZ",
+                        "zip": "85013",
+                        "country": "USA"
+                    },
+                    "insurance": {
+                        "primary": {
+                            "provider": "Blue Cross Blue Shield",
+                            "policy_number": "BCBS700020",
+                            "group_number": "BCG120",
+                            "copay_primary": 20.0,
+                            "copay_specialist": 45.0
+                        }
+                    },
+                    "medical_history": {
+                        "conditions": [
+                            "Atrial Fibrillation",
+                            "Hyperlipidemia"
+                        ],
+                        "allergies": [
+                            "Latex"
+                        ],
+                        "medications": [
+                            {
+                                "name": "Warfarin",
+                                "dosage": "5mg",
+                                "frequency": "once daily"
+                            },
+                            {
+                                "name": "Atorvastatin",
+                                "dosage": "20mg",
+                                "frequency": "once daily"
+                            }
+                        ]
+                    },
+                    "emergency_contact": {
+                        "name": "Avery Contact",
+                        "relationship": "Sibling",
+                        "phone": "(555) 886-0651"
+                    }
+                },
+                {
+                    "patient_id": "jordan_patel_tracer_0001",
+                    "name": {
+                        "first_name": "Jordan",
+                        "last_name": "Patel"
+                    },
+                    "demographics": {
+                        "date_of_birth": "1981-04-13",
+                        "gender": "Male",
+                        "phone": "(555) 882-0211",
+                        "email": "jordan.patel@tracer-health.org"
+                    },
+                    "address": {
+                        "address1": "715 River Market St",
+                        "address2": "",
+                        "city": "Kansas City",
+                        "state": "MO",
+                        "zip": "64106",
+                        "country": "USA"
+                    },
+                    "insurance": {
+                        "primary": {
+                            "provider": "Aetna",
+                            "policy_number": "AET700021",
+                            "group_number": "AEG121",
+                            "copay_primary": 25.0,
+                            "copay_specialist": 50.0
+                        }
+                    },
+                    "medical_history": {
+                        "conditions": [
+                            "Obstructive Sleep Apnea",
+                            "COPD"
+                        ],
+                        "allergies": [
+                            "Sulfa drugs"
+                        ],
+                        "medications": [
+                            {
+                                "name": "Fluticasone Inhaler",
+                                "dosage": "110mcg",
+                                "frequency": "twice daily"
+                            },
+                            {
+                                "name": "Montelukast",
+                                "dosage": "10mg",
+                                "frequency": "once daily"
+                            }
+                        ]
+                    },
+                    "emergency_contact": {
+                        "name": "Jordan Contact",
+                        "relationship": "Sibling",
+                        "phone": "(555) 886-0652"
+                    }
+                }
+            ],
+            "providers": [
+                {
+                    "provider_id": "camila_ortega_primary_care_tracer_0001",
+                    "name": {
+                        "first_name": "Camila",
+                        "last_name": "Ortega",
+                        "title": "MD"
+                    },
+                    "specialty": "Primary Care",
+                    "license_number": "MD78000",
+                    "credentials": [
+                        "MD"
+                    ],
+                    "contact": {
+                        "phone": "(555) 889-0900",
+                        "email": "dr.ortega.1@tracer-health.org"
+                    },
+                    "schedule": {
+                        "monday": [
+                            "08:00",
+                            "09:00",
+                            "10:00",
+                            "11:00",
+                            "14:00",
+                            "15:00"
+                        ],
+                        "tuesday": [
+                            "08:00",
+                            "09:00",
+                            "10:00",
+                            "11:00",
+                            "14:00"
+                        ],
+                        "wednesday": [
+                            "08:00",
+                            "09:00",
+                            "10:00",
+                            "14:00",
+                            "15:00"
+                        ],
+                        "thursday": [
+                            "08:00",
+                            "09:00",
+                            "10:00",
+                            "11:00",
+                            "14:00"
+                        ],
+                        "friday": [
+                            "08:00",
+                            "09:00",
+                            "10:00",
+                            "11:00"
+                        ]
+                    },
+                    "consultation_fee": 135.0,
+                    "languages": [
+                        "English",
+                        "Spanish"
+                    ],
+                    "years_experience": 11
+                },
+                {
+                    "provider_id": "owen_shaw_cardiology_tracer_0001",
+                    "name": {
+                        "first_name": "Owen",
+                        "last_name": "Shaw",
+                        "title": "MD"
+                    },
+                    "specialty": "Cardiology",
+                    "license_number": "MD78001",
+                    "credentials": [
+                        "MD",
+                        "FACC"
+                    ],
+                    "contact": {
+                        "phone": "(555) 889-0901",
+                        "email": "dr.shaw.2@tracer-health.org"
+                    },
+                    "schedule": {
+                        "monday": [
+                            "09:00",
+                            "10:00",
+                            "11:00",
+                            "14:00",
+                            "15:00"
+                        ],
+                        "tuesday": [
+                            "09:00",
+                            "10:00",
+                            "11:00",
+                            "14:00"
+                        ],
+                        "wednesday": [
+                            "09:00",
+                            "10:00",
+                            "14:00",
+                            "15:00"
+                        ],
+                        "thursday": [
+                            "09:00",
+                            "10:00",
+                            "11:00",
+                            "14:00"
+                        ],
+                        "friday": [
+                            "09:00",
+                            "10:00",
+                            "11:00"
+                        ]
+                    },
+                    "consultation_fee": 225.0,
+                    "languages": [
+                        "English"
+                    ],
+                    "years_experience": 20
+                },
+                {
+                    "provider_id": "meera_santos_pediatrics_tracer_0001",
+                    "name": {
+                        "first_name": "Meera",
+                        "last_name": "Santos",
+                        "title": "MD"
+                    },
+                    "specialty": "Pediatrics",
+                    "license_number": "MD78002",
+                    "credentials": [
+                        "MD",
+                        "FAAP"
+                    ],
+                    "contact": {
+                        "phone": "(555) 889-0902",
+                        "email": "dr.santos.3@tracer-health.org"
+                    },
+                    "schedule": {
+                        "monday": [
+                            "08:30",
+                            "09:30",
+                            "10:30",
+                            "14:00"
+                        ],
+                        "tuesday": [
+                            "08:30",
+                            "09:30",
+                            "10:30",
+                            "14:00"
+                        ],
+                        "wednesday": [
+                            "08:30",
+                            "09:30",
+                            "10:30",
+                            "14:00"
+                        ],
+                        "thursday": [
+                            "08:30",
+                            "09:30",
+                            "10:30",
+                            "14:00"
+                        ],
+                        "friday": [
+                            "08:30",
+                            "09:30",
+                            "10:30"
+                        ]
+                    },
+                    "consultation_fee": 165.0,
+                    "languages": [
+                        "English",
+                        "Spanish"
+                    ],
+                    "years_experience": 16
+                },
+                {
+                    "provider_id": "hector_lane_endocrinology_tracer_0001",
+                    "name": {
+                        "first_name": "Hector",
+                        "last_name": "Lane",
+                        "title": "MD"
+                    },
+                    "specialty": "Endocrinology",
+                    "license_number": "MD78003",
+                    "credentials": [
+                        "MD"
+                    ],
+                    "contact": {
+                        "phone": "(555) 889-0903",
+                        "email": "dr.lane.4@tracer-health.org"
+                    },
+                    "schedule": {
+                        "monday": [
+                            "09:00",
+                            "10:00",
+                            "13:00",
+                            "14:00"
+                        ],
+                        "tuesday": [
+                            "09:00",
+                            "10:00",
+                            "13:00",
+                            "14:00"
+                        ],
+                        "wednesday": [
+                            "09:00",
+                            "10:00",
+                            "13:00"
+                        ],
+                        "thursday": [
+                            "09:00",
+                            "10:00",
+                            "13:00",
+                            "14:00"
+                        ],
+                        "friday": [
+                            "09:00",
+                            "10:00",
+                            "13:00"
+                        ]
+                    },
+                    "consultation_fee": 210.0,
+                    "languages": [
+                        "English",
+                        "Hindi"
+                    ],
+                    "years_experience": 19
+                },
+                {
+                    "provider_id": "amelia_quinn_pulmonology_tracer_0001",
+                    "name": {
+                        "first_name": "Amelia",
+                        "last_name": "Quinn",
+                        "title": "MD"
+                    },
+                    "specialty": "Pulmonology",
+                    "license_number": "MD78004",
+                    "credentials": [
+                        "MD"
+                    ],
+                    "contact": {
+                        "phone": "(555) 889-0904",
+                        "email": "dr.quinn.5@tracer-health.org"
+                    },
+                    "schedule": {
+                        "monday": [
+                            "08:00",
+                            "09:00",
+                            "10:00",
+                            "14:00"
+                        ],
+                        "tuesday": [
+                            "08:00",
+                            "09:00",
+                            "10:00",
+                            "14:00"
+                        ],
+                        "wednesday": [
+                            "08:00",
+                            "09:00",
+                            "10:00",
+                            "14:00"
+                        ],
+                        "thursday": [
+                            "08:00",
+                            "09:00",
+                            "10:00",
+                            "14:00"
+                        ],
+                        "friday": [
+                            "08:00",
+                            "09:00",
+                            "10:00"
+                        ]
+                    },
+                    "consultation_fee": 215.0,
+                    "languages": [
+                        "English",
+                        "Korean"
+                    ],
+                    "years_experience": 17
+                },
+                {
+                    "provider_id": "victor_liao_neurology_tracer_0001",
+                    "name": {
+                        "first_name": "Victor",
+                        "last_name": "Liao",
+                        "title": "MD"
+                    },
+                    "specialty": "Neurology",
+                    "license_number": "MD78005",
+                    "credentials": [
+                        "MD"
+                    ],
+                    "contact": {
+                        "phone": "(555) 889-0905",
+                        "email": "dr.liao.6@tracer-health.org"
+                    },
+                    "schedule": {
+                        "monday": [
+                            "09:30",
+                            "10:30",
+                            "14:30"
+                        ],
+                        "tuesday": [
+                            "09:30",
+                            "10:30",
+                            "14:30"
+                        ],
+                        "wednesday": [
+                            "09:30",
+                            "10:30",
+                            "14:30"
+                        ],
+                        "thursday": [
+                            "09:30",
+                            "10:30",
+                            "14:30"
+                        ],
+                        "friday": [
+                            "09:30",
+                            "10:30"
+                        ]
+                    },
+                    "consultation_fee": 230.0,
+                    "languages": [
+                        "English",
+                        "French"
+                    ],
+                    "years_experience": 14
+                },
+                {
+                    "provider_id": "riley_stone_device_coaching_tracer_0001",
+                    "name": {
+                        "first_name": "Riley",
+                        "last_name": "Stone",
+                        "title": "RT"
+                    },
+                    "specialty": "Device Coaching",
+                    "license_number": "RT78006",
+                    "credentials": [
+                        "RT",
+                        "RN"
+                    ],
+                    "contact": {
+                        "phone": "(555) 889-0906",
+                        "email": "coach.stone.7@tracer-health.org"
+                    },
+                    "schedule": {
+                        "monday": [
+                            "08:00",
+                            "09:00",
+                            "10:00",
+                            "15:00"
+                        ],
+                        "tuesday": [
+                            "08:00",
+                            "09:00",
+                            "10:00",
+                            "15:00"
+                        ],
+                        "wednesday": [
+                            "08:00",
+                            "09:00",
+                            "10:00",
+                            "15:00"
+                        ],
+                        "thursday": [
+                            "08:00",
+                            "09:00",
+                            "10:00",
+                            "15:00"
+                        ],
+                        "friday": [
+                            "08:00",
+                            "09:00",
+                            "10:00"
+                        ]
+                    },
+                    "consultation_fee": 95.0,
+                    "languages": [
+                        "English"
+                    ],
+                    "years_experience": 11
+                },
+                {
+                    "provider_id": "monica_reyes_care_coordination_tracer_0001",
+                    "name": {
+                        "first_name": "Monica",
+                        "last_name": "Reyes",
+                        "title": "RN"
+                    },
+                    "specialty": "Care Coordination",
+                    "license_number": "RN78007",
+                    "credentials": [
+                        "LCSW",
+                        "RN"
+                    ],
+                    "contact": {
+                        "phone": "(555) 889-0907",
+                        "email": "care.reyes.8@tracer-health.org"
+                    },
+                    "schedule": {
+                        "monday": [
+                            "10:00",
+                            "11:00",
+                            "13:00",
+                            "14:00"
+                        ],
+                        "tuesday": [
+                            "10:00",
+                            "11:00",
+                            "13:00",
+                            "14:00"
+                        ],
+                        "wednesday": [
+                            "10:00",
+                            "11:00",
+                            "13:00",
+                            "14:00"
+                        ],
+                        "thursday": [
+                            "10:00",
+                            "11:00",
+                            "13:00",
+                            "14:00"
+                        ],
+                        "friday": [
+                            "10:00",
+                            "11:00",
+                            "13:00"
+                        ]
+                    },
+                    "consultation_fee": 110.0,
+                    "languages": [
+                        "English",
+                        "Spanish"
+                    ],
+                    "years_experience": 15
+                }
+            ],
+            "appointments": [],
+            "medical_records": [],
+            "telemetry_inventory": [
+                {
+                    "device_id": "CARDIA_tracer_451",
+                    "device_type": "Cardiac Event Monitor",
+                    "status": "deployed",
+                    "last_audit": "2026-01-10",
+                    "assigned_to": "avery_morgan_tracer_0001",
+                    "notes": "Assigned to avery_morgan_tracer_0001 for rhythm_surveillance"
+                },
+                {
+                    "device_id": "PHILIP_tracer_452",
+                    "device_type": "Philips Trilogy Ventilator",
+                    "status": "shipped",
+                    "last_audit": "2026-01-11",
+                    "assigned_to": "jordan_patel_tracer_0001",
+                    "notes": "Assigned to jordan_patel_tracer_0001 for sleep_compliance"
+                },
+                {
+                    "device_id": "CARDIA_tracer_453",
+                    "device_type": "Cardiac Event Monitor",
+                    "status": "available",
+                    "last_audit": "2026-01-12",
+                    "assigned_to": null,
+                    "notes": "Provisioned for rhythm_surveillance"
+                },
+                {
+                    "device_id": "PHILIP_tracer_454",
+                    "device_type": "Philips Trilogy Ventilator",
+                    "status": "inspection",
+                    "last_audit": "2026-01-13",
+                    "assigned_to": null,
+                    "notes": "Provisioned for sleep_compliance"
+                },
+                {
+                    "device_id": "CARDIA_tracer_455",
+                    "device_type": "Cardiac Event Monitor",
+                    "status": "available",
+                    "last_audit": "2026-01-14",
+                    "assigned_to": null,
+                    "notes": "Provisioned for rhythm_surveillance"
+                },
+                {
+                    "device_id": "PHILIP_tracer_456",
+                    "device_type": "Philips Trilogy Ventilator",
+                    "status": "available",
+                    "last_audit": "2026-01-15",
+                    "assigned_to": null,
+                    "notes": "Provisioned for sleep_compliance"
+                },
+                {
+                    "device_id": "CARDIA_tracer_457",
+                    "device_type": "Cardiac Event Monitor",
+                    "status": "inspection",
+                    "last_audit": "2026-01-16",
+                    "assigned_to": null,
+                    "notes": "Provisioned for rhythm_surveillance"
+                },
+                {
+                    "device_id": "PHILIP_tracer_458",
+                    "device_type": "Philips Trilogy Ventilator",
+                    "status": "available",
+                    "last_audit": "2026-01-17",
+                    "assigned_to": null,
+                    "notes": "Provisioned for sleep_compliance"
+                },
+                {
+                    "device_id": "CARDIA_tracer_459",
+                    "device_type": "Cardiac Event Monitor",
+                    "status": "available",
+                    "last_audit": "2026-01-18",
+                    "assigned_to": null,
+                    "notes": "Provisioned for rhythm_surveillance"
+                },
+                {
+                    "device_id": "PHILIP_tracer_460",
+                    "device_type": "Philips Trilogy Ventilator",
+                    "status": "inspection",
+                    "last_audit": "2026-01-10",
+                    "assigned_to": null,
+                    "notes": "Provisioned for sleep_compliance"
+                }
+            ],
+            "telemetry_uploads": [],
+            "regimen_plans": [],
+            "medication_suppliers": {},
+            "drug_interactions": {}
+        }
+    ]
+}
