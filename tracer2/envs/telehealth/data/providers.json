@@ -48,6 +48,9 @@
                 "10:00",
                 "11:00",
                 "15:00"
+            ],
+            "sunday": [
+                "16:00"
             ]
         },
         "consultation_fee": 200.0,
@@ -93,6 +96,7 @@
             ],
             "wednesday": [
                 "08:00",
+                "08:30",
                 "09:00",
                 "10:00",
                 "14:00",
@@ -260,6 +264,7 @@
             "monday": [
                 "06:00",
                 "08:00",
+                "08:30",
                 "09:00",
                 "10:00",
                 "11:00",
@@ -272,6 +277,7 @@
                 "08:00",
                 "09:00",
                 "10:00",
+                "10:30",
                 "11:00",
                 "14:00",
                 "15:00",
@@ -281,6 +287,7 @@
                 "06:00",
                 "08:00",
                 "09:00",
+                "09:30",
                 "10:00",
                 "11:00",
                 "14:00",
@@ -303,6 +310,9 @@
                 "10:00",
                 "11:00",
                 "14:00"
+            ],
+            "sunday": [
+                "09:30"
             ]
         },
         "consultation_fee": 150.0,
@@ -523,6 +533,7 @@
             ],
             "tuesday": [
                 "08:30",
+                "09:00",
                 "10:00",
                 "13:30",
                 "15:30"
@@ -588,6 +599,9 @@
             "friday": [
                 "10:00",
                 "13:30"
+            ],
+            "sunday": [
+                "14:00"
             ]
         },
         "consultation_fee": 225.0,
@@ -730,14 +744,40 @@
             "email": "dr.ivankovic@neurocenter.com"
         },
         "schedule": {
-            "monday": ["09:00", "10:00", "11:00", "14:00"],
-            "tuesday": ["09:30", "10:30", "13:30", "15:30"],
-            "wednesday": ["09:00", "10:00", "11:00"],
-            "thursday": ["09:30", "10:30", "14:00", "15:00"],
-            "friday": ["09:00", "10:00", "13:00"]
+            "monday": [
+                "09:00",
+                "10:00",
+                "11:00",
+                "14:00"
+            ],
+            "tuesday": [
+                "09:30",
+                "10:30",
+                "13:30",
+                "15:30"
+            ],
+            "wednesday": [
+                "09:00",
+                "10:00",
+                "11:00"
+            ],
+            "thursday": [
+                "09:30",
+                "10:30",
+                "14:00",
+                "15:00"
+            ],
+            "friday": [
+                "09:00",
+                "10:00",
+                "13:00"
+            ]
         },
         "consultation_fee": 260.0,
-        "languages": ["English", "Croatian"],
+        "languages": [
+            "English",
+            "Croatian"
+        ],
         "years_experience": 21
     },
     "dr_hartwell_psychology": {
@@ -758,13 +798,38 @@
             "email": "dr.hartwell@mindcenter.com"
         },
         "schedule": {
-            "monday": ["08:30", "09:30", "11:30", "14:30"],
-            "tuesday": ["08:00", "09:00", "10:00"],
-            "thursday": ["08:30", "09:30", "10:30", "13:30"],
-            "friday": ["09:00", "10:00", "11:00", "13:00"]
+            "monday": [
+                "08:30",
+                "09:30",
+                "11:30",
+                "14:30"
+            ],
+            "tuesday": [
+                "08:00",
+                "09:00",
+                "10:00"
+            ],
+            "thursday": [
+                "08:30",
+                "09:30",
+                "10:30",
+                "13:30"
+            ],
+            "friday": [
+                "09:00",
+                "10:00",
+                "11:00",
+                "13:00"
+            ],
+            "wednesday": [
+                "11:30"
+            ]
         },
         "consultation_fee": 195.0,
-        "languages": ["English", "Spanish"],
+        "languages": [
+            "English",
+            "Spanish"
+        ],
         "years_experience": 18
     },
     "dr_patel_neurology": {
@@ -785,14 +850,43 @@
             "email": "dr.patel@northstarhealth.org"
         },
         "schedule": {
-            "monday": ["07:30", "08:30", "09:30", "10:30"],
-            "tuesday": ["07:30", "08:30", "09:30", "13:30", "14:30"],
-            "wednesday": ["08:00", "09:00", "10:00"],
-            "thursday": ["07:30", "08:30", "09:30", "10:30", "15:00"],
-            "friday": ["08:00", "09:00", "13:00", "14:00"]
+            "monday": [
+                "07:30",
+                "08:30",
+                "09:30",
+                "10:30"
+            ],
+            "tuesday": [
+                "07:30",
+                "08:30",
+                "09:30",
+                "13:30",
+                "14:30"
+            ],
+            "wednesday": [
+                "08:00",
+                "09:00",
+                "10:00"
+            ],
+            "thursday": [
+                "07:30",
+                "08:30",
+                "09:30",
+                "10:30",
+                "15:00"
+            ],
+            "friday": [
+                "08:00",
+                "09:00",
+                "13:00",
+                "14:00"
+            ]
         },
         "consultation_fee": 255.0,
-        "languages": ["English", "Gujarati"],
+        "languages": [
+            "English",
+            "Gujarati"
+        ],
         "years_experience": 19
     },
     "coach_riley_telemetry": {
@@ -813,14 +907,42 @@
             "email": "morgan.riley@telemetrycoach.com"
         },
         "schedule": {
-            "monday": ["09:00", "10:00", "11:00", "15:00"],
-            "tuesday": ["09:30", "10:30", "11:30", "16:00"],
-            "wednesday": ["09:00", "10:00", "11:00"],
-            "thursday": ["09:30", "10:30", "11:30"],
-            "friday": ["09:00", "10:00", "11:00"]
+            "monday": [
+                "09:00",
+                "10:00",
+                "11:00",
+                "15:00"
+            ],
+            "tuesday": [
+                "08:00",
+                "09:30",
+                "10:00",
+                "10:30",
+                "11:30",
+                "16:00"
+            ],
+            "wednesday": [
+                "09:00",
+                "10:00",
+                "11:00"
+            ],
+            "thursday": [
+                "09:30",
+                "10:30",
+                "11:30"
+            ],
+            "friday": [
+                "09:00",
+                "09:30",
+                "10:00",
+                "11:00"
+            ]
         },
         "consultation_fee": 95.0,
-        "languages": ["English", "Spanish"],
+        "languages": [
+            "English",
+            "Spanish"
+        ],
         "years_experience": 14
     },
     "dr_kumar_respiratory": {
@@ -841,13 +963,38 @@
             "email": "anjali.kumar@northsoundsleep.org"
         },
         "schedule": {
-            "tuesday": ["08:00", "09:00", "10:00", "11:00"],
-            "wednesday": ["08:30", "09:30", "10:30"],
-            "thursday": ["08:00", "09:00", "10:00", "11:00"],
-            "friday": ["08:30", "09:30", "10:30", "14:00"]
+            "tuesday": [
+                "08:00",
+                "09:00",
+                "10:00",
+                "11:00"
+            ],
+            "wednesday": [
+                "08:30",
+                "09:30",
+                "10:30"
+            ],
+            "thursday": [
+                "08:00",
+                "09:00",
+                "10:00",
+                "11:00"
+            ],
+            "friday": [
+                "08:30",
+                "09:30",
+                "10:30",
+                "14:00"
+            ],
+            "saturday": [
+                "09:30"
+            ]
         },
         "consultation_fee": 220.0,
-        "languages": ["English", "Korean"],
+        "languages": [
+            "English",
+            "Korean"
+        ],
         "years_experience": 18
     },
     "dr_okafor_developmental_pediatrics": {
@@ -869,14 +1016,41 @@
             "email": "dr.okafor@portlandpeds.org"
         },
         "schedule": {
-            "monday": ["09:00", "10:00", "13:00", "14:00"],
-            "tuesday": ["09:00", "10:00", "11:00"],
-            "wednesday": ["09:00", "10:00", "13:00", "14:00", "15:00"],
-            "thursday": ["09:00", "10:00", "11:00", "13:00"],
-            "friday": ["09:00", "10:00"]
+            "monday": [
+                "09:00",
+                "10:00",
+                "13:00",
+                "14:00"
+            ],
+            "tuesday": [
+                "09:00",
+                "10:00",
+                "11:00",
+                "13:00"
+            ],
+            "wednesday": [
+                "09:00",
+                "10:00",
+                "13:00",
+                "14:00",
+                "15:00"
+            ],
+            "thursday": [
+                "09:00",
+                "10:00",
+                "11:00",
+                "13:00"
+            ],
+            "friday": [
+                "09:00",
+                "10:00"
+            ]
         },
         "consultation_fee": 285.0,
-        "languages": ["English", "Igbo"],
+        "languages": [
+            "English",
+            "Igbo"
+        ],
         "years_experience": 14
     },
     "ot_sullivan": {
@@ -897,14 +1071,47 @@
             "email": "r.sullivan@portlandpeds.org"
         },
         "schedule": {
-            "monday": ["08:00", "09:00", "10:00", "11:00", "13:00", "14:00"],
-            "tuesday": ["08:00", "09:00", "10:00", "13:00", "14:00"],
-            "wednesday": ["08:00", "09:00", "10:00", "11:00"],
-            "thursday": ["08:00", "09:00", "10:00", "11:00", "13:00"],
-            "friday": ["08:00", "09:00", "10:00"]
+            "monday": [
+                "08:00",
+                "09:00",
+                "10:00",
+                "11:00",
+                "13:00",
+                "14:00"
+            ],
+            "tuesday": [
+                "08:00",
+                "09:00",
+                "10:00",
+                "13:00",
+                "14:00"
+            ],
+            "wednesday": [
+                "08:00",
+                "09:00",
+                "10:00",
+                "11:00"
+            ],
+            "thursday": [
+                "08:00",
+                "09:00",
+                "10:00",
+                "11:00",
+                "13:00"
+            ],
+            "friday": [
+                "08:00",
+                "09:00",
+                "10:00"
+            ],
+            "saturday": [
+                "09:00"
+            ]
         },
         "consultation_fee": 140.0,
-        "languages": ["English"],
+        "languages": [
+            "English"
+        ],
         "years_experience": 9
     },
     "slp_martinez": {
@@ -926,14 +1133,44 @@
             "email": "d.martinez@portlandpeds.org"
         },
         "schedule": {
-            "monday": ["08:30", "09:30", "10:30", "13:30", "14:30"],
-            "tuesday": ["08:30", "09:30", "10:30", "11:30"],
-            "wednesday": ["08:30", "09:30", "10:30", "13:30", "14:30"],
-            "thursday": ["08:30", "09:30", "10:30", "11:30", "13:30"],
-            "friday": ["08:30", "09:30", "10:30"]
+            "monday": [
+                "08:30",
+                "09:30",
+                "10:30",
+                "13:30",
+                "14:30"
+            ],
+            "tuesday": [
+                "08:30",
+                "09:30",
+                "10:30",
+                "11:30"
+            ],
+            "wednesday": [
+                "08:30",
+                "09:30",
+                "10:30",
+                "13:30",
+                "14:30"
+            ],
+            "thursday": [
+                "08:30",
+                "09:30",
+                "10:30",
+                "11:30",
+                "13:30"
+            ],
+            "friday": [
+                "08:30",
+                "09:30",
+                "10:30"
+            ]
         },
         "consultation_fee": 155.0,
-        "languages": ["English", "Spanish"],
+        "languages": [
+            "English",
+            "Spanish"
+        ],
         "years_experience": 7
     },
     "bcba_washington": {
@@ -955,14 +1192,46 @@
             "email": "j.washington@portlandpeds.org"
         },
         "schedule": {
-            "monday": ["09:00", "10:00", "11:00", "13:00", "14:00", "15:00"],
-            "tuesday": ["09:00", "10:00", "11:00", "13:00", "14:00"],
-            "wednesday": ["09:00", "10:00", "11:00", "13:00", "14:00", "15:00"],
-            "thursday": ["09:00", "10:00", "11:00", "13:00", "14:00"],
-            "friday": ["09:00", "10:00", "11:00"]
+            "monday": [
+                "09:00",
+                "10:00",
+                "11:00",
+                "13:00",
+                "14:00",
+                "15:00"
+            ],
+            "tuesday": [
+                "09:00",
+                "10:00",
+                "11:00",
+                "13:00",
+                "14:00"
+            ],
+            "wednesday": [
+                "09:00",
+                "10:00",
+                "11:00",
+                "13:00",
+                "14:00",
+                "15:00"
+            ],
+            "thursday": [
+                "09:00",
+                "10:00",
+                "11:00",
+                "13:00",
+                "14:00"
+            ],
+            "friday": [
+                "09:00",
+                "10:00",
+                "11:00"
+            ]
         },
         "consultation_fee": 175.0,
-        "languages": ["English"],
+        "languages": [
+            "English"
+        ],
         "years_experience": 12
     },
     "dr_rodriguez_orthopedics": {
@@ -982,14 +1251,47 @@
             "email": "m.rodriguez@orthocenter.org"
         },
         "schedule": {
-            "monday": ["08:00", "09:00", "10:00", "11:00", "13:00", "14:00"],
-            "tuesday": ["08:00", "09:00", "10:00", "11:00"],
-            "wednesday": ["08:00", "09:00", "10:00", "11:00", "13:00", "14:00"],
-            "thursday": ["08:00", "09:00", "10:00", "11:00"],
-            "friday": ["08:00", "09:00", "10:00", "11:00", "13:00"]
+            "monday": [
+                "08:00",
+                "09:00",
+                "10:00",
+                "11:00",
+                "13:00",
+                "14:00"
+            ],
+            "tuesday": [
+                "08:00",
+                "09:00",
+                "10:00",
+                "11:00"
+            ],
+            "wednesday": [
+                "08:00",
+                "09:00",
+                "10:00",
+                "11:00",
+                "13:00",
+                "14:00"
+            ],
+            "thursday": [
+                "08:00",
+                "09:00",
+                "10:00",
+                "11:00"
+            ],
+            "friday": [
+                "08:00",
+                "09:00",
+                "10:00",
+                "11:00",
+                "13:00"
+            ]
         },
         "consultation_fee": 200.0,
-        "languages": ["English", "Spanish"],
+        "languages": [
+            "English",
+            "Spanish"
+        ],
         "years_experience": 18
     },
     "pt_james_chen": {
@@ -1009,14 +1311,61 @@
             "email": "j.chen@rehabpt.org"
         },
         "schedule": {
-            "monday": ["08:00", "09:00", "10:00", "11:00", "13:00", "14:00", "15:00", "16:00"],
-            "tuesday": ["08:00", "09:00", "10:00", "11:00", "13:00", "14:00", "15:00", "16:00"],
-            "wednesday": ["08:00", "09:00", "10:00", "11:00", "13:00", "14:00", "15:00", "16:00"],
-            "thursday": ["08:00", "09:00", "10:00", "11:00", "13:00", "14:00", "15:00", "16:00"],
-            "friday": ["08:00", "09:00", "10:00", "11:00", "13:00", "14:00", "15:00"]
+            "monday": [
+                "08:00",
+                "09:00",
+                "10:00",
+                "11:00",
+                "13:00",
+                "14:00",
+                "15:00",
+                "16:00"
+            ],
+            "tuesday": [
+                "08:00",
+                "09:00",
+                "10:00",
+                "11:00",
+                "13:00",
+                "14:00",
+                "15:00",
+                "16:00"
+            ],
+            "wednesday": [
+                "08:00",
+                "09:00",
+                "10:00",
+                "11:00",
+                "13:00",
+                "14:00",
+                "15:00",
+                "16:00"
+            ],
+            "thursday": [
+                "08:00",
+                "09:00",
+                "10:00",
+                "11:00",
+                "13:00",
+                "14:00",
+                "15:00",
+                "16:00"
+            ],
+            "friday": [
+                "08:00",
+                "09:00",
+                "10:00",
+                "11:00",
+                "13:00",
+                "14:00",
+                "15:00"
+            ]
         },
         "consultation_fee": 120.0,
-        "languages": ["English", "Mandarin"],
+        "languages": [
+            "English",
+            "Mandarin"
+        ],
         "years_experience": 12
     },
     "dr_chen_primary_care": {
@@ -1035,14 +1384,52 @@
             "email": "l.chen@primarycare.org"
         },
         "schedule": {
-            "monday": ["09:00", "10:00", "11:00", "14:00", "15:00", "16:00"],
-            "tuesday": ["09:00", "10:00", "11:00", "13:00", "14:00", "15:00", "16:00"],
-            "wednesday": ["08:00", "09:00", "10:00", "11:00", "14:00", "15:00"],
-            "thursday": ["09:00", "10:00", "11:00", "13:00", "14:00", "15:00"],
-            "friday": ["09:00", "10:00", "11:00", "13:00", "14:00"]
+            "monday": [
+                "09:00",
+                "10:00",
+                "11:00",
+                "14:00",
+                "15:00",
+                "16:00"
+            ],
+            "tuesday": [
+                "09:00",
+                "10:00",
+                "11:00",
+                "13:00",
+                "14:00",
+                "15:00",
+                "16:00"
+            ],
+            "wednesday": [
+                "08:00",
+                "09:00",
+                "10:00",
+                "11:00",
+                "14:00",
+                "15:00"
+            ],
+            "thursday": [
+                "09:00",
+                "10:00",
+                "11:00",
+                "13:00",
+                "14:00",
+                "15:00"
+            ],
+            "friday": [
+                "09:00",
+                "10:00",
+                "11:00",
+                "13:00",
+                "14:00"
+            ]
         },
         "consultation_fee": 150.0,
-        "languages": ["English", "Spanish"],
+        "languages": [
+            "English",
+            "Spanish"
+        ],
         "years_experience": 18
     },
     "dr_patel_anesthesiology": {
@@ -1063,14 +1450,51 @@
             "email": "a.patel@anesthesia.org"
         },
         "schedule": {
-            "monday": ["08:00", "09:00", "10:00", "11:00", "13:00", "14:00"],
-            "tuesday": ["08:00", "09:00", "10:00", "11:00", "13:00", "14:00"],
-            "wednesday": ["08:00", "09:00", "10:00", "11:00", "13:00", "14:00"],
-            "thursday": ["08:00", "09:00", "10:00", "11:00", "13:00", "14:00"],
-            "friday": ["08:00", "09:00", "10:00", "11:00"]
+            "monday": [
+                "08:00",
+                "09:00",
+                "10:00",
+                "11:00",
+                "13:00",
+                "14:00"
+            ],
+            "tuesday": [
+                "08:00",
+                "09:00",
+                "10:00",
+                "11:00",
+                "13:00",
+                "14:00"
+            ],
+            "wednesday": [
+                "08:00",
+                "09:00",
+                "10:00",
+                "11:00",
+                "13:00",
+                "14:00"
+            ],
+            "thursday": [
+                "08:00",
+                "09:00",
+                "10:00",
+                "11:00",
+                "13:00",
+                "14:00"
+            ],
+            "friday": [
+                "08:00",
+                "09:00",
+                "10:00",
+                "11:00"
+            ]
         },
         "consultation_fee": 250.0,
-        "languages": ["English", "Hindi", "Gujarati"],
+        "languages": [
+            "English",
+            "Hindi",
+            "Gujarati"
+        ],
         "years_experience": 15
     },
     "dr_kim_cardiac_surgery": {
@@ -1091,14 +1515,483 @@
             "email": "r.kim@cardiacsurgery.org"
         },
         "schedule": {
-            "monday": ["07:00", "08:00", "09:00", "13:00", "14:00"],
-            "tuesday": ["07:00", "08:00", "09:00", "13:00", "14:00"],
-            "wednesday": ["07:00", "08:00", "09:00", "13:00", "14:00"],
-            "thursday": ["07:00", "08:00", "09:00", "13:00", "14:00"],
-            "friday": ["07:00", "08:00", "09:00"]
+            "monday": [
+                "07:00",
+                "08:00",
+                "09:00",
+                "13:00",
+                "14:00"
+            ],
+            "tuesday": [
+                "07:00",
+                "08:00",
+                "09:00",
+                "13:00",
+                "14:00"
+            ],
+            "wednesday": [
+                "07:00",
+                "08:00",
+                "09:00",
+                "13:00",
+                "14:00"
+            ],
+            "thursday": [
+                "07:00",
+                "08:00",
+                "09:00",
+                "13:00",
+                "14:00"
+            ],
+            "friday": [
+                "07:00",
+                "08:00",
+                "09:00"
+            ],
+            "saturday": [
+                "07:00"
+            ]
         },
         "consultation_fee": 350.0,
-        "languages": ["English", "Korean"],
+        "languages": [
+            "English",
+            "Korean"
+        ],
         "years_experience": 22
+    },
+    "camila_ortega_primary_care_tracer_0001": {
+        "provider_id": "camila_ortega_primary_care_tracer_0001",
+        "name": {
+            "first_name": "Camila",
+            "last_name": "Ortega",
+            "title": "MD"
+        },
+        "specialty": "Primary Care",
+        "license_number": "MD78000",
+        "credentials": [
+            "MD"
+        ],
+        "contact": {
+            "phone": "(555) 889-0900",
+            "email": "dr.ortega.1@tracer-health.org"
+        },
+        "schedule": {
+            "monday": [
+                "08:00",
+                "09:00",
+                "10:00",
+                "11:00",
+                "14:00",
+                "15:00"
+            ],
+            "tuesday": [
+                "08:00",
+                "09:00",
+                "10:00",
+                "11:00",
+                "14:00"
+            ],
+            "wednesday": [
+                "08:00",
+                "09:00",
+                "10:00",
+                "14:00",
+                "15:00"
+            ],
+            "thursday": [
+                "08:00",
+                "09:00",
+                "10:00",
+                "11:00",
+                "14:00"
+            ],
+            "friday": [
+                "08:00",
+                "09:00",
+                "10:00",
+                "11:00"
+            ]
+        },
+        "consultation_fee": 135.0,
+        "languages": [
+            "English",
+            "Spanish"
+        ],
+        "years_experience": 11
+    },
+    "owen_shaw_cardiology_tracer_0001": {
+        "provider_id": "owen_shaw_cardiology_tracer_0001",
+        "name": {
+            "first_name": "Owen",
+            "last_name": "Shaw",
+            "title": "MD"
+        },
+        "specialty": "Cardiology",
+        "license_number": "MD78001",
+        "credentials": [
+            "MD",
+            "FACC"
+        ],
+        "contact": {
+            "phone": "(555) 889-0901",
+            "email": "dr.shaw.2@tracer-health.org"
+        },
+        "schedule": {
+            "monday": [
+                "09:00",
+                "10:00",
+                "11:00",
+                "14:00",
+                "15:00"
+            ],
+            "tuesday": [
+                "09:00",
+                "10:00",
+                "11:00",
+                "14:00"
+            ],
+            "wednesday": [
+                "09:00",
+                "10:00",
+                "14:00",
+                "15:00"
+            ],
+            "thursday": [
+                "09:00",
+                "10:00",
+                "11:00",
+                "14:00"
+            ],
+            "friday": [
+                "09:00",
+                "10:00",
+                "11:00"
+            ]
+        },
+        "consultation_fee": 225.0,
+        "languages": [
+            "English"
+        ],
+        "years_experience": 20
+    },
+    "meera_santos_pediatrics_tracer_0001": {
+        "provider_id": "meera_santos_pediatrics_tracer_0001",
+        "name": {
+            "first_name": "Meera",
+            "last_name": "Santos",
+            "title": "MD"
+        },
+        "specialty": "Pediatrics",
+        "license_number": "MD78002",
+        "credentials": [
+            "MD",
+            "FAAP"
+        ],
+        "contact": {
+            "phone": "(555) 889-0902",
+            "email": "dr.santos.3@tracer-health.org"
+        },
+        "schedule": {
+            "monday": [
+                "08:30",
+                "09:30",
+                "10:30",
+                "14:00"
+            ],
+            "tuesday": [
+                "08:30",
+                "09:30",
+                "10:30",
+                "14:00"
+            ],
+            "wednesday": [
+                "08:30",
+                "09:30",
+                "10:30",
+                "14:00"
+            ],
+            "thursday": [
+                "08:30",
+                "09:30",
+                "10:30",
+                "14:00"
+            ],
+            "friday": [
+                "08:30",
+                "09:30",
+                "10:30"
+            ]
+        },
+        "consultation_fee": 165.0,
+        "languages": [
+            "English",
+            "Spanish"
+        ],
+        "years_experience": 16
+    },
+    "hector_lane_endocrinology_tracer_0001": {
+        "provider_id": "hector_lane_endocrinology_tracer_0001",
+        "name": {
+            "first_name": "Hector",
+            "last_name": "Lane",
+            "title": "MD"
+        },
+        "specialty": "Endocrinology",
+        "license_number": "MD78003",
+        "credentials": [
+            "MD"
+        ],
+        "contact": {
+            "phone": "(555) 889-0903",
+            "email": "dr.lane.4@tracer-health.org"
+        },
+        "schedule": {
+            "monday": [
+                "09:00",
+                "10:00",
+                "13:00",
+                "14:00"
+            ],
+            "tuesday": [
+                "09:00",
+                "10:00",
+                "13:00",
+                "14:00"
+            ],
+            "wednesday": [
+                "09:00",
+                "10:00",
+                "13:00"
+            ],
+            "thursday": [
+                "09:00",
+                "10:00",
+                "13:00",
+                "14:00"
+            ],
+            "friday": [
+                "09:00",
+                "10:00",
+                "13:00"
+            ]
+        },
+        "consultation_fee": 210.0,
+        "languages": [
+            "English",
+            "Hindi"
+        ],
+        "years_experience": 19
+    },
+    "amelia_quinn_pulmonology_tracer_0001": {
+        "provider_id": "amelia_quinn_pulmonology_tracer_0001",
+        "name": {
+            "first_name": "Amelia",
+            "last_name": "Quinn",
+            "title": "MD"
+        },
+        "specialty": "Pulmonology",
+        "license_number": "MD78004",
+        "credentials": [
+            "MD"
+        ],
+        "contact": {
+            "phone": "(555) 889-0904",
+            "email": "dr.quinn.5@tracer-health.org"
+        },
+        "schedule": {
+            "monday": [
+                "08:00",
+                "09:00",
+                "10:00",
+                "14:00"
+            ],
+            "tuesday": [
+                "08:00",
+                "09:00",
+                "10:00",
+                "14:00"
+            ],
+            "wednesday": [
+                "08:00",
+                "09:00",
+                "10:00",
+                "14:00"
+            ],
+            "thursday": [
+                "08:00",
+                "09:00",
+                "10:00",
+                "14:00"
+            ],
+            "friday": [
+                "08:00",
+                "09:00",
+                "10:00"
+            ]
+        },
+        "consultation_fee": 215.0,
+        "languages": [
+            "English",
+            "Korean"
+        ],
+        "years_experience": 17
+    },
+    "victor_liao_neurology_tracer_0001": {
+        "provider_id": "victor_liao_neurology_tracer_0001",
+        "name": {
+            "first_name": "Victor",
+            "last_name": "Liao",
+            "title": "MD"
+        },
+        "specialty": "Neurology",
+        "license_number": "MD78005",
+        "credentials": [
+            "MD"
+        ],
+        "contact": {
+            "phone": "(555) 889-0905",
+            "email": "dr.liao.6@tracer-health.org"
+        },
+        "schedule": {
+            "monday": [
+                "09:30",
+                "10:30",
+                "14:30"
+            ],
+            "tuesday": [
+                "09:30",
+                "10:30",
+                "14:30"
+            ],
+            "wednesday": [
+                "09:30",
+                "10:30",
+                "14:30"
+            ],
+            "thursday": [
+                "09:30",
+                "10:30",
+                "14:30"
+            ],
+            "friday": [
+                "09:30",
+                "10:30"
+            ]
+        },
+        "consultation_fee": 230.0,
+        "languages": [
+            "English",
+            "French"
+        ],
+        "years_experience": 14
+    },
+    "riley_stone_device_coaching_tracer_0001": {
+        "provider_id": "riley_stone_device_coaching_tracer_0001",
+        "name": {
+            "first_name": "Riley",
+            "last_name": "Stone",
+            "title": "RT"
+        },
+        "specialty": "Device Coaching",
+        "license_number": "RT78006",
+        "credentials": [
+            "RT",
+            "RN"
+        ],
+        "contact": {
+            "phone": "(555) 889-0906",
+            "email": "coach.stone.7@tracer-health.org"
+        },
+        "schedule": {
+            "monday": [
+                "08:00",
+                "09:00",
+                "10:00",
+                "15:00"
+            ],
+            "tuesday": [
+                "08:00",
+                "09:00",
+                "10:00",
+                "15:00"
+            ],
+            "wednesday": [
+                "08:00",
+                "09:00",
+                "10:00",
+                "15:00"
+            ],
+            "thursday": [
+                "08:00",
+                "09:00",
+                "10:00",
+                "15:00"
+            ],
+            "friday": [
+                "08:00",
+                "09:00",
+                "10:00"
+            ]
+        },
+        "consultation_fee": 95.0,
+        "languages": [
+            "English"
+        ],
+        "years_experience": 11
+    },
+    "monica_reyes_care_coordination_tracer_0001": {
+        "provider_id": "monica_reyes_care_coordination_tracer_0001",
+        "name": {
+            "first_name": "Monica",
+            "last_name": "Reyes",
+            "title": "RN"
+        },
+        "specialty": "Care Coordination",
+        "license_number": "RN78007",
+        "credentials": [
+            "LCSW",
+            "RN"
+        ],
+        "contact": {
+            "phone": "(555) 889-0907",
+            "email": "care.reyes.8@tracer-health.org"
+        },
+        "schedule": {
+            "monday": [
+                "10:00",
+                "11:00",
+                "13:00",
+                "14:00"
+            ],
+            "tuesday": [
+                "10:00",
+                "11:00",
+                "13:00",
+                "14:00"
+            ],
+            "wednesday": [
+                "10:00",
+                "11:00",
+                "13:00",
+                "14:00"
+            ],
+            "thursday": [
+                "10:00",
+                "11:00",
+                "13:00",
+                "14:00"
+            ],
+            "friday": [
+                "10:00",
+                "11:00",
+                "13:00"
+            ]
+        },
+        "consultation_fee": 110.0,
+        "languages": [
+            "English",
+            "Spanish"
+        ],
+        "years_experience": 15
     }
 }

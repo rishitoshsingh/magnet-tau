@@ -1,72 +1,59 @@
-from typing import Any, Dict
+import json
+from typing import Any, Dict, List
 
-from tau_bench.envs.telehealth.tools.list_telemetry_devices import (
-    ListTelemetryDevices as _ListTelemetryDevices,
-)
+from tau_bench.envs.tool import Tool
 
 
-class ListTelemetryDevices(_ListTelemetryDevices):
+class ListTelemetryDevices(Tool):
+    @staticmethod
+    def invoke(
+        data: Dict[str, Any],
+        status_filter: str | None = None,
+        limit: int | None = None,
+    ) -> str:
+        inventory: List[Dict[str, Any]] = data.get("telemetry_inventory", [])
+        if not inventory:
+            return "Telemetry inventory is empty."
+
+        filtered = inventory
+        if status_filter:
+            filtered = [item for item in filtered if item.get("status", "").lower() == status_filter.lower()]
+            if not filtered:
+                return f"No telemetry devices with status {status_filter}."
+
+        filtered = sorted(filtered, key=lambda item: item.get("device_id", ""))
+        if limit is not None and limit > 0:
+            filtered = filtered[:limit]
+
+        lines = []
+        for entry in filtered:
+            lines.append(
+                f"{entry.get('device_id')} | status={entry.get('status')} | last_audit={entry.get('last_audit')} | notes={entry.get('notes')}"
+            )
+
+        return "Telemetry devices:\n" + "\n".join(lines)
+
     @staticmethod
     def get_info() -> Dict[str, Any]:
         return {
             "type": "function",
             "function": {
                 "name": "list_telemetry_devices",
-                "description": (
-                    "List telemetry wearable devices from the telemetry inventory, optionally "
-                    "filtered by device status and limited to a maximum number of entries. "
-                    "Devices are sorted by device_id in ascending order before limiting."
-                ),
+                "description": "List telemetry wearable devices optionally filtered by status.",
                 "parameters": {
                     "type": "object",
                     "properties": {
                         "status_filter": {
                             "type": "string",
-                            "description": (
-                                "Optional status filter to restrict results. Comparison is "
-                                "case-insensitive. Examples: 'available', 'shipped', "
-                                "'missing_overdue'. If omitted, all devices are listed."
-                            ),
+                            "description": "Optional status filter (e.g., 'available', 'missing_overdue').",
                         },
                         "limit": {
                             "type": "integer",
-                            "description": (
-                                "Optional maximum number of devices to list. If provided and > 0, "
-                                "only the first N devices (after sorting) are included."
-                            ),
+                            "description": "Optional maximum number of devices to list.",
                         },
                     },
                     "required": [],
                 },
-                "response": {
-                    "type": "string",
-                    "description": (
-                        "A human-readable string. In the normal case it begins with the header "
-                        "'Telemetry devices:' followed by one line per device in the format:\n\n"
-                        "  <device_id> | status=<status> | last_audit=<YYYY-MM-DD> | notes=<free text>\n\n"
-                        "If the telemetry inventory is empty, returns:\n"
-                        "  'Telemetry inventory is empty.'\n\n"
-                        "If a status_filter is provided but no devices match, returns:\n"
-                        "  'No telemetry devices with status <status_filter>.'"
-                    ),
-                    "examples": [
-                        # Full list (using your sample data)
-                        (
-                            "Telemetry devices:\n"
-                            "NS-EEG-218 | status=available | last_audit=2025-07-20 | notes=Spare unit ready for dispatch\n"
-                            "NS-EEG-219 | status=shipped | last_audit=2025-07-18 | notes=In transit to patient\n"
-                            "NS-EEG-220 | status=missing_overdue | last_audit=2025-07-05 | notes=Flagged missing; escalate replacement"
-                        ),
-                        # Filtered by status
-                        (
-                            "Telemetry devices:\n"
-                            "NS-EEG-218 | status=available | last_audit=2025-07-20 | notes=Spare unit ready for dispatch"
-                        ),
-                        # No matches for filter
-                        "No telemetry devices with status retired.",
-                        # Empty inventory
-                        "Telemetry inventory is empty.",
-                    ],
-                },
             },
         }
+

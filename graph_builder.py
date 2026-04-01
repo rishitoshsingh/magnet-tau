@@ -2,7 +2,7 @@ import argparse
 import json
 import os
 from collections import defaultdict
-from typing import List
+from typing import List, Optional
 
 from dotenv import load_dotenv
 from langchain_core.prompts import ChatPromptTemplate
@@ -99,6 +99,7 @@ Inputs you will receive
 • `target_function`: signature, short description, and response schema.
 • `candidate_functions`: ordered list of functions; each has signature, short description, and response schema.
 • `domain_wiki` (optional): a short domain knowledge note (use it only to resolve ambiguous business rules).
+• Representative task categories (optional): when present, a short list of benchmark-style scenario themes for the domain. Use it only as soft guidance for realistic customer/agent follow-ups — it is not exhaustive and must not override the decision rules above.
 
 Few functions will be ommitted from the candidate list; like functions used for authentication and getting the customer deatils, which will be called by the agent as a prerequisite step before calling any domain specific function, so assume that such prerequisite steps have already been taken care of by the agent.
 
@@ -152,6 +153,63 @@ If you cannot reliably judge a candidate, answer `false` and provide a brief rea
 
 Follow these instructions exactly.
 """
+
+# ---------------------------------------------------------------------
+# Optional: representative benchmark task categories per domain
+# (aligned to tracer2/envs/{telecom,telehealth,airline,retail}/tasks_test.py — soft guidance only)
+# ---------------------------------------------------------------------
+TASK_CONTEXT_TELECOM = """
+• Identity / lookup: find customer by email or phone; load customer/account details.
+• Billing: view billing breakdown, record payments, reconcile totals after plan changes, react to unexpected line items.
+• Services: list/add/remove/upgrade/downgrade plans; attach services to specific devices.
+• Devices: inventory devices, add new hardware, get device details, troubleshoot connectivity or device issues.
+• Support tickets: create tickets (billing, account, security, etc.); read ticket status and details.
+• Pricing & comparison: fetch service/plan prices; use calculate for deltas and hypothetical savings (often without completing a change).
+• Discounts: senior or promotional pricing where the domain supports it.
+""".strip()
+
+TASK_CONTEXT_TELEHEALTH = """
+• Scheduling: book, cancel, reschedule appointments; check provider schedules and specialties.
+• Appointment lifecycle: list/filter by status (e.g. pending_approval, scheduled); fetch appointment details.
+• Provider discovery: list available providers by specialty, language, experience; strict constraints may lead to human handoff.
+• Billing / payment: insurance vs voucher vs self-pay; payment notes for special accounts.
+• Family / multi-member: parent or guardian coordinating care for dependents (multiple patient profiles).
+• Medical records: list recent records, fetch full record, append audit or progress notes.
+• Pharmacy / sourcing: list medication suppliers (often by country/cost); update prescription supplier on a record.
+• Safety: drug interaction checks against current medications.
+• Regimen optimization: fetch regimen options; compare costs (often with calculate).
+• Telemetry: device inventory snapshots, upload history, single-day upload artifacts; compliance-style audits tied to records/appointments.
+""".strip()
+
+TASK_CONTEXT_AIRLINE = """
+• New bookings: book_reservation with cabin, route, dates, passengers, baggage counts, insurance yes/no, and split payment (certificates, gift cards, credit cards).
+• Cancellations: cancel_reservation (including constraints like basic economy / travel insurance in the scenario text).
+• Flight changes: update_reservation_flights for cabin changes, same-day or alternate dates, cheapest options, route or stopover preferences, refunds to original payment.
+• Baggage: update_reservation_baggages after or alongside flight updates.
+• Passengers: update_reservation_passengers (name/DOB changes on a reservation).
+• Discovery / lookup: get_user_details, get_reservation_details, search_direct_flight before changing or rebooking.
+• Price arithmetic: calculate for fare differences, refunds, or savings across options.
+• Compensation / goodwill: send_certificate where scenarios require issuing credit.
+• Escalation: transfer_to_human_agents when the user insists or policy blocks self-serve changes.
+""".strip()
+
+TASK_CONTEXT_RETAIL = """
+• Identity: find_user_id_by_name_zip or find_user_id_by_email before order or profile actions.
+• User profile: get_user_details; modify_user_address when delivery or account address must change.
+• Catalog: list_all_product_types, get_product_details for variants (size, color, options) and compatibility.
+• Order inspection: get_order_details across multiple orders when the user references items vaguely.
+• Delivered orders: exchange_delivered_order_items or return_delivered_order_items with specific item_ids, new_item_ids, payment_method_id; scenarios often branch on confirmations or “if not available, do X instead.”
+• Pending orders: modify_pending_order_items (swap variants), modify_pending_order_address, modify_pending_order_payment, cancel_pending_order.
+• Counting / simple math: calculate when the user asks for tallies (e.g. number of product options) combined with catalog lookups.
+• Escalation: transfer_to_human_agents when the workflow cannot be completed self-serve.
+""".strip()
+
+TASK_CONTEXT_BY_DOMAIN: dict[str, str] = {
+    "telecom": TASK_CONTEXT_TELECOM,
+    "telehealth": TASK_CONTEXT_TELEHEALTH,
+    "airline": TASK_CONTEXT_AIRLINE,
+    "retail": TASK_CONTEXT_RETAIL,
+}
 # Root eligibility (how to judge `is_root`)
 # Decide whether the **target_function** itself can be a realistic **root (entry-point)** for a customer support interaction.
 
@@ -246,7 +304,7 @@ HUMAN_PROMPT = """
 Domain Knowledge Base (wiki):
 {wiki}
 
-Target Function:
+{task_context_block}Target Function:
 {target_function}
 
 Candidate Functions:
@@ -361,11 +419,29 @@ def get_taubench_tools(skip=["think", "calculate", "transfert_to_agent"]):
 # ---------------------------------------------------------------------
 # Adjacency matrix builder – uses the chain directly
 # ---------------------------------------------------------------------
-def build_adjacency_matrix(tools, wiki, neighbour_chain):
+def _format_task_context_block(task_context: Optional[str]) -> str:
+    """Non-empty block inserted into HUMAN_PROMPT when task context is enabled."""
+    if not task_context or not task_context.strip():
+        return ""
+    return (
+        "Representative task categories for this domain (from benchmark-style test scenarios; "
+        "use as soft guidance for realistic customer/agent follow-ups — the list is not exhaustive):\n"
+        f"{task_context.strip()}\n\n"
+    )
+
+
+def build_adjacency_matrix(
+    tools,
+    wiki,
+    neighbour_chain,
+    task_context: Optional[str] = None,
+):
     """
     tools: list[dict] from get_taubench_tools()[domain]
     neighbour_chain: LangChain runnable returning IsNeighbourResponse
+    task_context: optional multi-line summary of typical domain tasks for the neighbour prompt (default: omit)
     """
+    task_context_block = _format_task_context_block(task_context)
     results = {
         "tools": tools,
         "adjacency_matrix": [],  # list[list[bool]]
@@ -379,6 +455,7 @@ def build_adjacency_matrix(tools, wiki, neighbour_chain):
             {
                 "message": f"I have {expected_len} candidate functions, so I will expect {expected_len} boolean values and {expected_len} reasoning strings in the response.",
                 "wiki": wiki,
+                "task_context_block": task_context_block,
                 "target_function": tool,
                 "candidate_functions": tools,
             }
@@ -389,6 +466,7 @@ def build_adjacency_matrix(tools, wiki, neighbour_chain):
                 {
                     "message": f"You gave me {len(result.answer)} boolean values and {len(result.reason)} reasoning strings, I was expecting {expected_len} of each since I have {expected_len} candidate functions. Please try again and ensure the lengths match exactly.",
                     "wiki": wiki,
+                    "task_context_block": task_context_block,
                     "target_function": tool,
                     "candidate_functions": tools,
                 }
@@ -404,7 +482,14 @@ def build_adjacency_matrix(tools, wiki, neighbour_chain):
 # ---------------------------------------------------------------------
 # Main CLI entrypoint
 # ---------------------------------------------------------------------
-def main(domains: list[str], provider: str, model_name: str, temperature: float, base_url: str | None):
+def main(
+    domains: list[str],
+    provider: str,
+    model_name: str,
+    temperature: float,
+    base_url: str | None,
+    include_task_context: bool = False,
+):
     # still set envs if some downstream code expects them
     os.environ["model_name"] = model_name
     os.environ["temperature"] = str(temperature)
@@ -430,7 +515,14 @@ def main(domains: list[str], provider: str, model_name: str, temperature: float,
             wiki = TELEHEALTH_WIKI
         else:
             wiki = "No wiki available."
-        results = build_adjacency_matrix(tools, wiki, neighbour_chain)
+
+        task_context: Optional[str] = None
+        if include_task_context:
+            task_context = TASK_CONTEXT_BY_DOMAIN.get(domain)
+            if task_context is not None and not str(task_context).strip():
+                task_context = None
+
+        results = build_adjacency_matrix(tools, wiki, neighbour_chain, task_context=task_context)
 
         out_path = os.path.join(
             base_output_dir,
@@ -476,6 +568,22 @@ if __name__ == "__main__":
         default=None,
         help="Base URL for OpenAI-compatible vLLM server (required when provider=vllm).",
     )
+    parser.add_argument(
+        "--include-task-context",
+        action="store_true",
+        default=False,
+        help=(
+            "If set, inject a short list of representative benchmark task categories for each domain "
+            "into the neighbour-finding prompt (soft guidance). Default: off."
+        ),
+    )
     args = parser.parse_args()
     print(args)
-    main(args.domains, args.provider, args.model, args.temperature, args.base_url)
+    main(
+        args.domains,
+        args.provider,
+        args.model,
+        args.temperature,
+        args.base_url,
+        include_task_context=args.include_task_context,
+    )

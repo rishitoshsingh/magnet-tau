@@ -9,6 +9,8 @@ from datetime import date, timedelta
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Mapping, MutableMapping, Optional, Sequence, Tuple, Union
 
+from faker import Faker
+
 
 def _repo_root(start: Path) -> Path:
     cur = start.resolve()
@@ -201,67 +203,17 @@ def _device_names_by_category(devices_json: Mapping[str, Any]) -> Dict[str, List
     return out
 
 
-_CITY_STATE_ZIP: List[Tuple[str, str, str]] = [
-    ("Denver", "CO", "80202"),
-    ("Austin", "TX", "73301"),
-    ("Seattle", "WA", "98101"),
-    ("San Francisco", "CA", "94102"),
-    ("Mountain View", "CA", "94043"),
-    ("Boston", "MA", "02108"),
-    ("Chicago", "IL", "60601"),
-    ("Miami", "FL", "33101"),
-    ("Phoenix", "AZ", "85001"),
-    ("Portland", "OR", "97201"),
-    ("New York", "NY", "10001"),
-    ("Los Angeles", "CA", "90001"),
-]
-
-
-_FIRST_NAMES = [
-    "Alex",
-    "Jordan",
-    "Taylor",
-    "Casey",
-    "Morgan",
-    "Riley",
-    "Avery",
-    "Cameron",
-    "Quinn",
-    "Drew",
-    "Sam",
-    "Jamie",
-    "Parker",
-    "Reese",
-    "Rowan",
-    "Elliot",
-    "Harper",
-    "Skyler",
-    "Kendall",
-    "Emerson",
-]
-
-_LAST_NAMES = [
-    "Lee",
-    "Patel",
-    "Garcia",
-    "Nguyen",
-    "Brown",
-    "Wilson",
-    "Martinez",
-    "Anderson",
-    "Thomas",
-    "Jackson",
-    "White",
-    "Harris",
-    "Clark",
-    "Lewis",
-    "Walker",
-    "Hall",
-    "Young",
-    "Allen",
-    "King",
-    "Wright",
-]
+def _faker_us_address(fake: Faker) -> Dict[str, str]:
+    """Build address dict matching tracer telecom schema; uses fake.random (shared rng)."""
+    addr2 = fake.secondary_address() if fake.random.random() < 0.35 else ""
+    return {
+        "address1": fake.street_address(),
+        "address2": addr2,
+        "city": fake.city(),
+        "state": fake.state_abbr(),
+        "zip": fake.zipcode(),
+        "country": "USA",
+    }
 
 
 def _make_customer_id(first: str, last: str, suffix: int) -> str:
@@ -682,6 +634,8 @@ def generate_telecom_dataset(n_customers: int, seed: int, out_dir: Path, repo_ro
     device_names_by_cat = _device_names_by_category(devices_json)
 
     rng = random.Random(seed)
+    fake = Faker("en_US")
+    fake.random = rng
 
     customers_out: Dict[str, Any] = {}
     billing_out: Dict[str, Any] = {}
@@ -699,8 +653,8 @@ def generate_telecom_dataset(n_customers: int, seed: int, out_dir: Path, repo_ro
     for _i in range(n_customers):
         # Generate unique name/id
         for _try in range(2000):
-            first = rng.choice(_FIRST_NAMES)
-            last = rng.choice(_LAST_NAMES)
+            first = fake.first_name()
+            last = fake.last_name()
             suffix = rng.randint(0, 9999)
             cid = _make_customer_id(first, last, suffix)
             if cid not in used_customer_ids:
@@ -728,9 +682,7 @@ def generate_telecom_dataset(n_customers: int, seed: int, out_dir: Path, repo_ro
             email = f"{first.lower()}.{last.lower()}{rng.randint(0, 999999):06d}@email.com"
         used_email.add(email)
 
-        city, state, zip_code = rng.choice(_CITY_STATE_ZIP)
-        addr1 = f"{rng.randint(10, 9999)} {rng.choice(['Oak', 'Pine', 'Maple', 'Cedar', 'Elm', 'Baker', 'Sunset', 'Lake'])} {rng.choice(['St', 'Street', 'Ave', 'Avenue', 'Dr', 'Drive', 'Blvd', 'Boulevard'])}"
-        addr2 = "" if rng.random() < 0.65 else f"Unit {rng.randint(1, 50)}{rng.choice(['A', 'B', 'C', ''])}"
+        addr = _faker_us_address(fake)
 
         created = _rand_date(rng, date(2016, 1, 1), date(2025, 9, 1))
         payment_method = _pick_payment_method(rng, account_type)
@@ -748,14 +700,7 @@ def generate_telecom_dataset(n_customers: int, seed: int, out_dir: Path, repo_ro
                 "phone": f"(555) {rng.randint(100, 999)}-{rng.randint(0, 9999):04d}",
                 "email": email,
             },
-            "address": {
-                "address1": addr1,
-                "address2": addr2,
-                "city": city,
-                "state": state,
-                "zip": zip_code,
-                "country": "USA",
-            },
+            "address": addr,
             "account": {
                 "account_number": acc,
                 "account_type": account_type,

@@ -1,64 +1,76 @@
+
+from datetime import datetime
 from typing import Any, Dict
 
-from tau_bench.envs.telehealth.tools.cancel_appointment import (
-    CancelAppointment as _CancelAppointment,
-)
+from tau_bench.envs.tool import Tool
 
 
-class CancelAppointment(_CancelAppointment):
+class CancelAppointment(Tool):
+    @staticmethod
+    def invoke(data: Dict[str, Any], appointment_id: str) -> str:
+        """Cancel a scheduled appointment.
+        
+        Args:
+            appointment_id: The appointment's unique identifier
+            
+        Returns:
+            Success message or error message if cancellation fails
+        """
+        appointments = data["appointments"]
+        patients = data["patients"]
+        providers = data["providers"]
+        
+        if appointment_id not in appointments:
+            return f"Appointment with ID {appointment_id} not found."
+            
+        appointment = appointments[appointment_id]
+        
+        # Check if appointment can be cancelled
+        if appointment["status"] == "cancelled":
+            return f"Appointment {appointment_id} is already cancelled."
+            
+        if appointment["status"] == "completed":
+            return f"Cannot cancel appointment {appointment_id} - appointment has already been completed."
+        
+        # Update appointment status
+        appointment["status"] = "cancelled"
+        appointment["cancellation_reason"] = "patient_cancelled"
+        appointment["cancellation_date"] = datetime.now().strftime("%Y-%m-%d")
+        
+        # Get patient and provider info for confirmation message
+        patient = patients.get(appointment["patient_id"], {})
+        provider = providers.get(appointment["provider_id"], {})
+        
+        patient_name = f"{patient.get('name', {}).get('first_name', 'Unknown')} {patient.get('name', {}).get('last_name', 'Patient')}"
+        provider_name = f"Dr. {provider.get('name', {}).get('last_name', 'Unknown Provider')}"
+        
+        return f"""Appointment successfully cancelled.
+
+Appointment ID: {appointment_id}
+Patient: {patient_name}
+Provider: {provider_name}
+Original Date/Time: {appointment['date']} at {appointment['time']}
+Cancellation Reason: {appointment['cancellation_reason'].replace('_', ' ').title()}
+Cancellation Date: {appointment['cancellation_date']}
+
+The appointment slot is now available for other patients. If this was a patient cancellation, please remind them of the cancellation policy."""
+
     @staticmethod
     def get_info() -> Dict[str, Any]:
         return {
             "type": "function",
             "function": {
                 "name": "cancel_appointment",
-                "description": (
-                    "Cancel a scheduled appointment by appointment_id. "
-                    "If the appointment is scheduled, its status will be set to 'cancelled', "
-                    "with cancellation_reason='patient_cancelled' and cancellation_date set to today. "
-                    "If the appointment is already cancelled or completed, an explanatory message is returned instead."
-                ),
+                "description": "Cancel a scheduled appointment.",
                 "parameters": {
                     "type": "object",
                     "properties": {
                         "appointment_id": {
                             "type": "string",
-                            "description": "The appointment's unique identifier, such as 'APPT001'.",
+                            "description": "The appointment's unique identifier",
                         },
                     },
                     "required": ["appointment_id"],
-                },
-                "response": {
-                    "type": "string",
-                    "description": (
-                        "On success, returns a multi-line human-readable confirmation message containing "
-                        "appointment id, patient name, provider name, original date/time, cancellation reason, "
-                        "and cancellation date. On failure, returns an error message string explaining why "
-                        "the appointment could not be cancelled (not found, already cancelled, or completed)."
-                    ),
-                    "examples": [
-                        # Success example (based on APPT001 + sarah_johnson_1234, provider missing → Unknown Provider)
-                        (
-                            "Appointment successfully cancelled.\n\n"
-                            "Appointment ID: APPT001\n"
-                            "Patient: Sarah Johnson\n"
-                            "Provider: Dr. Unknown Provider\n"
-                            "Original Date/Time: 2024-01-15 at 09:00\n"
-                            "Cancellation Reason: Patient Cancelled\n"
-                            "Cancellation Date: 2025-01-10\n\n"
-                            "The appointment slot is now available for other patients. "
-                            "If this was a patient cancellation, please remind them of the cancellation policy."
-                        ),
-
-                        # Error: not found
-                        "Appointment with ID APPT999 not found.",
-
-                        # Error: already cancelled
-                        "Appointment APPT002 is already cancelled.",
-
-                        # Error: already completed
-                        "Cannot cancel appointment APPT003 - appointment has already been completed.",
-                    ],
                 },
             },
         }

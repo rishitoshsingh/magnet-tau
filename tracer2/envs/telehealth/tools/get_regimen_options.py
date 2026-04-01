@@ -1,87 +1,84 @@
-from typing import Any, Dict
+from __future__ import annotations
 
-from tau_bench.envs.telehealth.tools.get_regimen_options import (
-    GetRegimenOptions as _GetRegimenOptions,
-)
+from typing import Any, Dict, List
+
+from tau_bench.envs.tool import Tool
 
 
-class GetRegimenOptions(_GetRegimenOptions):
+class GetRegimenOptions(Tool):
+    @staticmethod
+    def invoke(data: Dict[str, Any], patient_id: str) -> str:
+        plans: Dict[str, Any] = data.get("regimen_plans", {})
+        patient_plan = plans.get(patient_id)
+        if not patient_plan:
+            return f"No regimen optimization data available for patient {patient_id}."
+
+        def _format_component(component: Dict[str, Any]) -> str:
+            return (
+                f"{component.get('medication')} | dosage={component.get('dosage')} | "
+                f"daily_dose={component.get('daily_dose')} | monthly_units={component.get('monthly_units')} | "
+                f"unit_type={component.get('unit_type')} | brand={component.get('preferred_brand')} | "
+                f"supplier={component.get('supplier')} | unit_cost_usd={component.get('unit_cost_usd'):.2f}"
+            )
+
+        lines: List[str] = []
+
+        current = patient_plan.get("current_regimen", {})
+        lines.append("Current regimen components:")
+        for component in current.get("components", []):
+            lines.append(f"- {_format_component(component)}")
+
+        pill_burden = current.get("pill_burden")
+        if pill_burden:
+            lines.append(
+                "Current pill burden: "
+                f"tablets_per_day={pill_burden.get('tablets_per_day')} | "
+                f"devices_per_month={pill_burden.get('devices_per_month')}"
+            )
+
+        notes = current.get("notes", [])
+        if notes:
+            lines.append("Current regimen notes:")
+            for note in notes:
+                lines.append(f"  * {note}")
+
+        lines.append("Optimized regimen options:")
+        for idx, regimen in enumerate(patient_plan.get("optimized_regimens", []), start=1):
+            lines.append(f"Option {idx}: {regimen.get('name')}")
+            lines.append(f"  Focus: {regimen.get('focus')}")
+            for component in regimen.get("components", []):
+                lines.append(f"  - {_format_component(component)}")
+            pill_burden = regimen.get("pill_burden")
+            if pill_burden:
+                lines.append(
+                    "  Pill burden: "
+                    f"tablets_per_day={pill_burden.get('tablets_per_day')} | "
+                    f"devices_per_month={pill_burden.get('devices_per_month')}"
+                )
+            synergy_notes = regimen.get("synergy_notes", [])
+            if synergy_notes:
+                lines.append("  Synergy notes:")
+                for note in synergy_notes:
+                    lines.append(f"    - {note}")
+
+        return "\n".join(lines)
+
     @staticmethod
     def get_info() -> Dict[str, Any]:
         return {
             "type": "function",
             "function": {
                 "name": "get_regimen_options",
-                "description": (
-                    "Retrieve the current medication regimen and optimized alternative regimen options for a patient. "
-                    "Includes component-level details (medication, dosage, unit cost, supplier), overall pill burden, "
-                    "and any synergy/clinical notes for each optimized option. Returns a human-readable multi-line "
-                    "string or an error message if no regimen data is available."
-                ),
+                "description": "Retrieve current regimen components and optimized alternative combinations for a patient, including costs and pill burden details.",
                 "parameters": {
                     "type": "object",
                     "properties": {
                         "patient_id": {
                             "type": "string",
-                            "description": (
-                                "ID of the patient, such as 'sarah_johnson_1234'. "
-                                "Must correspond to a key in the 'regimen_plans' map."
-                            ),
+                            "description": "ID of the patient",
                         },
                     },
                     "required": ["patient_id"],
-                },
-                "response": {
-                    "type": "string",
-                    "description": (
-                        "Multi-line, human-readable summary of the patient's current regimen and optimized regimen "
-                        "options, or an error string if no regimen optimization data exists for the patient. "
-                        "The format includes:\n"
-                        "- Current regimen components (one per line)\n"
-                        "- Current pill burden (tablets per day, devices per month)\n"
-                        "- Current regimen notes (if present)\n"
-                        "- Optimized options with name, focus, components, pill burden, and synergy notes"
-                    ),
-                    "examples": [
-                        # Successful example for sarah_johnson_1234
-                        (
-                            "Current regimen components:\n"
-                            "- Metformin | dosage=500mg | daily_dose=2 | monthly_units=60 | unit_type=tablet | "
-                            "brand=Glucophage | supplier=PharmaCo USA | unit_cost_usd=0.45\n"
-                            "- Lisinopril | dosage=10mg | daily_dose=1 | monthly_units=30 | unit_type=tablet | "
-                            "brand=Prinivil | supplier=MedSupply Inc | unit_cost_usd=0.30\n"
-                            "Current pill burden: tablets_per_day=3 | devices_per_month=0\n"
-                            "Current regimen notes:\n"
-                            "  * Taking medications twice daily\n"
-                            "  * No reported side effects\n"
-                            "  * Good adherence per patient report\n"
-                            "Optimized regimen options:\n"
-                            "Option 1: Extended Release Option\n"
-                            "  Focus: Reduced pill burden with extended-release formulation\n"
-                            "  - Metformin ER | dosage=1000mg | daily_dose=1 | monthly_units=30 | unit_type=tablet | "
-                            "brand=Glucophage XR | supplier=PharmaCo USA | unit_cost_usd=0.85\n"
-                            "  - Lisinopril | dosage=10mg | daily_dose=1 | monthly_units=30 | unit_type=tablet | "
-                            "brand=Prinivil | supplier=MedSupply Inc | unit_cost_usd=0.30\n"
-                            "  Pill burden: tablets_per_day=2 | devices_per_month=0\n"
-                            "  Synergy notes:\n"
-                            "    - Single daily Metformin dose improves adherence\n"
-                            "    - Reduced GI side effects with extended release\n"
-                            "    - Same efficacy as current regimen\n"
-                            "Option 2: Cost-Optimized Generic\n"
-                            "  Focus: Lower cost with generic alternatives\n"
-                            "  - Metformin | dosage=500mg | daily_dose=2 | monthly_units=60 | unit_type=tablet | "
-                            "brand=Generic | supplier=ValueMeds Direct | unit_cost_usd=0.18\n"
-                            "  - Lisinopril | dosage=10mg | daily_dose=1 | monthly_units=30 | unit_type=tablet | "
-                            "brand=Generic | supplier=ValueMeds Direct | unit_cost_usd=0.12\n"
-                            "  Pill burden: tablets_per_day=3 | devices_per_month=0\n"
-                            '  Synergy notes:\n'
-                            "    - Significant cost savings\n"
-                            "    - Same active ingredients as brand\n"
-                            "    - FDA-approved bioequivalent formulations"
-                        ),
-                        # Error case example
-                        "No regimen optimization data available for patient unknown_patient_9999.",
-                    ],
                 },
             },
         }

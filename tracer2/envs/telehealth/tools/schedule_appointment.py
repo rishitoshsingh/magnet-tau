@@ -1,170 +1,197 @@
+
+import datetime
 from typing import Any, Dict
 
-from tau_bench.envs.telehealth.tools.schedule_appointment import (
-    ScheduleAppointment as _ScheduleAppointment,
-)
+from tau_bench.envs.tool import Tool
 
 
-class ScheduleAppointment(_ScheduleAppointment):
+class ScheduleAppointment(Tool):
+    @staticmethod
+    def invoke(
+        data: Dict[str, Any],
+        patient_id: str,
+        provider_id: str,
+        date: str,
+        time: str,
+        appointment_type: str,
+        bill_insurance: bool = True,
+        voucher_id: str | None = None,
+        payment_notes: str | None = None,
+    ) -> str:
+        """Schedule a new appointment for a patient.
+        
+        Args:
+            patient_id: The patient's unique identifier
+            provider_id: The provider's unique identifier
+            date: Appointment date in YYYY-MM-DD format
+            time: Appointment time in HH:MM format (24-hour)
+            appointment_type: Type of appointment (routine_checkup, follow_up, consultation, etc.)
+            
+        Returns:
+            Success message with appointment ID, or error message if scheduling fails
+        """
+        patients = data["patients"]
+        providers = data["providers"]
+        appointments = data["appointments"]
+        
+        # Validate patient exists
+        if patient_id not in patients:
+            return f"Patient with ID {patient_id} not found."
+            
+        # Validate provider exists
+        if provider_id not in providers:
+            return f"Provider with ID {provider_id} not found."
+        
+        patient = patients[patient_id]
+        provider = providers[provider_id]
+        
+        # Check if provider is available at the requested time
+        try:
+            appointment_date = datetime.datetime.strptime(date, "%Y-%m-%d")
+            day_of_week = appointment_date.strftime("%A").lower()
+            
+            if day_of_week not in provider["schedule"]:
+                return f"Provider {provider_id} does not work on {day_of_week.title()}."
+                
+            available_times = provider["schedule"][day_of_week]
+            if time not in available_times:
+                available_times_str = ', '.join(available_times) if available_times else 'None'
+                return f"Provider {provider_id} is not available at {time} on {day_of_week.title()}. Available times: {available_times_str}"
+                
+        except ValueError:
+            return f"Invalid date format: {date}. Please use YYYY-MM-DD format."
+        
+        # Check for conflicts with existing appointments
+        for appt_id, appt in appointments.items():
+            if (appt["provider_id"] == provider_id and 
+                appt["date"] == date and 
+                appt["time"] == time and 
+                appt["status"] in ["scheduled", "pending_approval"]):
+                return f"Provider {provider_id} already has an appointment scheduled at {time} on {date}."
+        
+        # Generate new appointment ID
+        existing_ids = [int(appt_id.replace("APPT", "")) for appt_id in appointments.keys() if appt_id.startswith("APPT")]
+        new_id_num = max(existing_ids) + 1 if existing_ids else 1
+        new_appointment_id = f"APPT{new_id_num:03d}"
+        
+        # Determine copay amount based on provider specialty
+        insurance = patient["insurance"]["primary"]
+        if provider["specialty"] == "Primary Care":
+            base_copay = insurance["copay_primary"]
+        else:
+            base_copay = insurance["copay_specialist"]
+
+        if bill_insurance:
+            copay_amount = base_copay
+            payment_method = "insurance"
+            insurance_billed = True
+            applied_voucher = None
+            insurance_auth = f"AUTH{new_id_num:06d}"
+        else:
+            payment_method = "telehealth_voucher" if voucher_id else "self_pay"
+            insurance_billed = False
+            applied_voucher = voucher_id
+            copay_amount = 0.0
+            insurance_auth = None
+
+        # Create new appointment
+        new_appointment = {
+            "appointment_id": new_appointment_id,
+            "patient_id": patient_id,
+            "provider_id": provider_id,
+            "date": date,
+            "time": time,
+            "duration_minutes": 30,  # Default duration
+            "type": appointment_type,
+            "status": "scheduled",
+            "notes": payment_notes or "",
+            "insurance_authorization": insurance_auth,
+            "copay_amount": copay_amount,
+            "meeting_link": f"https://telehealth.healthcenter.com/room/{new_appointment_id}",
+            "payment_method": payment_method,
+            "voucher_id": applied_voucher,
+            "insurance_billed": insurance_billed,
+        }
+        
+        # Add to appointments data
+        appointments[new_appointment_id] = new_appointment
+        
+        patient_name = f"{patient['name']['first_name']} {patient['name']['last_name']}"
+        provider_name = f"Dr. {provider['name']['last_name']}"
+        
+        message_lines = [
+            "Appointment successfully scheduled!",
+            "",
+            f"Appointment ID: {new_appointment_id}",
+            f"Patient: {patient_name}",
+            f"Provider: {provider_name} - {provider['specialty']}",
+            f"Date: {date}",
+            f"Time: {time}",
+            f"Type: {appointment_type.replace('_', ' ').title()}",
+        ]
+
+        if bill_insurance:
+            message_lines.append(f"Copay: ${copay_amount:.2f}")
+            message_lines.append(f"Insurance Authorization: {insurance_auth}")
+        else:
+            message_lines.append("Insurance Billing: Skipped")
+            message_lines.append(f"Payment Method: {payment_method.replace('_', ' ').title()}")
+            if applied_voucher:
+                message_lines.append(f"Voucher Applied: {applied_voucher}")
+            message_lines.append(f"Amount Due Today: ${copay_amount:.2f}")
+            if payment_notes:
+                message_lines.append(f"Billing Notes: {payment_notes}")
+
+        message_lines.append(f"Meeting Link: {new_appointment['meeting_link']}")
+        message_lines.append("")
+        message_lines.append("Please save your appointment ID for future reference.")
+
+        return "\n".join(message_lines)
+
     @staticmethod
     def get_info() -> Dict[str, Any]:
         return {
             "type": "function",
             "function": {
                 "name": "schedule_appointment",
-                "description": (
-                    "Schedule a new telehealth appointment for a patient with a healthcare provider.\n\n"
-                    "The tool will:\n"
-                    "- Validate that the patient and provider exist.\n"
-                    "- Validate the appointment date format (YYYY-MM-DD) and derive the weekday.\n"
-                    "- Check the provider's weekly schedule to ensure they work on that weekday and "
-                    "that the requested time is one of their available time slots.\n"
-                    "- Reject the request if the provider is already booked at that date/time with a "
-                    "status of 'scheduled' or 'pending_approval'.\n"
-                    "- Generate a new appointment ID of the form 'APPT###' based on existing IDs.\n"
-                    "- Determine copay based on patient insurance and provider specialty "
-                    "(Primary Care vs specialist).\n"
-                    "- If bill_insurance=true, mark payment as insurance-based and set copay and "
-                    "an insurance authorization code.\n"
-                    "- If bill_insurance=false, skip insurance billing, optionally apply a voucher, "
-                    "and set payment_method to either 'telehealth_voucher' or 'self_pay'.\n"
-                    "- Create a 30-minute scheduled appointment with a telehealth meeting link and "
-                    "return a human-readable confirmation summary."
-                ),
+                "description": "Schedule a new telehealth appointment for a patient with a healthcare provider.",
                 "parameters": {
                     "type": "object",
                     "properties": {
                         "patient_id": {
                             "type": "string",
-                            "description": (
-                                "The patient's unique identifier, e.g. 'sarah_johnson_1234'. "
-                                "Must exist in the patients dataset."
-                            ),
+                            "description": "The patient's unique identifier",
                         },
                         "provider_id": {
                             "type": "string",
-                            "description": (
-                                "The provider's unique identifier, e.g. 'dr_smith_cardiology'. "
-                                "Must exist in the providers dataset."
-                            ),
+                            "description": "The provider's unique identifier",
                         },
                         "date": {
                             "type": "string",
-                            "description": (
-                                "Appointment date in 'YYYY-MM-DD' format. "
-                                "The provider's schedule for that weekday will be checked."
-                            ),
+                            "description": "Appointment date in YYYY-MM-DD format",
                         },
                         "time": {
                             "type": "string",
-                            "description": (
-                                "Appointment time in 'HH:MM' 24-hour format, e.g. '09:00', '15:30'. "
-                                "Must exactly match one of the provider's available time slots "
-                                "for that weekday."
-                            ),
+                            "description": "Appointment time in HH:MM format (24-hour)",
                         },
                         "appointment_type": {
                             "type": "string",
-                            "description": (
-                                "Type of appointment, such as 'routine_checkup', 'follow_up', "
-                                "'consultation', 'specialist_consultation', or 'sick_visit'. "
-                                "Stored in the appointment's 'type' field."
-                            ),
+                            "description": "Type of appointment (routine_checkup, follow_up, consultation, specialist_consultation, sick_visit)",
                         },
                         "bill_insurance": {
                             "type": "boolean",
-                            "description": (
-                                "Whether to bill the patient's primary insurance for this visit. "
-                                "Defaults to true.\n"
-                                "- If true: copay is set based on provider specialty "
-                                "(primary vs specialist) and an insurance authorization code is generated.\n"
-                                "- If false: insurance is not billed, copay is set to 0.0, "
-                                "and payment is either via telehealth voucher or self-pay."
-                            ),
-                            "default": True,
+                            "description": "Set to false to skip insurance billing for this appointment",
                         },
                         "voucher_id": {
                             "type": "string",
-                            "description": (
-                                "Optional voucher identifier to apply when bill_insurance is false. "
-                                "If provided, payment_method is 'telehealth_voucher'; otherwise 'self_pay'."
-                            ),
+                            "description": "Optional voucher identifier applied to this appointment",
                         },
                         "payment_notes": {
                             "type": "string",
-                            "description": (
-                                "Optional free-text notes regarding payment or billing handling. "
-                                "Stored in the appointment's 'notes' field if provided."
-                            ),
+                            "description": "Optional notes regarding payment handling",
                         },
                     },
                     "required": ["patient_id", "provider_id", "date", "time", "appointment_type"],
-                },
-                "response": {
-                    "type": "string",
-                    "description": (
-                        "On success, returns a multi-line human-readable confirmation message including:\n"
-                        "- Appointment ID\n"
-                        "- Patient and provider names\n"
-                        "- Date, time, and appointment type\n"
-                        "- Copay and insurance authorization details (if bill_insurance=true)\n"
-                        "- Or voucher/self-pay details (if bill_insurance=false)\n"
-                        "- Telehealth meeting link\n"
-                        "and a reminder to save the appointment ID.\n\n"
-                        "On failure, returns a human-readable error string such as:\n"
-                        "- 'Patient with ID ... not found.'\n"
-                        "- 'Provider with ID ... not found.'\n"
-                        "- 'Invalid date format: ... Please use YYYY-MM-DD format.'\n"
-                        "- 'Provider ... does not work on <Day>.'\n"
-                        "- 'Provider ... is not available at <time> on <Day>. Available times: ...'\n"
-                        "- 'Provider ... already has an appointment scheduled at <time> on <date>.'"
-                    ),
-                    "examples": [
-                        # Success with insurance
-                        (
-                            "Appointment successfully scheduled!\n\n"
-                            "Appointment ID: APPT002\n"
-                            "Patient: Sarah Johnson\n"
-                            "Provider: Dr. Smith - Cardiology\n"
-                            "Date: 2024-01-16\n"
-                            "Time: 10:00\n"
-                            "Type: Consultation\n"
-                            "Copay: $50.00\n"
-                            "Insurance Authorization: AUTH000002\n"
-                            "Meeting Link: https://telehealth.healthcenter.com/room/APPT002\n\n"
-                            "Please save your appointment ID for future reference."
-                        ),
-                        # Success with voucher / no insurance billing
-                        (
-                            "Appointment successfully scheduled!\n\n"
-                            "Appointment ID: APPT003\n"
-                            "Patient: Sarah Johnson\n"
-                            "Provider: Dr. Smith - Cardiology\n"
-                            "Date: 2024-01-16\n"
-                            "Time: 15:00\n"
-                            'Type: Follow Up\n'
-                            "Insurance Billing: Skipped\n"
-                            "Payment Method: Telehealth Voucher\n"
-                            "Voucher Applied: VOUCHER123\n"
-                            "Amount Due Today: $0.00\n"
-                            "Billing Notes: Sponsored follow-up visit\n"
-                            "Meeting Link: https://telehealth.healthcenter.com/room/APPT003\n\n"
-                            "Please save your appointment ID for future reference."
-                        ),
-                        # Typical errors
-                        "Patient with ID unknown_patient_999 not found.",
-                        "Provider with ID dr_unknown not found.",
-                        "Invalid date format: 16-01-2024. Please use YYYY-MM-DD format.",
-                        "Provider dr_smith_cardiology does not work on Sunday.",
-                        (
-                            "Provider dr_smith_cardiology is not available at 14:00 on Monday. "
-                            "Available times: 09:00, 10:00, 11:00, 15:00, 16:00"
-                        ),
-                        (
-                            "Provider dr_smith_cardiology already has an appointment scheduled "
-                            "at 09:00 on 2024-01-15."
-                        ),
-                    ],
                 },
             },
         }

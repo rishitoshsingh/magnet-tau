@@ -1,110 +1,117 @@
+
+import datetime
 from typing import Any, Dict
 
-from tau_bench.envs.telehealth.tools.reschedule_appointment import (
-    RescheduleAppointment as _RescheduleAppointment,
-)
+from tau_bench.envs.tool import Tool
 
 
-class RescheduleAppointment(_RescheduleAppointment):
+class RescheduleAppointment(Tool):
+    @staticmethod
+    def invoke(data: Dict[str, Any], appointment_id: str, new_date: str, new_time: str) -> str:
+        """Reschedule an existing appointment to a new date and time.
+        
+        Args:
+            appointment_id: The appointment's unique identifier
+            new_date: New appointment date in YYYY-MM-DD format
+            new_time: New appointment time in HH:MM format (24-hour)
+            
+        Returns:
+            Success message or error message if rescheduling fails
+        """
+        appointments = data["appointments"]
+        providers = data["providers"]
+        patients = data["patients"]
+        
+        if appointment_id not in appointments:
+            return f"Appointment with ID {appointment_id} not found."
+            
+        appointment = appointments[appointment_id]
+        
+        # Check if appointment can be rescheduled
+        if appointment["status"] == "cancelled":
+            return f"Cannot reschedule appointment {appointment_id} - appointment has been cancelled."
+            
+        if appointment["status"] == "completed":
+            return f"Cannot reschedule appointment {appointment_id} - appointment has already been completed."
+        
+        provider_id = appointment["provider_id"]
+        provider = providers[provider_id]
+        
+        # Check if provider is available at the new time
+        try:
+            appointment_date = datetime.datetime.strptime(new_date, "%Y-%m-%d")
+            day_of_week = appointment_date.strftime("%A").lower()
+            
+            if day_of_week not in provider["schedule"]:
+                return f"Provider {provider_id} does not work on {day_of_week.title()}."
+                
+            available_times = provider["schedule"][day_of_week]
+            if new_time not in available_times:
+                available_times_str = ', '.join(available_times) if available_times else 'None'
+                return f"Provider {provider_id} is not available at {new_time} on {day_of_week.title()}. Available times: {available_times_str}"
+                
+        except ValueError:
+            return f"Invalid date format: {new_date}. Please use YYYY-MM-DD format."
+        
+        # Check for conflicts with existing appointments
+        for appt_id, appt in appointments.items():
+            if (appt_id != appointment_id and  # Don't check against the appointment being rescheduled
+                appt["provider_id"] == provider_id and 
+                appt["date"] == new_date and 
+                appt["time"] == new_time and 
+                appt["status"] in ["scheduled", "pending_approval"]):
+                return f"Provider {provider_id} already has an appointment scheduled at {new_time} on {new_date}."
+        
+        # Store old details for confirmation
+        old_date = appointment["date"]
+        old_time = appointment["time"]
+        
+        # Update appointment
+        appointment["date"] = new_date
+        appointment["time"] = new_time
+        
+        # Get patient and provider info for confirmation message
+        patient = patients.get(appointment["patient_id"], {})
+        patient_name = f"{patient.get('name', {}).get('first_name', 'Unknown')} {patient.get('name', {}).get('last_name', 'Patient')}"
+        provider_name = f"Dr. {provider.get('name', {}).get('last_name', 'Unknown Provider')}"
+        
+        return f"""Appointment successfully rescheduled.
+
+Appointment ID: {appointment_id}
+Patient: {patient_name}
+Provider: {provider_name} - {provider['specialty']}
+
+Previous Date/Time: {old_date} at {old_time}
+New Date/Time: {new_date} at {new_time}
+
+Meeting Link: {appointment['meeting_link']}
+
+Please update your calendar with the new appointment time."""
+
     @staticmethod
     def get_info() -> Dict[str, Any]:
         return {
             "type": "function",
             "function": {
                 "name": "reschedule_appointment",
-                "description": (
-                    "Reschedule an existing appointment to a new date and time, while enforcing provider "
-                    "availability and avoiding double-booking.\n\n"
-                    "The tool will:\n"
-                    "- Validate that the appointment exists.\n"
-                    "- Reject rescheduling for appointments that are already cancelled or completed.\n"
-                    "- Look up the provider's weekly schedule and check that the provider works on the "
-                    "requested day and that the requested time is one of the available time slots.\n"
-                    "- Reject the request if the date format is invalid (must be YYYY-MM-DD).\n"
-                    "- Reject the request if another appointment for the same provider already exists at "
-                    "the same date and time with status 'scheduled' or 'pending_approval'.\n"
-                    "- On success, update the appointment's date and time and return a confirmation summary "
-                    "showing the old and new date/time along with patient and provider details."
-                ),
+                "description": "Reschedule an existing appointment to a new date and time.",
                 "parameters": {
                     "type": "object",
                     "properties": {
                         "appointment_id": {
                             "type": "string",
-                            "description": (
-                                "The appointment's unique identifier to be rescheduled, "
-                                "e.g. 'APPT001'."
-                            ),
+                            "description": "The appointment's unique identifier",
                         },
                         "new_date": {
                             "type": "string",
-                            "description": (
-                                "New appointment date in 'YYYY-MM-DD' format. "
-                                "The provider's workday for this date will be used to check availability "
-                                "against their weekly schedule (e.g., Monday, Tuesday)."
-                            ),
+                            "description": "New appointment date in YYYY-MM-DD format",
                         },
                         "new_time": {
                             "type": "string",
-                            "description": (
-                                "New appointment time in 'HH:MM' 24-hour format, e.g. '09:00', '15:30'. "
-                                "Must exactly match one of the provider's available time slots for that day."
-                            ),
+                            "description": "New appointment time in HH:MM format (24-hour)",
                         },
                     },
                     "required": ["appointment_id", "new_date", "new_time"],
                 },
-                "response": {
-                    "type": "string",
-                    "description": (
-                        "On success, returns a multi-line human-readable confirmation message, including:\n"
-                        "- Appointment ID\n"
-                        "- Patient name\n"
-                        "- Provider name and specialty\n"
-                        "- Previous date/time\n"
-                        "- New date/time\n"
-                        "- Meeting link\n\n"
-                        "On failure, returns a human-readable error string explaining why the reschedule "
-                        "could not be performed, such as:\n"
-                        "- Appointment not found\n"
-                        "- Appointment already cancelled or completed\n"
-                        "- Invalid date format\n"
-                        "- Provider does not work that day\n"
-                        "- Provider is not available at the requested time\n"
-                        "- Provider already has a conflicting appointment at that slot."
-                    ),
-                    "examples": [
-                        # Example success
-                        (
-                            "Appointment successfully rescheduled.\n\n"
-                            "Appointment ID: APPT001\n"
-                            "Patient: Sarah Johnson\n"
-                            "Provider: Dr. Garcia - Primary Care\n\n"
-                            "Previous Date/Time: 2024-01-15 at 09:00\n"
-                            "New Date/Time: 2024-01-16 at 10:00\n\n"
-                            "Meeting Link: https://telehealth.healthcenter.com/room/APPT001\n\n"
-                            "Please update your calendar with the new appointment time."
-                        ),
-                        # Appointment not found
-                        "Appointment with ID APPT999 not found.",
-                        # Cancelled / completed
-                        "Cannot reschedule appointment APPT010 - appointment has been cancelled.",
-                        "Cannot reschedule appointment APPT011 - appointment has already been completed.",
-                        # Invalid date
-                        "Invalid date format: 15-01-2024. Please use YYYY-MM-DD format.",
-                        # Provider not working that day
-                        "Provider dr_smith_cardiology does not work on Sunday.",
-                        # Provider unavailable at that time
-                        (
-                            "Provider dr_smith_cardiology is not available at 13:00 on Monday. "
-                            "Available times: 09:00, 10:00, 11:00, 15:00, 16:00"
-                        ),
-                        # Double-booking
-                        (
-                            "Provider dr_smith_cardiology already has an appointment scheduled at "
-                            "09:00 on 2024-01-15."
-                        ),
-                    ],
-                },
             },
-        } 
+        }

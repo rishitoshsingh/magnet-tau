@@ -1529,5 +1529,561 @@
             "relationship": "Spouse",
             "phone": "(555) 663-4413"
         }
+    },
+    "daniel_morales_tracer_0001": {
+        "patient_id": "daniel_morales_tracer_0001",
+        "name": {
+            "first_name": "Daniel",
+            "last_name": "Morales"
+        },
+        "demographics": {
+            "date_of_birth": "1980-01-10",
+            "gender": "Male",
+            "phone": "(555) 882-0200",
+            "email": "daniel.morales@tracer-health.org"
+        },
+        "address": {
+            "address1": "128 Cedar Grove Ave",
+            "address2": "",
+            "city": "Boston",
+            "state": "MA",
+            "zip": "02118",
+            "country": "USA"
+        },
+        "insurance": {
+            "primary": {
+                "provider": "Aetna",
+                "policy_number": "AET700001",
+                "group_number": "AEG101",
+                "copay_primary": 25.0,
+                "copay_specialist": 50.0
+            }
+        },
+        "medical_history": {
+            "conditions": [
+                "Family care coordination"
+            ],
+            "allergies": [],
+            "medications": []
+        },
+        "emergency_contact": {
+            "name": "Same household contact",
+            "relationship": "Partner",
+            "phone": "(555) 885-0500"
+        }
+    },
+    "sofia_morales_tracer_0001": {
+        "patient_id": "sofia_morales_tracer_0001",
+        "name": {
+            "first_name": "Sofia",
+            "last_name": "Morales"
+        },
+        "demographics": {
+            "date_of_birth": "2017-04-19",
+            "gender": "Female",
+            "phone": "(555) 882-0201",
+            "email": "sofia.morales@tracer-health.org"
+        },
+        "address": {
+            "address1": "128 Cedar Grove Ave",
+            "address2": "",
+            "city": "Boston",
+            "state": "MA",
+            "zip": "02118",
+            "country": "USA"
+        },
+        "insurance": {
+            "primary": {
+                "provider": "Aetna",
+                "policy_number": "AET700001",
+                "group_number": "AEG101",
+                "copay_primary": 25.0,
+                "copay_specialist": 50.0
+            }
+        },
+        "medical_history": {
+            "conditions": [
+                "Food Sensitivity"
+            ],
+            "allergies": [],
+            "medications": []
+        },
+        "emergency_contact": {
+            "name": "Daniel Morales",
+            "relationship": "Parent",
+            "phone": "(555) 882-0200"
+        }
+    },
+    "mateo_morales_tracer_0001": {
+        "patient_id": "mateo_morales_tracer_0001",
+        "name": {
+            "first_name": "Mateo",
+            "last_name": "Morales"
+        },
+        "demographics": {
+            "date_of_birth": "2020-08-11",
+            "gender": "Male",
+            "phone": "(555) 882-0202",
+            "email": "mateo.morales@tracer-health.org"
+        },
+        "address": {
+            "address1": "128 Cedar Grove Ave",
+            "address2": "",
+            "city": "Boston",
+            "state": "MA",
+            "zip": "02118",
+            "country": "USA"
+        },
+        "insurance": {
+            "primary": {
+                "provider": "Aetna",
+                "policy_number": "AET700001",
+                "group_number": "AEG101",
+                "copay_primary": 25.0,
+                "copay_specialist": 50.0
+            }
+        },
+        "medical_history": {
+            "conditions": [],
+            "allergies": [],
+            "medications": []
+        },
+        "emergency_contact": {
+            "name": "Daniel Morales",
+            "relationship": "Parent",
+            "phone": "(555) 882-0200"
+        }
+    },
+    "grace_kim_tracer_0001": {
+        "patient_id": "grace_kim_tracer_0001",
+        "name": {
+            "first_name": "Grace",
+            "last_name": "Kim"
+        },
+        "demographics": {
+            "date_of_birth": "1981-02-11",
+            "gender": "Female",
+            "phone": "(555) 882-0203",
+            "email": "grace.kim@tracer-health.org"
+        },
+        "address": {
+            "address1": "441 Sunset Ridge Dr",
+            "address2": "Unit 3",
+            "city": "Austin",
+            "state": "TX",
+            "zip": "73301",
+            "country": "USA"
+        },
+        "insurance": {
+            "primary": {
+                "provider": "Cigna",
+                "policy_number": "CIG700002",
+                "group_number": "CIGG102",
+                "copay_primary": 30.0,
+                "copay_specialist": 55.0
+            }
+        },
+        "medical_history": {
+            "conditions": [
+                "Family care coordination"
+            ],
+            "allergies": [],
+            "medications": []
+        },
+        "emergency_contact": {
+            "name": "Same household contact",
+            "relationship": "Partner",
+            "phone": "(555) 885-0501"
+        }
+    },
+    "mina_kim_tracer_0001": {
+        "patient_id": "mina_kim_tracer_0001",
+        "name": {
+            "first_name": "Mina",
+            "last_name": "Kim"
+        },
+        "demographics": {
+            "date_of_birth": "2018-01-06",
+            "gender": "Female",
+            "phone": "(555) 882-0204",
+            "email": "mina.kim@tracer-health.org"
+        },
+        "address": {
+            "address1": "441 Sunset Ridge Dr",
+            "address2": "Unit 3",
+            "city": "Austin",
+            "state": "TX",
+            "zip": "73301",
+            "country": "USA"
+        },
+        "insurance": {
+            "primary": {
+                "provider": "Cigna",
+                "policy_number": "CIG700002",
+                "group_number": "CIGG102",
+                "copay_primary": 30.0,
+                "copay_specialist": 55.0
+            }
+        },
+        "medical_history": {
+            "conditions": [
+                "Autism Spectrum Disorder"
+            ],
+            "allergies": [],
+            "medications": [
+                {
+                    "name": "Melatonin",
+                    "dosage": "3mg",
+                    "frequency": "at bedtime"
+                }
+            ]
+        },
+        "emergency_contact": {
+            "name": "Grace Kim",
+            "relationship": "Parent",
+            "phone": "(555) 882-0203"
+        }
+    },
+    "eli_kim_tracer_0001": {
+        "patient_id": "eli_kim_tracer_0001",
+        "name": {
+            "first_name": "Eli",
+            "last_name": "Kim"
+        },
+        "demographics": {
+            "date_of_birth": "2014-10-22",
+            "gender": "Male",
+            "phone": "(555) 882-0205",
+            "email": "eli.kim@tracer-health.org"
+        },
+        "address": {
+            "address1": "441 Sunset Ridge Dr",
+            "address2": "Unit 3",
+            "city": "Austin",
+            "state": "TX",
+            "zip": "73301",
+            "country": "USA"
+        },
+        "insurance": {
+            "primary": {
+                "provider": "Cigna",
+                "policy_number": "CIG700002",
+                "group_number": "CIGG102",
+                "copay_primary": 30.0,
+                "copay_specialist": 55.0
+            }
+        },
+        "medical_history": {
+            "conditions": [
+                "ADHD"
+            ],
+            "allergies": [],
+            "medications": []
+        },
+        "emergency_contact": {
+            "name": "Grace Kim",
+            "relationship": "Parent",
+            "phone": "(555) 882-0203"
+        }
+    },
+    "jasmine_reed_tracer_0001": {
+        "patient_id": "jasmine_reed_tracer_0001",
+        "name": {
+            "first_name": "Jasmine",
+            "last_name": "Reed"
+        },
+        "demographics": {
+            "date_of_birth": "1982-03-12",
+            "gender": "Male",
+            "phone": "(555) 882-0206",
+            "email": "jasmine.reed@tracer-health.org"
+        },
+        "address": {
+            "address1": "85 Harbor View Ln",
+            "address2": "",
+            "city": "Seattle",
+            "state": "WA",
+            "zip": "98109",
+            "country": "USA"
+        },
+        "insurance": {
+            "primary": {
+                "provider": "UnitedHealthcare",
+                "policy_number": "UHC700003",
+                "group_number": "UHG103",
+                "copay_primary": 35.0,
+                "copay_specialist": 60.0
+            }
+        },
+        "medical_history": {
+            "conditions": [
+                "Family care coordination"
+            ],
+            "allergies": [],
+            "medications": []
+        },
+        "emergency_contact": {
+            "name": "Same household contact",
+            "relationship": "Partner",
+            "phone": "(555) 885-0502"
+        }
+    },
+    "noah_reed_tracer_0001": {
+        "patient_id": "noah_reed_tracer_0001",
+        "name": {
+            "first_name": "Noah",
+            "last_name": "Reed"
+        },
+        "demographics": {
+            "date_of_birth": "2016-07-14",
+            "gender": "Male",
+            "phone": "(555) 882-0207",
+            "email": "noah.reed@tracer-health.org"
+        },
+        "address": {
+            "address1": "85 Harbor View Ln",
+            "address2": "",
+            "city": "Seattle",
+            "state": "WA",
+            "zip": "98109",
+            "country": "USA"
+        },
+        "insurance": {
+            "primary": {
+                "provider": "UnitedHealthcare",
+                "policy_number": "UHC700003",
+                "group_number": "UHG103",
+                "copay_primary": 35.0,
+                "copay_specialist": 60.0
+            }
+        },
+        "medical_history": {
+            "conditions": [
+                "Asthma"
+            ],
+            "allergies": [],
+            "medications": [
+                {
+                    "name": "Montelukast",
+                    "dosage": "5mg",
+                    "frequency": "once daily"
+                }
+            ]
+        },
+        "emergency_contact": {
+            "name": "Jasmine Reed",
+            "relationship": "Parent",
+            "phone": "(555) 882-0206"
+        }
+    },
+    "ivy_reed_tracer_0001": {
+        "patient_id": "ivy_reed_tracer_0001",
+        "name": {
+            "first_name": "Ivy",
+            "last_name": "Reed"
+        },
+        "demographics": {
+            "date_of_birth": "2019-03-05",
+            "gender": "Female",
+            "phone": "(555) 882-0208",
+            "email": "ivy.reed@tracer-health.org"
+        },
+        "address": {
+            "address1": "85 Harbor View Ln",
+            "address2": "",
+            "city": "Seattle",
+            "state": "WA",
+            "zip": "98109",
+            "country": "USA"
+        },
+        "insurance": {
+            "primary": {
+                "provider": "UnitedHealthcare",
+                "policy_number": "UHC700003",
+                "group_number": "UHG103",
+                "copay_primary": 35.0,
+                "copay_specialist": 60.0
+            }
+        },
+        "medical_history": {
+            "conditions": [
+                "Allergic Rhinitis"
+            ],
+            "allergies": [],
+            "medications": []
+        },
+        "emergency_contact": {
+            "name": "Jasmine Reed",
+            "relationship": "Parent",
+            "phone": "(555) 882-0206"
+        }
+    },
+    "nadia_abbasi_tracer_0001": {
+        "patient_id": "nadia_abbasi_tracer_0001",
+        "name": {
+            "first_name": "Nadia",
+            "last_name": "Abbasi"
+        },
+        "demographics": {
+            "date_of_birth": "1989-02-11",
+            "gender": "Female",
+            "phone": "(555) 882-0209",
+            "email": "nadia.abbasi@tracer-health.org"
+        },
+        "address": {
+            "address1": "909 Magnolia Street",
+            "address2": "Apt 5C",
+            "city": "Chicago",
+            "state": "IL",
+            "zip": "60611",
+            "country": "USA"
+        },
+        "insurance": {
+            "primary": {
+                "provider": "UnitedHealthcare",
+                "policy_number": "UHC700019",
+                "group_number": "UHG119",
+                "copay_primary": 35.0,
+                "copay_specialist": 65.0
+            }
+        },
+        "medical_history": {
+            "conditions": [
+                "Hypertension",
+                "Type 2 Diabetes"
+            ],
+            "allergies": [
+                "Penicillin"
+            ],
+            "medications": [
+                {
+                    "name": "Metformin",
+                    "dosage": "500mg",
+                    "frequency": "twice daily"
+                },
+                {
+                    "name": "Lisinopril",
+                    "dosage": "10mg",
+                    "frequency": "once daily"
+                }
+            ]
+        },
+        "emergency_contact": {
+            "name": "Nadia Contact",
+            "relationship": "Sibling",
+            "phone": "(555) 886-0650"
+        }
+    },
+    "avery_morgan_tracer_0001": {
+        "patient_id": "avery_morgan_tracer_0001",
+        "name": {
+            "first_name": "Avery",
+            "last_name": "Morgan"
+        },
+        "demographics": {
+            "date_of_birth": "1980-03-12",
+            "gender": "Male",
+            "phone": "(555) 882-0210",
+            "email": "avery.morgan@tracer-health.org"
+        },
+        "address": {
+            "address1": "22 Desert Bloom Rd",
+            "address2": "",
+            "city": "Phoenix",
+            "state": "AZ",
+            "zip": "85013",
+            "country": "USA"
+        },
+        "insurance": {
+            "primary": {
+                "provider": "Blue Cross Blue Shield",
+                "policy_number": "BCBS700020",
+                "group_number": "BCG120",
+                "copay_primary": 20.0,
+                "copay_specialist": 45.0
+            }
+        },
+        "medical_history": {
+            "conditions": [
+                "Atrial Fibrillation",
+                "Hyperlipidemia"
+            ],
+            "allergies": [
+                "Latex"
+            ],
+            "medications": [
+                {
+                    "name": "Warfarin",
+                    "dosage": "5mg",
+                    "frequency": "once daily"
+                },
+                {
+                    "name": "Atorvastatin",
+                    "dosage": "20mg",
+                    "frequency": "once daily"
+                }
+            ]
+        },
+        "emergency_contact": {
+            "name": "Avery Contact",
+            "relationship": "Sibling",
+            "phone": "(555) 886-0651"
+        }
+    },
+    "jordan_patel_tracer_0001": {
+        "patient_id": "jordan_patel_tracer_0001",
+        "name": {
+            "first_name": "Jordan",
+            "last_name": "Patel"
+        },
+        "demographics": {
+            "date_of_birth": "1981-04-13",
+            "gender": "Male",
+            "phone": "(555) 882-0211",
+            "email": "jordan.patel@tracer-health.org"
+        },
+        "address": {
+            "address1": "715 River Market St",
+            "address2": "",
+            "city": "Kansas City",
+            "state": "MO",
+            "zip": "64106",
+            "country": "USA"
+        },
+        "insurance": {
+            "primary": {
+                "provider": "Aetna",
+                "policy_number": "AET700021",
+                "group_number": "AEG121",
+                "copay_primary": 25.0,
+                "copay_specialist": 50.0
+            }
+        },
+        "medical_history": {
+            "conditions": [
+                "Obstructive Sleep Apnea",
+                "COPD"
+            ],
+            "allergies": [
+                "Sulfa drugs"
+            ],
+            "medications": [
+                {
+                    "name": "Fluticasone Inhaler",
+                    "dosage": "110mcg",
+                    "frequency": "twice daily"
+                },
+                {
+                    "name": "Montelukast",
+                    "dosage": "10mg",
+                    "frequency": "once daily"
+                }
+            ]
+        },
+        "emergency_contact": {
+            "name": "Jordan Contact",
+            "relationship": "Sibling",
+            "phone": "(555) 886-0652"
+        }
     }
 }

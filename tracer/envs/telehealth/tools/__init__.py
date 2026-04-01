@@ -7,6 +7,7 @@ from .find_patient_by_name_dob import FindPatientByNameDOB
 from .get_appointment_details import GetAppointmentDetails
 from .get_medical_record import GetMedicalRecord
 from .get_patient_details import GetPatientDetails
+from .list_patient_telemetry_devices import ListPatientTelemetryDevices
 from .get_provider_details import GetProviderDetails
 from .get_regimen_options import GetRegimenOptions
 from .get_telemetry_upload import GetTelemetryUpload
@@ -30,6 +31,7 @@ ALL_TOOLS = [
     GetAppointmentDetails,
     GetProviderDetails,
     GetMedicalRecord,
+    ListPatientTelemetryDevices,
     GetRegimenOptions,
     ListPatientMedicalRecords,
     ListAvailableProviders,
@@ -44,7 +46,7 @@ ALL_TOOLS = [
     # Think,
     # TransferToHumanSupport,
     UpdatePrescriptionSupplier,
-    ListTelemetryDevices,
+    # ListTelemetryDevices,
     GetTelemetryUpload,
-    UpdateMedicalRecordNote,
+    # UpdateMedicalRecordNote,
 ]

@@ -1,97 +1,79 @@
 from __future__ import annotations
 
-from typing import Any, Dict
+from typing import Any, Dict, List
 
-from tau_bench.envs.telehealth.tools.list_medication_suppliers import (
-    ListMedicationSuppliers as _ListMedicationSuppliers,
-)
+from tau_bench.envs.tool import Tool
 
 
-class ListMedicationSuppliers(_ListMedicationSuppliers):
+class ListMedicationSuppliers(Tool):
+    @staticmethod
+    def invoke(
+        data: Dict[str, Any],
+        medication: str,
+        country_filter: str | None = None,
+        limit: int | None = None,
+    ) -> str:
+        suppliers_map: Dict[str, List[Dict[str, Any]]] = data.get("medication_suppliers", {})
+
+        # allow case-insensitive lookups
+        canonical_map: Dict[str, str] = {
+            key.lower(): key for key in suppliers_map.keys()
+        }
+        medication_key = canonical_map.get(medication.lower())
+        suppliers = suppliers_map.get(medication_key) if medication_key else None
+
+        if not suppliers and medication_key is None:
+            # provide clearer guidance if casing caused the miss
+            return (
+                "No supplier information found for "
+                f"{medication}. (Tip: ensure the medication name matches the catalog)"
+            )
+        if not suppliers:
+            return f"No supplier information found for {medication}."
+
+        filtered: List[Dict[str, Any]] = suppliers
+        if country_filter:
+            filtered = [item for item in filtered if item.get("country", "").lower() == country_filter.lower()]
+            if not filtered:
+                return f"No suppliers in {country_filter} for {medication}."
+
+        filtered = sorted(filtered, key=lambda item: item.get("price_usd", float("inf")))
+        if limit is not None and limit > 0:
+            filtered = filtered[:limit]
+
+        lines: List[str] = []
+        for entry in filtered:
+            company = entry.get("company")
+            brand = entry.get("brand_name")
+            country = entry.get("country")
+            price = entry.get("price_usd")
+            lines.append(f"{company} ({country}) | brand={brand} | price_usd={price:.2f}")
+        return f"Suppliers for {medication}:\n" + "\n".join(lines)
+
     @staticmethod
     def get_info() -> Dict[str, Any]:
         return {
             "type": "function",
             "function": {
                 "name": "list_medication_suppliers",
-                "description": (
-                    "List suppliers for a given medication, optionally filtered by country and optionally "
-                    "limited to the lowest-cost suppliers. Case-insensitive matching is supported. "
-                    "Output is a human-readable multi-line list of suppliers including company, country, "
-                    "brand name, and price in USD. If no suppliers are found, returns an informative error message."
-                ),
+                "description": "List suppliers for a given medication, optionally filtered by country and sorted by price.",
                 "parameters": {
                     "type": "object",
                     "properties": {
                         "medication": {
                             "type": "string",
-                            "description": (
-                                "Medication name to search for, such as 'Atorvastatin' or 'Aspirin EC'. "
-                                "Must match a key in the medication supplier catalog (case-insensitive)."
-                            ),
+                            "description": "Medication name to search for",
                         },
                         "country_filter": {
                             "type": "string",
-                            "description": (
-                                "Optional country name to filter suppliers by (case-insensitive), such as 'India', "
-                                "'USA', 'Canada', 'Germany'."
-                            ),
+                            "description": "Optional country name to filter suppliers",
                         },
                         "limit": {
                             "type": "integer",
-                            "description": (
-                                "Optional maximum number of suppliers to return. If provided, suppliers are sorted "
-                                "by price and the lowest-cost results are returned."
-                            ),
+                            "description": "Optional maximum number of suppliers to list",
                         },
                     },
                     "required": ["medication"],
                 },
-                "response": {
-                    "type": "string",
-                    "description": (
-                        "A multi-line formatted string listing suppliers for the requested medication. "
-                        "Each supplier entry contains: company, country, brand name, and price in USD. "
-                        "If no suppliers are found—or if country filtering eliminates all results—an "
-                        "error-like string is returned instead."
-                    ),
-                    "examples": [
-                        # Successful full response for Atorvastatin
-                        (
-                            "Suppliers for Atorvastatin:\n"
-                            "Sunrise Biotech (India) | brand=Lipistal | price_usd=4.15\n"
-                            "VedaRx Labs (India) | brand=Atorveeda | price_usd=4.05\n"
-                            "Bharat Lifecare (India) | brand=Cholozen | price_usd=4.30\n"
-                            "Lagos Pharma (Nigeria) | brand=Atorlag | price_usd=5.95\n"
-                            "Qianlong Remedies (China) | brand=LongStat | price_usd=5.40\n"
-                            "MedFirst Generics (USA) | brand=StatGuard | price_usd=6.80\n"
-                            "Pacific Coast Labs (USA) | brand=CoastStat | price_usd=6.55\n"
-                            "Silver Maple Pharma (Canada) | brand=MapleStat | price_usd=6.20\n"
-                            "Trinity Generics (UK) | brand=Cardiotor | price_usd=6.45\n"
-                            "NovaNord Therapeutics (Denmark) | brand=AtorvaNova | price_usd=7.10"
-                        ),
-
-                        # Country-filtered example
-                        (
-                            "Suppliers for Atorvastatin:\n"
-                            "VedaRx Labs (India) | brand=Atorveeda | price_usd=4.05\n"
-                            "Sunrise Biotech (India) | brand=Lipistal | price_usd=4.15\n"
-                            "Bharat Lifecare (India) | brand=Cholozen | price_usd=4.30"
-                        ),
-
-                        # Limited example (cheapest 2)
-                        (
-                            "Suppliers for Metoprolol Succinate:\n"
-                            "Aurora Heart Labs (India) | brand=BetaShield | price_usd=3.80\n"
-                            "MedNova Kerala (India) | brand=Metotime | price_usd=3.95"
-                        ),
-
-                        # Error: medication not found
-                        "No supplier information found for Xylostat. (Tip: ensure the medication name matches the catalog)",
-
-                        # Error: filtering removes all suppliers
-                        "No suppliers in Germany for Aspirin EC."
-                    ],
-                },
             },
-        }  
+        }

@@ -1,122 +1,75 @@
-from typing import Any, Dict
+from __future__ import annotations
 
-from tau_bench.envs.telehealth.tools.list_telemetry_uploads import (
-    ListTelemetryUploads as _ListTelemetryUploads,
-)
+import json
+from typing import Any, Dict, List
+
+from tau_bench.envs.tool import Tool
 
 
-class ListTelemetryUploads(_ListTelemetryUploads):
+class ListTelemetryUploads(Tool):
+    @staticmethod
+    def invoke(
+        data: Dict[str, Any],
+        device_id: str,
+        start_date: str | None = None,
+        end_date: str | None = None,
+        limit: int | None = None,
+    ) -> str:
+        uploads: List[Dict[str, Any]] = data.get("telemetry_uploads", [])
+
+        def in_range(entry: Dict[str, Any]) -> bool:
+            if entry.get("device_id") != device_id:
+                return False
+            entry_date = entry.get("date")
+            if start_date and entry_date < start_date:
+                return False
+            if end_date and entry_date > end_date:
+                return False
+            return True
+
+        filtered = [entry for entry in uploads if in_range(entry)]
+        filtered.sort(key=lambda item: item.get("date"))
+
+        if limit is not None and limit > 0:
+            filtered = filtered[:limit]
+
+        if not filtered:
+            return (
+                "No telemetry uploads found for device "
+                f"{device_id} in the specified window."
+            )
+
+        return json.dumps(filtered)
+
     @staticmethod
     def get_info() -> Dict[str, Any]:
         return {
             "type": "function",
             "function": {
                 "name": "list_telemetry_uploads",
-                "description": (
-                    "List telemetry upload artifacts for a given device over an optional "
-                    "date window. Entries are filtered by device_id, optionally constrained "
-                    "to start_date/end_date (inclusive), then sorted by date in ascending "
-                    "order before applying any limit."
-                ),
+                "description": "List telemetry upload artifacts for a device over an optional date window.",
                 "parameters": {
                     "type": "object",
                     "properties": {
                         "device_id": {
                             "type": "string",
-                            "description": (
-                                "Unique identifier of the telemetry device, e.g. 'VC-449'. "
-                                "This is required."
-                            ),
+                            "description": "Unique identifier of the telemetry device",
                         },
                         "start_date": {
                             "type": "string",
-                            "description": (
-                                "Optional inclusive start date in 'YYYY-MM-DD' format. "
-                                "If provided, only uploads on or after this date are returned."
-                            ),
+                            "description": "Start date (inclusive, YYYY-MM-DD)",
                         },
                         "end_date": {
                             "type": "string",
-                            "description": (
-                                "Optional inclusive end date in 'YYYY-MM-DD' format. "
-                                "If provided, only uploads on or before this date are returned."
-                            ),
+                            "description": "End date (inclusive, YYYY-MM-DD)",
                         },
                         "limit": {
                             "type": "integer",
-                            "description": (
-                                "Optional maximum number of entries to return. "
-                                "If provided and > 0, only the first N entries (after sorting "
-                                "by date ascending) are included."
-                            ),
+                            "description": "Optional maximum number of entries to return",
                         },
                     },
                     "required": ["device_id"],
                 },
-                "response": {
-                    "type": "string",
-                    "description": (
-                        "On success: a JSON-encoded array of telemetry upload objects for "
-                        "the requested device, already filtered and sorted by date ascending. "
-                        "Each object typically includes fields such as:\n\n"
-                        "  {\n"
-                        "    \"device_id\": \"VC-449\",\n"
-                        "    \"date\": \"2025-06-01\",\n"
-                        "    \"usage_hours\": 7.4,\n"
-                        "    \"synced_at\": \"2025-06-01T06:15:00Z\",\n"
-                        "    \"event\": \"normal\",\n"
-                        "    \"alerts\": []\n"
-                        "  }\n\n"
-                        "If no uploads match the device_id and date window, returns a human-"
-                        "readable message instead:\n"
-                        "  'No telemetry uploads found for device <device_id> in the specified window.'"
-                    ),
-                    "examples": [
-                        # Full range for the sample device
-                        (
-                            "[\n"
-                            "  {\n"
-                            "    \"device_id\": \"VC-449\",\n"
-                            "    \"date\": \"2025-06-01\",\n"
-                            "    \"usage_hours\": 7.4,\n"
-                            "    \"synced_at\": \"2025-06-01T06:15:00Z\",\n"
-                            "    \"event\": \"normal\",\n"
-                            "    \"alerts\": []\n"
-                            "  },\n"
-                            "  {\n"
-                            "    \"device_id\": \"VC-449\",\n"
-                            "    \"date\": \"2025-06-02\",\n"
-                            "    \"usage_hours\": 6.8,\n"
-                            "    \"synced_at\": \"2025-06-02T06:12:00Z\",\n"
-                            "    \"event\": \"normal\",\n"
-                            "    \"alerts\": []\n"
-                            "  },\n"
-                            "  {\n"
-                            "    \"device_id\": \"VC-449\",\n"
-                            "    \"date\": \"2025-06-03\",\n"
-                            "    \"usage_hours\": 5.9,\n"
-                            "    \"synced_at\": \"2025-06-03T06:09:00Z\",\n"
-                            "    \"event\": \"normal\",\n"
-                            "    \"alerts\": []\n"
-                            "  }\n"
-                            "]"
-                        ),
-                        # With date window and limit
-                        (
-                            "[\n"
-                            "  {\n"
-                            "    \"device_id\": \"VC-449\",\n"
-                            "    \"date\": \"2025-06-02\",\n"
-                            "    \"usage_hours\": 6.8,\n"
-                            "    \"synced_at\": \"2025-06-02T06:12:00Z\",\n"
-                            "    \"event\": \"normal\",\n"
-                            "    \"alerts\": []\n"
-                            "  }\n"
-                            "]"
-                        ),
-                        # No results in window
-                        "No telemetry uploads found for device VC-449 in the specified window."
-                    ],
-                },
             },
         }
+

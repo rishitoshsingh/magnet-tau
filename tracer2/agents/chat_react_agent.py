@@ -123,10 +123,8 @@ class ChatReActAgent(Agent):
             "temperature": self.temperature,
         }
 
-        # Only pass provider when not using a custom api_base
-        if self.api_base is None:
-            completion_kwargs["custom_llm_provider"] = self.provider
-        else:
+        completion_kwargs["custom_llm_provider"] = self.provider
+        if self.api_base is not None:
             completion_kwargs["api_base"] = self.api_base
 
         res = completion(**completion_kwargs)

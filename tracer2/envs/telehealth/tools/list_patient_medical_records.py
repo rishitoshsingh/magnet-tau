@@ -1,70 +1,64 @@
 from __future__ import annotations
 
-from typing import Any, Dict
+from datetime import datetime
+from typing import Any, Dict, List
 
-from tau_bench.envs.telehealth.tools.list_patient_medical_records import (
-    ListPatientMedicalRecords as _ListPatientMedicalRecords,
-)
+from tau_bench.envs.tool import Tool
 
 
-class ListPatientMedicalRecords(_ListPatientMedicalRecords):
+class ListPatientMedicalRecords(Tool):
+    @staticmethod
+    def invoke(data: Dict[str, Any], patient_id: str, limit: int | None = None) -> str:
+        records: Dict[str, Dict[str, Any]] = data["medical_records"]
+        filtered: List[Dict[str, Any]] = [
+            record for record in records.values() if record.get("patient_id") == patient_id
+        ]
+        if not filtered:
+            return f"No medical records found for patient {patient_id}."
+
+        def _parse_date(record: Dict[str, Any]) -> datetime:
+            return datetime.strptime(record.get("date", "1900-01-01"), "%Y-%m-%d")
+
+        filtered.sort(key=_parse_date, reverse=True)
+        if limit is not None and limit > 0:
+            filtered = filtered[:limit]
+
+        lines: List[str] = []
+        for record in filtered:
+            prescriptions = record.get("prescriptions", [])
+            medication_list = ", ".join(item.get("medication") for item in prescriptions) if prescriptions else "None recorded"
+            lines.append(
+                " | ".join(
+                    [
+                        f"record_id={record['record_id']}",
+                        f"date={record['date']}",
+                        f"appointment_id={record['appointment_id']}",
+                        f"medications={medication_list}",
+                    ]
+                )
+            )
+        return "Medical records (newest first):\n" + "\n".join(lines)
+
     @staticmethod
     def get_info() -> Dict[str, Any]:
         return {
             "type": "function",
             "function": {
                 "name": "list_patient_medical_records",
-                "description": (
-                    "List a patient's medical records (most recent first). Each record line includes "
-                    "record_id, date, related appointment_id, and a comma-separated list of prescribed medications "
-                    "if present. Supports an optional 'limit' to restrict how many records are returned."
-                ),
+                "description": "List medical record identifiers for a patient sorted with the newest first.",
                 "parameters": {
                     "type": "object",
                     "properties": {
                         "patient_id": {
                             "type": "string",
-                            "description": (
-                                "ID of the patient, such as 'david_martinez_5678'. Must exist in the "
-                                "medical_records dataset, otherwise an error-style string is returned."
-                            ),
+                            "description": "ID of the patient",
                         },
                         "limit": {
                             "type": "integer",
-                            "description": (
-                                "Optional maximum number of records to return. If provided and > 0, "
-                                "only the newest N records are included."
-                            ),
+                            "description": "Optional maximum number of records to return",
                         },
                     },
                     "required": ["patient_id"],
-                },
-                "response": {
-                    "type": "string",
-                    "description": (
-                        "A multi-line, human-readable string. The first line is a header "
-                        "('Medical records (newest first):'), followed by one line per record in the format:\n"
-                        "record_id=<ID> | date=<YYYY-MM-DD> | appointment_id=<APPT_ID> | medications=<list or 'None recorded'>.\n"
-                        "If no records are found for the patient, an informative message is returned instead."
-                    ),
-                    "examples": [
-                        # Successful listing with one record (your sample REC001)
-                        (
-                            "Medical records (newest first):\n"
-                            "record_id=REC001 | date=2024-01-16 | appointment_id=APPT002 | "
-                            "medications=Sertraline"
-                        ),
-                        # No records for this patient
-                        "No medical records found for patient sarah_johnson_1234.",
-                        # Multiple records with a limit applied
-                        (
-                            "Medical records (newest first):\n"
-                            "record_id=REC010 | date=2024-05-10 | appointment_id=APPT020 | "
-                            "medications=Metformin, Lisinopril\n"
-                            "record_id=REC007 | date=2024-03-01 | appointment_id=APPT015 | "
-                            "medications=None recorded"
-                        ),
-                    ],
                 },
             },
         }

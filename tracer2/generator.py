@@ -82,7 +82,6 @@ def _build_retail_env(
     env.terminate_tools = ["transfer_to_human_agents"]
     return env
 
-
 def _build_telecom_env(
     task: Task, tools_mode: str
 ) -> Env:
@@ -99,14 +98,37 @@ def _build_telecom_env(
         wiki=WIKI,
         rules=RULES,
         user_strategy="instruction",
-        user_model="llama4-scout-17b",
+        user_model="gpt-4o",
+        user_provider=None,
+        task_index=0,
+        enable_reward=True,
+    )
+    env.terminate_tools = ["transfer_to_human_agents"]
+    return env
+
+def _build_telehealth_env(
+    task: Task, tools_mode: str
+) -> Env:
+    from tracer2.envs.telehealth import tools as telehealth_tools
+    from tracer2.envs.telehealth.data import load_data
+    from tracer2.envs.telehealth.reverse_tools import ALL_TOOLS as REVERSE_TOOLS
+    from tracer2.envs.telehealth.rules import RULES
+    from tracer2.envs.telehealth.wiki import WIKI
+
+    env = Env(
+        data_load_func=load_data,
+        tools=telehealth_tools.ALL_TOOLS if tools_mode == "forward" else REVERSE_TOOLS,
+        tasks=[task],
+        wiki=WIKI,
+        rules=RULES,
+        user_strategy="instruction",
+        user_model="gpt-4o",
         user_provider=None,
         task_index=0,
         enable_reward=True,
     )
     env.terminate_tools = ["transfer_to_human_support"]
     return env
-
 
 def _combine_instruction(user_id: str, instructions: List[str]) -> str:
     """Create a single 2nd-person instruction with the goals (same as generate_verify)."""
@@ -136,7 +158,7 @@ def parse_args():
     p.add_argument(
         "--env",
         default="airline",
-        choices=["airline", "retail", "telecom"],
+        choices=["airline", "retail", "telecom", "telehealth"],
         help="Domain env.",
     )
     p.add_argument(
@@ -234,6 +256,15 @@ def main():
 
         build_env = _build_telecom_env
         forward_tools = telecom_tools_module.ALL_TOOLS
+    elif args.env == "telehealth":
+        from tracer2.envs.telehealth.data import load_data
+        from tracer2.envs.telehealth.reverse_tools import ALL_TOOLS as REVERSE_TOOLS
+        from tracer2.envs.telehealth import tools as telehealth_tools_module
+        from tracer2.prompts.task_generator_telehealth import SYSTEM_PROMPT, USER_PROMPT
+        from tracer2.prompts.task_preference_telehealth import (
+            PREFERENCE_SYSTEM_PROMPT as TELEHEALTH_PREFERENCE_SYSTEM_PROMPT,
+            format_preference_user_prompt as telehealth_format_preference_user_prompt,
+        )
     else:
         raise ValueError(f"Unsupported env: {args.env}")
 

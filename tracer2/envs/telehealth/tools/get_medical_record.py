@@ -1,75 +1,111 @@
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
-from tau_bench.envs.telehealth.tools.get_medical_record import (
-    GetMedicalRecord as _GetMedicalRecord,
-)
+from tau_bench.envs.tool import Tool
 
 
-class GetMedicalRecord(_GetMedicalRecord):
+class GetMedicalRecord(Tool):
+    @staticmethod
+    def invoke(
+        data: Dict[str, Any],
+        record_id: Optional[str] = None,
+        appointment_id: Optional[str] = None,
+    ) -> str:
+        """Retrieve a medical record by record ID or appointment ID."""
+        medical_records = data.get("medical_records", {})
+        appointments = data.get("appointments", {})
+        patients = data.get("patients", {})
+        providers = data.get("providers", {})
+
+        if not record_id and not appointment_id:
+            return "Please provide a record_id or appointment_id to look up the medical record."
+
+        record = None
+        if record_id:
+            record = medical_records.get(record_id)
+            if record is None:
+                return f"Medical record with ID {record_id} not found."
+        else:
+            for candidate in medical_records.values():
+                if candidate.get("appointment_id") == appointment_id:
+                    record = candidate
+                    break
+            if record is None:
+                return (
+                    f"No medical record found for appointment ID {appointment_id}."
+                )
+
+        appointment = appointments.get(record.get("appointment_id", ""), {})
+        patient = patients.get(record.get("patient_id", ""), {})
+        provider = providers.get(record.get("provider_id", ""), {})
+
+        patient_name = " ".join(
+            filter(
+                None,
+                [
+                    patient.get("name", {}).get("first_name"),
+                    patient.get("name", {}).get("last_name"),
+                ],
+            )
+        ).strip() or "Unknown Patient"
+        provider_name = " ".join(
+            filter(
+                None,
+                [
+                    provider.get("name", {}).get("title"),
+                    provider.get("name", {}).get("first_name"),
+                    provider.get("name", {}).get("last_name"),
+                ],
+            )
+        ).strip() or "Unknown Provider"
+
+        lines = [
+            f"Medical Record (ID: {record['record_id']})",
+            f"Patient: {patient_name} (ID: {record.get('patient_id', 'Unknown')})",
+            f"Provider: {provider_name} (ID: {record.get('provider_id', 'Unknown')})",
+        ]
+
+        if appointment:
+            lines.append(
+                (
+                    f"Related Appointment: {appointment.get('appointment_id', 'Unknown')} "
+                    f"on {appointment.get('date', 'Unknown Date')} at {appointment.get('time', 'Unknown Time')}"
+                )
+            )
+
+        lines.append(f"Date: {record.get('date', 'Unknown Date')}")
+        lines.append(f"Type: {record.get('type', 'Unknown')}")
+
+        for key in ["subjective", "objective", "assessment", "plan"]:
+            if key in record:
+                lines.append(f"{key.title()}: {record[key]}")
+
+        if "recommendations" in record and record["recommendations"]:
+            lines.append("Recommendations:")
+            for rec in record["recommendations"]:
+                lines.append(f"- {rec}")
+
+        return "\n".join(lines)
+
     @staticmethod
     def get_info() -> Dict[str, Any]:
         return {
             "type": "function",
             "function": {
                 "name": "get_medical_record",
-                "description": (
-                    "Retrieve a patient's medical record by record ID or by the related appointment ID. "
-                    "If both record_id and appointment_id are provided, record_id will be used. "
-                    "If no matching record is found, an error message is returned."
-                ),
+                "description": "Retrieve a patient's medical record by record ID or related appointment ID.",
                 "parameters": {
                     "type": "object",
                     "properties": {
                         "record_id": {
                             "type": "string",
-                            "description": (
-                                "The unique medical record identifier, such as 'REC001'. "
-                                "If provided, this is used as the primary lookup key."
-                            ),
+                            "description": "The unique medical record identifier.",
                         },
                         "appointment_id": {
                             "type": "string",
-                            "description": (
-                                "The appointment ID associated with the medical record, such as 'APPT002'. "
-                                "Used to find the record when record_id is not provided."
-                            ),
+                            "description": "The appointment ID associated with the medical record.",
                         },
                     },
                     "required": [],
-                },
-                "response": {
-                    "type": "string",
-                    "description": (
-                        "Returns a multi-line, human-readable summary of the medical record if found, including:\n"
-                        "- Medical record header with record ID\n"
-                        "- Patient and provider names and IDs\n"
-                        "- Related appointment (if available): ID, date, and time\n"
-                        "- Record date and type\n"
-                        "- SOAP-style sections: Subjective, Objective, Assessment, Plan (when present)\n"
-                        "- Any recommendations listed as bullet points (when present)\n\n"
-                        "If no record_id or appointment_id is provided, returns a guidance message. "
-                        "If no matching record is found, returns an error string."
-                    ),
-                    "examples": [
-                        (
-                            "Medical Record (ID: REC001)\n"
-                            "Patient: David Martinez (ID: david_martinez_5678)\n"
-                            "Provider: Dr. Williams Psychiatry (ID: dr_williams_psychiatry)\n"
-                            "Related Appointment: APPT002 on 2024-01-16 at 10:00\n"
-                            "Date: 2024-01-16\n"
-                            "Type: consultation_note\n"
-                            "Subjective: Patient reports significant improvement in anxiety symptoms since starting sertraline 6 weeks ago.\n"
-                            "Objective: Patient appears calm and engaged. Good eye contact.\n"
-                            "Assessment: Generalized anxiety disorder, responding well to sertraline 50mg daily.\n"
-                            "Plan: Increase sertraline to 75mg daily and follow up in 6 weeks.\n"
-                            "Recommendations:\n"
-                            "- Continue medication as adjusted\n"
-                            "- Practice daily stress management techniques"
-                        ),
-                        "Medical record with ID REC999 not found.",
-                        "No medical record found for appointment ID APPT999.",
-                        "Please provide a record_id or appointment_id to look up the medical record.",
-                    ],
                 },
             },
         }
