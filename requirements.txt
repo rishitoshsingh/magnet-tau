@@ -2,7 +2,7 @@ python-dotenv>=1.0.0
 litellm
 openai>=1.0.0
 pydantic>=2.0
-git+https://github.com/sierra-research/tau-bench.git
+git+https://github.com/rishitoshsingh/tau-bench.git
 tqdm>=4.66.0
 langchain==1.2.0
 langchain-openai==1.1.0

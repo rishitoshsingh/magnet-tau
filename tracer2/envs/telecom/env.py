@@ -1,12 +1,12 @@
 
 from typing import Dict, Optional, Union
 
-from tau_bench.envs.base import Env
-from tau_bench.envs.telecom.data import load_data
-from tau_bench.envs.telecom.rules import RULES
-from tau_bench.envs.telecom.tools import ALL_TOOLS
-from tau_bench.envs.telecom.wiki import WIKI
-from tau_bench.envs.user import UserStrategy
+from tracer2.envs.base import Env
+from tracer2.envs.telecom.data import load_data
+from tracer2.envs.telecom.reverse_tools import ALL_TOOLS
+from tracer2.envs.telecom.rules import RULES
+from tracer2.envs.telecom.wiki import WIKI
+from tracer2.envs.user import UserStrategy
 
 
 class MockTelecomDomainEnv(Env):
@@ -23,11 +23,11 @@ class MockTelecomDomainEnv(Env):
     ):
         match task_split:
             case "test":
-                from tau_bench.envs.telecom.tasks_test import TASKS_TEST as tasks
+                from tracer2.envs.telecom.tasks_test import TASKS_TEST as tasks
             case "train":
-                from tau_bench.envs.telecom.tasks_train import TASKS_TRAIN as tasks
+                from tracer2.envs.telecom.tasks_train import TASKS_TRAIN as tasks
             case "dev":
-                from tau_bench.envs.telecom.tasks_dev import TASKS_DEV as tasks
+                from tracer2.envs.telecom.tasks_dev import TASKS_TEST as tasks
             case _:
                 raise ValueError(f"Unknown task split: {task_split}")
         super().__init__(
