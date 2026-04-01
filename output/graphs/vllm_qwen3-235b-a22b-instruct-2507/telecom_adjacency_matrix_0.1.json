@@ -1,0 +1,1477 @@
+{
+  "tools": [
+    {
+      "name": "GetServiceDetails",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "get_service_details",
+          "description": "Get detailed information about a telecom service. Returns service metadata including name, category, and price. If the service_id is not found, an error string is returned.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "service_id": {
+                "type": "string",
+                "description": "The service identifier, such as 'mobile_unlimited', 'internet_fiber_1gb', or 'tv_premium'."
+              }
+            },
+            "required": [
+              "service_id"
+            ]
+          },
+          "response": {
+            "type": "object",
+            "description": "The service details object, including service_id, name, category, and price. If the service is not found, the function returns the string 'Error: Service not found: <service_id>'.",
+            "properties": {
+              "service_id": {
+                "type": "string",
+                "description": "The unique identifier of the service."
+              },
+              "name": {
+                "type": "string",
+                "description": "Human-readable service name."
+              },
+              "category": {
+                "type": "string",
+                "description": "Service category, such as 'mobile', 'internet', or 'tv'."
+              },
+              "price": {
+                "type": "number",
+                "description": "Monthly price of the service."
+              }
+            },
+            "required": [
+              "service_id",
+              "name",
+              "category",
+              "price"
+            ],
+            "examples": [
+              {
+                "service_id": "mobile_unlimited",
+                "name": "Unlimited Mobile Plan",
+                "category": "mobile",
+                "price": 85.0
+              },
+              {
+                "service_id": "mobile_business_10lines",
+                "name": "Business Mobile - 10 Lines",
+                "category": "mobile",
+                "price": 450.0
+              },
+              "Error: Service not found: mobile_prepaid_500mb"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "GetDeviceDetails",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "get_device_details",
+          "description": "Get detailed information about a device available in the catalog. Returns device metadata such as category, manufacturer, and model. If the device name is not found, an error string is returned.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "device_name": {
+                "type": "string",
+                "description": "The name of the device to get details about.Options: iPhone 15 ProiPhone 14iPhone 13Samsung Galaxy S23iPhone 12iPhone 15Google Pixel 8Samsung Galaxy A54iPhone SE (3rd gen)WiFi 6 RouterStandard WiFi RouterEnterprise RouterBasic WiFi RouterSamsung 65\" Smart TVHD Cable Box55\" Smart TVConference Room TVConference Phone SystemHome Security System"
+              }
+            },
+            "required": [
+              "device_name"
+            ]
+          },
+          "response": {
+            "type": "object",
+            "description": "The device details object for the requested device, including category, manufacturer, and model. If the device does not exist in the catalog, the function returns the string 'Error: Device not found: <device_name>'.",
+            "properties": {
+              "category": {
+                "type": "string",
+                "description": "Device category, such as 'mobile_phone' or 'router'."
+              },
+              "manufacturer": {
+                "type": "string",
+                "description": "Name of the manufacturer, such as 'Apple' or 'Samsung'."
+              },
+              "model": {
+                "type": "string",
+                "description": "Device model name."
+              }
+            },
+            "required": [
+              "category",
+              "manufacturer",
+              "model"
+            ],
+            "examples": [
+              {
+                "category": "mobile_phone",
+                "manufacturer": "Apple",
+                "model": "iPhone 15 Pro"
+              },
+              {
+                "category": "mobile_phone",
+                "manufacturer": "Samsung",
+                "model": "Galaxy S23"
+              },
+              "Error: Device not found: Motorola Razr 2025"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "GetBillingDetails",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "get_billing_details",
+          "description": "Get billing information for a customer, including current balance, last payment, monthly charges, payment history, and bill settings (auto-pay, paperless). If no billing information exists for the customer, an error string is returned.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "customer_id": {
+                "type": "string",
+                "description": "The customer's unique identifier, such as 'john_smith_1234'."
+              }
+            },
+            "required": [
+              "customer_id"
+            ]
+          },
+          "response": {
+            "type": "object",
+            "description": "The billing record for the specified customer. If the customer has no billing record, the function returns the string 'Error: No billing information found for customer: <customer_id>'.",
+            "properties": {
+              "customer_id": {
+                "type": "string",
+                "description": "The customer's unique identifier."
+              },
+              "account_number": {
+                "type": "string",
+                "description": "The customer's billing account number."
+              },
+              "current_balance": {
+                "type": "number",
+                "description": "The customer's current outstanding balance."
+              },
+              "last_payment": {
+                "type": "object",
+                "description": "Most recent payment made by the customer.",
+                "properties": {
+                  "amount": {
+                    "type": "number"
+                  },
+                  "date": {
+                    "type": "string"
+                  },
+                  "method": {
+                    "type": "string"
+                  },
+                  "status": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "amount",
+                  "date",
+                  "method",
+                  "status"
+                ]
+              },
+              "next_bill_date": {
+                "type": "string",
+                "description": "The date the next bill will be issued."
+              },
+              "monthly_charges": {
+                "type": "object",
+                "description": "Recurring monthly charges broken down by service type. Keys are service names; values are charge amounts.",
+                "additionalProperties": {
+                  "type": "number"
+                }
+              },
+              "payment_history": {
+                "type": "array",
+                "description": "List of previous payments.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "date": {
+                      "type": "string"
+                    },
+                    "amount": {
+                      "type": "number"
+                    },
+                    "status": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "date",
+                    "amount",
+                    "status"
+                  ]
+                }
+              },
+              "auto_pay": {
+                "type": "boolean",
+                "description": "Indicates whether auto-pay is enabled."
+              },
+              "paperless": {
+                "type": "boolean",
+                "description": "Indicates whether paperless billing is enabled."
+              }
+            },
+            "required": [
+              "customer_id",
+              "account_number",
+              "current_balance",
+              "last_payment",
+              "next_bill_date",
+              "monthly_charges",
+              "payment_history",
+              "auto_pay",
+              "paperless"
+            ],
+            "examples": [
+              {
+                "customer_id": "john_smith_1234",
+                "account_number": "ACC001234567",
+                "current_balance": 0.0,
+                "last_payment": {
+                  "amount": 245.5,
+                  "date": "2025-09-15",
+                  "method": "auto_pay_credit_card",
+                  "status": "completed"
+                },
+                "next_bill_date": "2025-10-15",
+                "monthly_charges": {
+                  "mobile_unlimited": 85.0,
+                  "internet_fiber_1gb": 80.0,
+                  "tv_premium": 95.0,
+                  "taxes_fees": 18.5
+                },
+                "payment_history": [
+                  {
+                    "date": "2025-09-15",
+                    "amount": 245.5,
+                    "status": "completed"
+                  },
+                  {
+                    "date": "2025-08-15",
+                    "amount": 245.5,
+                    "status": "completed"
+                  },
+                  {
+                    "date": "2025-07-15",
+                    "amount": 245.5,
+                    "status": "completed"
+                  }
+                ],
+                "auto_pay": true,
+                "paperless": true
+              },
+              "Error: No billing information found for customer: john_smith_1234"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "ManageService",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "manage_service",
+          "description": "Manage customer services: add, remove, or list services on an account. For 'list', the function returns a JSON object of the customer's services. For 'add' and 'remove', it returns a human-readable status string. On failure (e.g., invalid customer, service, action, or device), it returns an error string.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "customer_id": {
+                "type": "string",
+                "description": "The customer's unique identifier, such as 'john_smith_1234'."
+              },
+              "action": {
+                "type": "string",
+                "enum": [
+                  "add",
+                  "remove",
+                  "list"
+                ],
+                "description": "Action to perform on the customer's services: 'list' to retrieve all services, 'add' to add a service, 'remove' to remove a service."
+              },
+              "service_id": {
+                "type": "string",
+                "description": "The service identifier, such as 'mobile_unlimited'. Required when action is 'add' or 'remove'. Ignored for 'list'."
+              },
+              "devices_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Optional list of device IDs to associate with the service when action is 'add'. Each ID must match a 'device_id' in the customer's devices list. Ignored for 'list'. When removing a service, all devices currently associated with that service are automatically detached."
+              }
+            },
+            "required": [
+              "customer_id",
+              "action"
+            ]
+          },
+          "response": {
+            "anyOf": [
+              {
+                "type": "object",
+                "description": "Returned when action is 'list': the customer's current services enriched with service details.",
+                "properties": {
+                  "customer_id": {
+                    "type": "string",
+                    "description": "The customer's unique identifier."
+                  },
+                  "services": {
+                    "type": "array",
+                    "description": "List of service objects for this customer. Each entry comes from the global 'services' catalog.",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "service_id": {
+                          "type": "string",
+                          "description": "Service identifier, e.g. 'mobile_unlimited'."
+                        },
+                        "name": {
+                          "type": "string",
+                          "description": "Human-readable service name."
+                        },
+                        "category": {
+                          "type": "string",
+                          "description": "Service category, e.g. 'mobile', 'internet', 'tv'."
+                        },
+                        "price": {
+                          "type": "number",
+                          "description": "Standard monthly price of the service."
+                        }
+                      },
+                      "required": [
+                        "service_id",
+                        "name",
+                        "category",
+                        "price"
+                      ]
+                    }
+                  }
+                },
+                "required": [
+                  "customer_id",
+                  "services"
+                ]
+              },
+              {
+                "type": "string",
+                "description": "Status or error message returned when action is 'add' or 'remove', or when an error occurs. For example:\n- 'Success: Added service ...'\n- 'Success: Removed service ...'\n- 'Error: Customer not found: ...'\n- 'Error: Service not found: ...'"
+              }
+            ],
+            "examples": [
+              {
+                "customer_id": "john_smith_1234",
+                "services": [
+                  {
+                    "service_id": "mobile_unlimited",
+                    "name": "Unlimited Mobile Plan",
+                    "category": "mobile",
+                    "price": 85.0
+                  },
+                  {
+                    "service_id": "internet_fiber_1gb",
+                    "name": "Fiber Internet 1 Gbps",
+                    "category": "internet",
+                    "price": 80.0
+                  },
+                  {
+                    "service_id": "tv_premium",
+                    "name": "Premium TV Package",
+                    "category": "tv",
+                    "price": 95.0
+                  }
+                ]
+              },
+              "Success: Added service 'Unlimited Mobile Plan' to customer john_smith_1234",
+              "Success: Removed service 'Unlimited Mobile Plan' from customer john_smith_1234. Devices ['iPhone 15 Pro'] are now no longer associated with the service.",
+              "Error: Customer not found: unknown_customer",
+              "Error: Service not found: mobile_unlimited_plus",
+              "Error: Invalid action: update. Valid actions are: add, remove, list"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "TroubleshootDevice",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "troubleshoot_device",
+          "description": "Provide troubleshooting steps for a given device and issue type. If the device is not found or the issue is not recognized for the device category, an error string or 'Unknown issue' is returned.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "device_name": {
+                "type": "string",
+                "description": "Name of the device, such as 'iPhone 15 Pro' or 'WiFi 6 Router'. Must exist in the device catalog."
+              },
+              "issue": {
+                "type": "string",
+                "enum": [
+                  "no_service",
+                  "slow_speeds",
+                  "battery_drain"
+                ],
+                "description": "Issue type to troubleshoot. Supported issues: 'no_service', 'slow_speeds', 'battery_drain'."
+              }
+            },
+            "required": [
+              "device_name",
+              "issue"
+            ]
+          },
+          "response": {
+            "type": "string",
+            "description": "Returns troubleshooting steps as a multi-line string. If the device is not found, returns an error string 'Error: Device not found: <device_name>'. If the issue is unsupported for the device category, returns 'Unknown issue'.",
+            "examples": [
+              "Troubleshooting steps: \n1) Restart device \n2) Check brightness settings and reduce if needed\n3) Close background apps\n4) Contact support if issue persists\n",
+              "Troubleshooting steps: \n1) Restart device \n2) Check signal coverage \n3) Reset network settings \n4) Contact support if issue persists\n",
+              "Error: Device not found: Nokia 3310",
+              "Unknown issue"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "CreateSupportTicket",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "create_support_ticket",
+          "description": "Create a new support ticket for a customer. Validates the customer_id, ticket category, and priority. On success, a ticket ID is generated and the ticket is stored with status 'open'.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "customer_id": {
+                "type": "string",
+                "description": "The customer's unique identifier, such as 'john_smith_1234'. Must exist in the system."
+              },
+              "category": {
+                "type": "string",
+                "enum": [
+                  "mobile",
+                  "internet",
+                  "tv",
+                  "billing",
+                  "account",
+                  "device",
+                  "security",
+                  "phone"
+                ],
+                "description": "Ticket category. Must be one of: mobile, internet, tv, billing, account, device, security, or phone."
+              },
+              "priority": {
+                "type": "string",
+                "enum": [
+                  "low",
+                  "medium",
+                  "high",
+                  "urgent"
+                ],
+                "description": "Priority level. Defaults to 'medium'. low = non-urgent, medium = standard, high = important, urgent = critical."
+              }
+            },
+            "required": [
+              "customer_id",
+              "category"
+            ]
+          },
+          "response": {
+            "type": "string",
+            "description": "Returns a success message such as 'Success: Created support ticket TICKET001 for customer john_smith_1234' or an error message starting with 'Error:' if validation fails.",
+            "examples": [
+              "Success: Created support ticket TICKET001 for customer john_smith_1234",
+              "Error: Customer not found: unknown_cust_9999",
+              "Error: Invalid category: plumbing. Valid categories: mobile, internet, tv, billing, account, device, security, phone",
+              "Error: Invalid priority: extreme. Valid priorities: low, medium, high, urgent"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "GetSupportTicketDetails",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "get_support_ticket_details",
+          "description": "Get details of a support ticket, including ticket_id, customer_id, current status, and priority. Returns an error string if the ticket does not exist.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "ticket_id": {
+                "type": "string",
+                "description": "The support ticket identifier, such as 'TICKET001'."
+              }
+            },
+            "required": [
+              "ticket_id"
+            ]
+          },
+          "response": {
+            "type": "object",
+            "description": "The support ticket details. If the ticket_id does not exist, the function returns the string 'Error: Support ticket not found: <ticket_id>'.",
+            "properties": {
+              "ticket_id": {
+                "type": "string",
+                "description": "The unique identifier of the support ticket."
+              },
+              "customer_id": {
+                "type": "string",
+                "description": "The ID of the customer who created the ticket."
+              },
+              "status": {
+                "type": "string",
+                "description": "The current status of the ticket, e.g., 'open', 'closed'."
+              },
+              "priority": {
+                "type": "string",
+                "description": "The ticket's priority level, such as 'low', 'medium', 'high', 'urgent'."
+              }
+            },
+            "required": [
+              "ticket_id",
+              "customer_id",
+              "status",
+              "priority"
+            ],
+            "examples": [
+              {
+                "ticket_id": "TICKET001",
+                "customer_id": "john_smith_1234",
+                "status": "closed",
+                "priority": "medium"
+              },
+              {
+                "ticket_id": "TICKET002",
+                "customer_id": "sarah_johnson_5678",
+                "status": "open",
+                "priority": "high"
+              },
+              "Error: Support ticket not found: TICKET999"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "AddDevice",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "add_device",
+          "description": "Add a device to a customer. The device must be one of the supported device names in the device catalog, and the customer must already exist in the system. The device will be added to the customer's 'devices' list with a new 'device_id' and 'service' set to null.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "customer_id": {
+                "type": "string",
+                "description": "The customer's unique identifier, such as 'john_smith_1234'. This can be obtained from prior customer lookup tools."
+              },
+              "device_name": {
+                "type": "string",
+                "description": "The name of the device to add. Must match one of the known devices in the catalog. Options: iPhone 15 Pro, iPhone 14, iPhone 13, Samsung Galaxy S23, iPhone 12, iPhone 15, Google Pixel 8, Samsung Galaxy A54, iPhone SE (3rd gen), WiFi 6 Router, Standard WiFi Router, Enterprise Router, Basic WiFi Router, Samsung 65\" Smart TV, HD Cable Box, 55\" Smart TV, Conference Room TV, Conference Phone System, Home Security System."
+              }
+            },
+            "required": [
+              "customer_id",
+              "device_name"
+            ]
+          },
+          "response": {
+            "type": "string",
+            "description": "A status message indicating whether the device was successfully added. On success, it returns a string of the form 'Success: Added device \"<device_name>\" to customer <customer_id>'. On failure, it returns an error string such as 'Error: Customer not found: <customer_id>' or 'Error: Invalid device name: <device_name>'.",
+            "examples": [
+              "Success: Added device 'iPhone 14' to customer john_smith_1234",
+              "Error: Customer not found: unknown_customer_9999",
+              "Error: Invalid device name: Nokia 3310"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "ManageBilling",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "manage_billing",
+          "description": "Update a customer's billing preferences, including paperless billing, auto-pay, and billing cycle. Returns the updated billing record for that customer. If the customer does not exist, returns an error string.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "customer_id": {
+                "type": "string",
+                "description": "The customer's unique identifier, such as 'john_smith_1234'."
+              },
+              "paperless": {
+                "type": "boolean",
+                "description": "Whether the customer is enrolled in paperless billing. True enables paperless, False disables it."
+              },
+              "auto_pay": {
+                "type": "boolean",
+                "description": "Whether auto-pay is enabled for the customer's account. True enables auto-pay, False disables it."
+              },
+              "billing_cycle": {
+                "type": "string",
+                "enum": [
+                  "monthly",
+                  "quarterly",
+                  "annual"
+                ],
+                "description": "The billing cycle for the customer's account. Allowed values: 'monthly', 'quarterly', 'annual'."
+              }
+            },
+            "required": [
+              "customer_id",
+              "paperless",
+              "auto_pay",
+              "billing_cycle"
+            ]
+          },
+          "response": {
+            "type": "object",
+            "description": "The updated billing information for the customer. If the customer_id is not found, the function returns the string 'Error: Customer not found: <customer_id>'.",
+            "properties": {
+              "customer_id": {
+                "type": "string",
+                "description": "The customer's unique identifier."
+              },
+              "billing": {
+                "type": "object",
+                "description": "The full billing record for the customer after the update.",
+                "properties": {
+                  "customer_id": {
+                    "type": "string",
+                    "description": "The customer's unique identifier."
+                  },
+                  "account_number": {
+                    "type": "string",
+                    "description": "The account number associated with billing."
+                  },
+                  "current_balance": {
+                    "type": "number",
+                    "description": "Current outstanding balance on the account."
+                  },
+                  "last_payment": {
+                    "type": "object",
+                    "description": "Information about the most recent payment.",
+                    "properties": {
+                      "amount": {
+                        "type": "number",
+                        "description": "Last payment amount."
+                      },
+                      "date": {
+                        "type": "string",
+                        "description": "Date of the last payment in 'YYYY-MM-DD' format."
+                      },
+                      "method": {
+                        "type": "string",
+                        "description": "Payment method used for the last payment."
+                      },
+                      "status": {
+                        "type": "string",
+                        "description": "Status of the last payment, e.g., 'completed'."
+                      }
+                    },
+                    "required": [
+                      "amount",
+                      "date",
+                      "method",
+                      "status"
+                    ]
+                  },
+                  "next_bill_date": {
+                    "type": "string",
+                    "description": "Next bill date in 'YYYY-MM-DD' format."
+                  },
+                  "monthly_charges": {
+                    "type": "object",
+                    "description": "Breakdown of recurring monthly charges by service plus taxes/fees.",
+                    "additionalProperties": {
+                      "type": "number",
+                      "description": "Charge amount for the given line item."
+                    }
+                  },
+                  "payment_history": {
+                    "type": "array",
+                    "description": "Historical list of payments made on the account.",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "date": {
+                          "type": "string",
+                          "description": "Payment date in 'YYYY-MM-DD' format."
+                        },
+                        "amount": {
+                          "type": "number",
+                          "description": "Payment amount."
+                        },
+                        "status": {
+                          "type": "string",
+                          "description": "Payment status, e.g., 'completed'."
+                        }
+                      },
+                      "required": [
+                        "date",
+                        "amount",
+                        "status"
+                      ]
+                    }
+                  },
+                  "auto_pay": {
+                    "type": "boolean",
+                    "description": "Whether auto-pay is enabled after the update."
+                  },
+                  "paperless": {
+                    "type": "boolean",
+                    "description": "Whether paperless billing is enabled after the update."
+                  },
+                  "billing_cycle": {
+                    "type": "string",
+                    "description": "The updated billing cycle, e.g., 'monthly', 'quarterly', or 'annual'."
+                  }
+                },
+                "required": [
+                  "customer_id",
+                  "account_number",
+                  "current_balance",
+                  "last_payment",
+                  "next_bill_date",
+                  "monthly_charges",
+                  "payment_history",
+                  "auto_pay",
+                  "paperless"
+                ]
+              }
+            },
+            "required": [
+              "customer_id",
+              "billing"
+            ],
+            "examples": [
+              {
+                "customer_id": "john_smith_1234",
+                "billing": {
+                  "customer_id": "john_smith_1234",
+                  "account_number": "ACC001234567",
+                  "current_balance": 0.0,
+                  "last_payment": {
+                    "amount": 245.5,
+                    "date": "2025-09-15",
+                    "method": "auto_pay_credit_card",
+                    "status": "completed"
+                  },
+                  "next_bill_date": "2025-10-15",
+                  "monthly_charges": {
+                    "mobile_unlimited": 85.0,
+                    "internet_fiber_1gb": 80.0,
+                    "tv_premium": 95.0,
+                    "taxes_fees": 18.5
+                  },
+                  "payment_history": [
+                    {
+                      "date": "2025-09-15",
+                      "amount": 245.5,
+                      "status": "completed"
+                    },
+                    {
+                      "date": "2025-08-15",
+                      "amount": 245.5,
+                      "status": "completed"
+                    },
+                    {
+                      "date": "2025-07-15",
+                      "amount": 245.5,
+                      "status": "completed"
+                    }
+                  ],
+                  "auto_pay": false,
+                  "paperless": false,
+                  "billing_cycle": "quarterly"
+                }
+              },
+              "Error: Customer not found: unknown_customer"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "GetServices",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "get_services",
+          "description": "Get detailed information about all telecom services available in the catalog. Returns a mapping from service_id to service details.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": []
+          },
+          "response": {
+            "type": "object",
+            "description": "A dictionary of all available telecom services. Each key is a service_id, and each value is an object describing the service (service_id, name, category, price).",
+            "additionalProperties": {
+              "type": "object",
+              "properties": {
+                "service_id": {
+                  "type": "string",
+                  "description": "The unique identifier of the service."
+                },
+                "name": {
+                  "type": "string",
+                  "description": "Human-readable service name."
+                },
+                "category": {
+                  "type": "string",
+                  "description": "Category of the service, e.g. 'mobile', 'internet', 'tv'."
+                },
+                "price": {
+                  "type": "number",
+                  "description": "Monthly service price."
+                }
+              },
+              "required": [
+                "service_id",
+                "name",
+                "category",
+                "price"
+              ]
+            },
+            "examples": [
+              {
+                "mobile_unlimited": {
+                  "service_id": "mobile_unlimited",
+                  "name": "Unlimited Mobile Plan",
+                  "category": "mobile",
+                  "price": 85.0
+                },
+                "mobile_family_4lines": {
+                  "service_id": "mobile_family_4lines",
+                  "name": "Family Plan - 4 Lines",
+                  "category": "mobile",
+                  "price": 160.0
+                },
+                "mobile_business_10lines": {
+                  "service_id": "mobile_business_10lines",
+                  "name": "Business Mobile - 10 Lines",
+                  "category": "mobile",
+                  "price": 450.0
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "GetSeniorDiscount",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "get_senior_discount",
+          "description": "Apply a fixed $5 senior discount to the provided service price. If the discount results in a negative value, the final price is returned as 0.00. If the input is not a valid number, an error string is returned.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "original_price": {
+                "type": "string",
+                "description": "Original price before applying the senior discount. Must be convertible to a number. Example: '95.00'."
+              }
+            },
+            "required": [
+              "original_price"
+            ]
+          },
+          "response": {
+            "type": "string",
+            "description": "Returns the discounted price as a string formatted to two decimal places, or an error string if the input is not a valid number.",
+            "examples": [
+              "90.00",
+              "0.00",
+              "Error: original_price must be a number"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "ModifySupportTicket",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "modify_support_ticket",
+          "description": "Modify the status and priority of a support ticket. If the ticket_id does not exist, an error string is returned.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "ticket_id": {
+                "type": "string",
+                "description": "The support ticket identifier, such as 'TICKET001'."
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "open",
+                  "closed",
+                  "pending",
+                  "in_progress",
+                  "resolved"
+                ],
+                "description": "New status for the ticket. Typical values include 'open', 'closed', 'pending', 'in_progress', or 'resolved'."
+              },
+              "priority": {
+                "type": "string",
+                "enum": [
+                  "low",
+                  "medium",
+                  "high",
+                  "urgent"
+                ],
+                "description": "New priority for the ticket: 'low', 'medium', 'high', or 'urgent'."
+              }
+            },
+            "required": [
+              "ticket_id",
+              "status",
+              "priority"
+            ]
+          },
+          "response": {
+            "type": "string",
+            "description": "Returns a success message indicating the ticket was modified, or an error string if the ticket_id does not exist.",
+            "examples": [
+              "Success: Modified support ticket TICKET001 with status open and priority high",
+              "Success: Modified support ticket TICKET002 with status resolved and priority urgent",
+              "Error: Support ticket not found: TICKET999"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "RecordPayment",
+      "info": {
+        "type": "function",
+        "function": {
+          "name": "record_payment",
+          "description": "Apply a payment to a customer account, update the remaining balance, and record the payment in billing history. Returns an error string if the customer has no billing information or if the amount is not a valid number.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "customer_id": {
+                "type": "string",
+                "description": "Unique customer identifier, e.g. 'john_smith_1234'. Must exist in the billing data."
+              },
+              "amount": {
+                "type": "number",
+                "description": "Payment amount to apply. It will be rounded to two decimals. If a non-numeric value is provided, the tool returns an error."
+              },
+              "method": {
+                "type": "string",
+                "enum": [
+                  "credit_card",
+                  "bank_transfer"
+                ],
+                "description": "Payment method used. Supported values: 'credit_card', 'bank_transfer'."
+              },
+              "date": {
+                "type": "string",
+                "description": "Payment date in ISO format, e.g. '2025-09-18'. This value is recorded as-is in the billing history."
+              }
+            },
+            "required": [
+              "customer_id",
+              "amount",
+              "method",
+              "date"
+            ]
+          },
+          "response": {
+            "type": "object",
+            "description": "On success, returns a JSON object describing the applied payment and the updated balance. On failure, the tool instead returns an error string starting with 'Error:'.",
+            "properties": {
+              "customer_id": {
+                "type": "string",
+                "description": "The customer id the payment was applied to."
+              },
+              "amount": {
+                "type": "string",
+                "description": "Payment amount applied, formatted as a string with two decimals, e.g. '245.50'."
+              },
+              "method": {
+                "type": "string",
+                "description": "Payment method used, e.g. 'credit_card'."
+              },
+              "date": {
+                "type": "string",
+                "description": "Payment date as provided, e.g. '2025-09-18'."
+              },
+              "current_balance": {
+                "type": "string",
+                "description": "Updated account balance after applying the payment, formatted as a string with two decimals, e.g. '0.00'."
+              }
+            },
+            "required": [
+              "customer_id",
+              "amount",
+              "method",
+              "date",
+              "current_balance"
+            ],
+            "examples": [
+              {
+                "customer_id": "john_smith_1234",
+                "amount": "100.00",
+                "method": "credit_card",
+                "date": "2025-09-18",
+                "current_balance": "0.00"
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "adjacency_matrix": [
+    [
+      false,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    [
+      true,
+      false,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      false,
+      true,
+      true,
+      true,
+      true
+    ],
+    [
+      true,
+      false,
+      false,
+      true,
+      true,
+      true,
+      true,
+      false,
+      true,
+      true,
+      false,
+      false,
+      true
+    ],
+    [
+      true,
+      false,
+      true,
+      false,
+      true,
+      true,
+      true,
+      true,
+      true,
+      false,
+      false,
+      true,
+      true
+    ],
+    [
+      false,
+      true,
+      false,
+      false,
+      false,
+      true,
+      true,
+      true,
+      false,
+      false,
+      false,
+      true,
+      false
+    ],
+    [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false
+    ],
+    [
+      false,
+      false,
+      true,
+      false,
+      true,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false
+    ],
+    [
+      false,
+      true,
+      true,
+      true,
+      true,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    [
+      false,
+      false,
+      true,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      true
+    ],
+    [
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false
+    ],
+    [
+      true,
+      false,
+      true,
+      true,
+      false,
+      false,
+      false,
+      false,
+      true,
+      true,
+      false,
+      false,
+      false
+    ],
+    [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    [
+      false,
+      false,
+      true,
+      false,
+      false,
+      true,
+      true,
+      false,
+      true,
+      false,
+      false,
+      true,
+      false
+    ]
+  ],
+  "reason_matrix": [
+    [
+      "self — ignored",
+      "Agent may need device details after reviewing a service to assess compatibility or troubleshoot; user provides service context and device name.",
+      "After checking service details, agent may retrieve customer's billing to discuss cost impact; customer_id is typically known post-authentication.",
+      "Agent might add or remove the service after reviewing its details; requires customer_id and confirmation from user.",
+      "If service issue is suspected, agent may troubleshoot a related device; user provides device and issue type.",
+      "Agent may create a ticket if service details reveal an unresolved problem; customer_id and issue category come from context.",
+      "Agent may check existing ticket status related to the service; ticket_id can be inferred or provided by user.",
+      "Agent may add a device to pair with the service being reviewed; customer_id and device_name are user-provided.",
+      "Agent may update billing preferences after discussing service costs; customer_id and user preferences are available.",
+      "Agent may list all services to compare with the one reviewed; no inputs needed beyond authenticated customer context.",
+      "Agent may apply senior discount to the service price just retrieved; original_price comes from get_service_details output.",
+      "Agent may update a ticket related to the service; ticket_id, status, and priority are provided by user.",
+      "Agent may record a payment if service review reveals a balance; customer_id and payment details are provided by user."
+    ],
+    [
+      "A customer may want to check service details after learning about a device's capabilities to see which plan suits it. User-provided input: device_name (from prior context), service_id (inferred or requested).",
+      "self — ignored",
+      "After retrieving device details, the agent might need the customer's billing info to discuss costs or payment options. User-provided input: customer_id (from authentication or profile lookup).",
+      "Agent may proceed to manage services (e.g., add a new service) after confirming device compatibility. User-provided input: customer_id, service_id, action (add/remove/list), optional device_ids.",
+      "After identifying a device issue (e.g., battery drain), the agent can provide troubleshooting steps. User-provided input: device_name (same as target), issue type (from customer).",
+      "If device troubleshooting fails, creating a support ticket is a natural next step. User-provided input: customer_id, category (e.g., 'device'), priority (based on urgency).",
+      "After retrieving device details, the agent might check an existing ticket related to that device. User-provided input: ticket_id (provided by customer or from prior interaction).",
+      "After confirming device specs, the agent may add the device to the customer’s account. User-provided input: customer_id, device_name (same as target).",
+      "Managing billing preferences doesn't directly follow device details without intermediate context like payment for a new device. No strong workflow link.",
+      "Agent may list all services to help user choose one after reviewing device capabilities. No additional user input needed beyond customer context.",
+      "If the customer is eligible, applying a senior discount to a service price may follow device and service review. User-provided input: original_price (from service details), eligibility (stated by user).",
+      "Agent may need to update a ticket (e.g., escalate priority) after diagnosing a device issue. User-provided input: ticket_id, new status, new priority.",
+      "If the device is being added or replaced, the customer may make a payment. User-provided input: customer_id, amount, method, date."
+    ],
+    [
+      "After retrieving billing details, the customer may ask for more information about a specific service listed in their monthly charges. The agent can use GetServiceDetails to fetch plan details (e.g., data limits, features) for clarification. User-provided input: service_id from monthly_charges.",
+      "GetDeviceDetails retrieves catalog info about a device by name, but billing details do not typically reference specific device names directly. Without an explicit customer query about a device, this follow-up is not a natural next step. No direct user-provided input links billing to a specific device name.",
+      "Self — ignored",
+      "Customer sees their services in billing and wants to modify them (e.g., remove a plan to reduce cost). ManageService allows adding/removing services. This is a common workflow after reviewing charges. User-provided input: customer_id (already known), service_id (from billing).",
+      "Customer may report a device issue (e.g., slow internet) after seeing high charges. Agent can troubleshoot the associated device (e.g., router). This is plausible if the billing context includes internet service. User-provided input: device_name (inferred or stated), issue type.",
+      "Customer sees unexpected charges and wants to escalate. Agent creates a billing-related support ticket. This is a routine follow-up for disputes. User-provided input: customer_id (known), category='billing', priority (based on urgency).",
+      "Customer wants to check the status of a previous billing or service issue. After viewing current billing, they may reference an old ticket. Agent retrieves it. User-provided input: ticket_id (provided by customer).",
+      "AddDevice is used to add new hardware. There’s no direct link from billing details to adding a device unless the customer explicitly requests it, which would be a separate intent. Not a typical immediate follow-up.",
+      "After reviewing billing, customer may want to update preferences (e.g., disable auto-pay, switch to paperless). ManageBilling enables these changes. User-provided input: customer_id, paperless, auto_pay, billing_cycle.",
+      "Customer may want to compare their current services with available plans to find savings. GetServices provides full catalog for comparison. Plausible after reviewing high charges. User-provided input: none required.",
+      "GetSeniorDiscount applies a $5 discount to a service price. It operates on a single price value, not full billing data. Only relevant if the customer explicitly asks about senior pricing, which is not a common or implied follow-up from viewing billing.",
+      "ModifySupportTicket changes an existing ticket’s status or priority. This is an internal action unlikely to follow directly from viewing billing unless the customer references a specific ticket, which would trigger GetSupportTicketDetails first. Not a typical immediate step.",
+      "Customer has an outstanding balance and wants to pay. Recording the payment is a direct and common action after reviewing the current balance. User-provided input: customer_id, amount, method, date."
+    ],
+    [
+      "After listing or modifying services, the agent may need to fetch detailed pricing or category info for a specific service to explain it to the user. The service_id is available from the ManageService output. User-provided input: none (service_id comes from prior step).",
+      "The device_name required by GetDeviceDetails is not directly returned by ManageService. While devices are mentioned during removal, their names (e.g., 'iPhone 15 Pro') are not structured in a way that reliably maps to device_name without additional lookup. No direct user-provided input justifies immediate follow-up.",
+      "After managing services (e.g., adding or removing), the agent may need to verify the updated billing impact. The customer_id is available from the ManageService call. User-provided input: customer_id (already known).",
+      "This is the same as the target function. self — ignored",
+      "After adding or removing a service, the user may report device-level issues (e.g., phone not connecting). The agent can then troubleshoot using the device name. User-provided input: device_name, issue (from user).",
+      "If a service change fails or causes an issue (e.g., loss of internet), the agent may create a support ticket to escalate. The customer_id is known. User-provided input: customer_id, category, priority (from user request).",
+      "After managing a service, the agent may need to check the status of an existing ticket related to service activation or outage. The customer_id from ManageService can help identify relevant tickets. User-provided input: ticket_id (from user or prior context).",
+      "After removing a service, the user may want to add a new device for a new plan. Or after adding a service, they may need a compatible device. The customer_id is known. User-provided input: customer_id, device_name (from user).",
+      "After modifying services, the agent may need to update billing preferences (e.g., enable auto-pay for new charges). The customer_id is available. User-provided input: customer_id, paperless, auto_pay, billing_cycle (from user request).",
+      "GetServices returns all available services. While useful for planning, it's not a typical immediate follow-up after managing services unless the user explicitly asks for alternatives, which would require a separate intent. No strong workflow trigger.",
+      "GetSeniorDiscount is a pricing utility that applies only if the user qualifies and requests a discount. It’s not a routine follow-up after service management and requires additional eligibility checks not triggered by ManageService.",
+      "After creating a ticket due to a service issue, the agent or user may later want to modify its status or priority. The ticket_id would come from prior interaction. User-provided input: ticket_id, status, priority (from user).",
+      "After adding a service with new charges, the user may make a payment to cover the balance. The customer_id is known. User-provided input: customer_id, amount, method, date (from user)."
+    ],
+    [
+      "Mismatched intent: Getting service details is not a typical follow-up after troubleshooting a device unless the issue reveals a service problem, which is not the default path.",
+      "Plausible follow-up: After troubleshooting, the agent may need to verify device specifications (e.g., model, category) to ensure correct steps were provided. Uses device_name from prior context.",
+      "Mismatched intent: Billing details are not directly relevant after troubleshooting unless payment or balance is part of the issue, which is uncommon and not implied.",
+      "Mismatched intent: Managing services is a major account change and not a routine follow-up to device troubleshooting without explicit user request.",
+      "self — ignored",
+      "Plausible follow-up: If troubleshooting fails, creating a support ticket (e.g., category='device', priority='medium' or 'high') is a standard escalation path. Uses customer_id and device_name from context.",
+      "Plausible follow-up: Agent may check existing ticket status for the same device or issue to avoid duplicates. Requires ticket_id, which could be derived from prior interactions or customer input.",
+      "Plausible follow-up: If the device is not in the customer's inventory, agent may add it after troubleshooting reveals it's a new or missing device. Uses customer_id and device_name.",
+      "Mismatched intent: Updating billing preferences is unrelated to device troubleshooting and not a typical next step.",
+      "Mismatched intent: Listing all services is not a natural follow-up unless the user shifts focus to service plans, which is not implied.",
+      "Mismatched intent: Applying a senior discount is unrelated to device troubleshooting and only relevant in pricing contexts.",
+      "Plausible follow-up: Agent may need to escalate or update an existing ticket (e.g., raise priority) if troubleshooting reveals severity. Uses ticket_id and customer_id from context.",
+      "Mismatched intent: Recording a payment is unrelated to device troubleshooting and not a typical next action."
+    ],
+    [
+      "Mismatched intent: Getting service details is unrelated to creating a support ticket unless the ticket is about a specific service, but no such context is implied for a follow-up.",
+      "Mismatched intent: Device details are not typically needed immediately after creating a ticket unless troubleshooting, which would require a different flow.",
+      "Mismatched intent: Billing details may be relevant for billing-related tickets, but accessing them isn't a standard follow-up after ticket creation.",
+      "Mismatched intent: Managing services is a separate workflow; creating a ticket does not lead to modifying services unless explicitly requested later.",
+      "Mismatched intent: Troubleshooting is a self-contained action; it would precede or replace ticket creation, not follow it.",
+      "self — ignored",
+      "Plausible follow-up: After creating a ticket, the agent may need to retrieve its details to confirm status or share with the customer. User-provided input: ticket_id.",
+      "Mismatched intent: Adding a device is unrelated to support ticket creation and would require a separate customer request.",
+      "Mismatched intent: Updating billing preferences is a distinct action not logically tied to post-ticket workflows.",
+      "Mismatched intent: Listing all services is a discovery action, not a typical follow-up after creating a support ticket.",
+      "Mismatched intent: Senior discount is pricing-specific and irrelevant to support ticket workflows.",
+      "Plausible follow-up: After creating a ticket, the agent or customer may want to modify its priority or status (e.g., escalate). User-provided inputs: ticket_id, new status, new priority.",
+      "Mismatched intent: Recording a payment is unrelated to support ticket creation and belongs to a separate billing workflow."
+    ],
+    [
+      "Mismatched intent: Getting service details is not a typical follow-up after retrieving a support ticket unless the ticket is about a service issue, which is not guaranteed.",
+      "Mismatched intent: Device details are not directly relevant after viewing a ticket unless the ticket concerns a specific device, which is not always the case.",
+      "Plausible follow-up: After viewing a support ticket, the agent may need the customer's billing details—especially if the ticket is billing-related (e.g., disputed charge). User-provided input: customer_id (from ticket details).",
+      "Mismatched intent: Managing services is a high-impact action and not a routine follow-up unless the ticket resolution requires a service change, which would need explicit user confirmation and is not immediate.",
+      "Plausible follow-up: If the ticket involves a device issue (e.g., connectivity), the agent may need to troubleshoot the device. User-provided inputs: device_name (inferred or confirmed), issue type (from ticket context).",
+      "Plausible follow-up: After reviewing a ticket, the agent may need to update its status or priority (e.g., escalate from 'high' to 'urgent'). User-provided inputs: ticket_id (from current function), new status and priority.",
+      "Self — ignored",
+      "Mismatched intent: Adding a device is a separate action not typically triggered directly after viewing a ticket unless part of a resolution, which requires additional confirmation and is not routine.",
+      "Mismatched intent: Updating billing preferences is unrelated to most ticket types and would only follow if the ticket was about billing settings, which is not common enough to be a standard follow-up.",
+      "Mismatched intent: Listing all services is not a typical next step after viewing a ticket unless the ticket is service-related, which is not guaranteed.",
+      "Mismatched intent: Applying a senior discount is a niche pricing action unrelated to general ticket handling and not a routine follow-up.",
+      "Plausible follow-up: After reviewing a ticket, the agent may need to record a payment if the ticket was about a payment dispute or missed payment. User-provided inputs: customer_id (from ticket), amount, method, date.",
+      "Mismatched intent: Recording a payment is not a direct follow-up unless the ticket specifically involves billing, which is not always the case."
+    ],
+    [
+      "Mismatched intent: Getting service details is not a typical follow-up after adding a device unless the user is exploring service plans, but that would require a separate request and is not a direct workflow continuation.",
+      "Plausible follow-up: After adding a device, the agent may need to verify its details (category, manufacturer, model) to confirm correctness. User-provided input: device_name.",
+      "Plausible follow-up: After adding a device, the agent may check the customer's billing details to assess impact on monthly charges or confirm account status. User-provided input: customer_id.",
+      "Plausible follow-up: The agent may proceed to attach the newly added device to a service (e.g., mobile or internet plan). This requires listing or adding services. User-provided input: customer_id, device_ids.",
+      "Plausible follow-up: If the device has connectivity or performance issues post-addition, troubleshooting steps may be initiated. User-provided input: device_name, issue type (e.g., no_service).",
+      "Plausible follow-up: If the device addition is part of resolving a broader issue (e.g., faulty equipment), a support ticket may be created. User-provided input: customer_id, category (e.g., device), priority.",
+      "Not a valid follow-up: Getting a ticket's details requires a ticket ID, which hasn't been created yet unless a prior ticket existed — not implied by adding a device.",
+      "Self — ignored",
+      "Not a valid follow-up: Managing billing preferences (paperless, auto-pay) is unrelated to device addition unless explicitly requested, and not a routine next step.",
+      "Not a valid follow-up: Getting all services is exploratory and not a direct continuation unless the user is comparing plans, which is not implied.",
+      "Not a valid follow-up: Senior discount is a pricing utility, not logically connected to device addition without an explicit pricing context.",
+      "Not a valid follow-up: Modifying a ticket requires an existing ticket ID, which is not generated by adding a device unless previously created.",
+      "Not a valid follow-up: Recording a payment is unrelated to device addition unless tied to a purchase, which is not indicated in the function's scope."
+    ],
+    [
+      "Mismatched intent: Getting service details is not a typical follow-up after updating billing preferences unless the user explicitly asks about a service, which is not implied here.",
+      "Mismatched intent: Device details are unrelated to billing preference updates; no common customer scenario links these actions directly.",
+      "Plausible follow-up: After updating billing settings, the customer may want to verify the changes by viewing their updated billing details. The agent would use the same customer_id to call GetBillingDetails.",
+      "Mismatched intent: Managing services (add/remove) is a separate domain from billing preferences; no routine workflow connects them directly without additional customer intent.",
+      "Mismatched intent: Troubleshooting a device is unrelated to billing updates; no common scenario justifies this immediate follow-up.",
+      "Plausible follow-up: If a customer updates billing preferences (e.g., disables auto-pay) and then fails to pay, the agent might create a billing-related support ticket. The customer_id is already known, making this a valid escalation path.",
+      "Mismatched intent: Reading ticket details requires a ticket ID, which isn't generated by ManageBilling unless a prior ticket exists, which isn't implied.",
+      "Mismatched intent: Adding a device is unrelated to billing changes; no routine workflow connects these without additional customer request.",
+      "self — ignored",
+      "Mismatched intent: Listing all available services is not a natural follow-up to updating billing settings; no common customer scenario supports this.",
+      "Mismatched intent: Applying a senior discount is a pricing action, not a follow-up to billing preference changes; no direct link in workflow.",
+      "Mismatched intent: Modifying a support ticket requires an existing ticket ID, which isn't produced or implied by ManageBilling.",
+      "Plausible follow-up: After changing billing settings (e.g., disabling auto-pay), the customer might make a manual payment. The agent can use the same customer_id to record the payment, making this a realistic next step."
+    ],
+    [
+      "After listing all available services, the agent may need to provide detailed information about a specific service. The user would provide the service_id they are interested in.",
+      "The target function returns service catalog data, not device-related information. There is no direct customer intent or agent workflow that would require fetching device details immediately after listing all services without first identifying a specific service or customer need.",
+      "Billing details require a customer_id, which is not provided or implied by the target function. No natural follow-up exists without first identifying a specific customer and their context.",
+      "Managing services requires a customer_id and action (add/remove/list), which are not outputs of the target function. The agent cannot proceed without explicit customer intent and authentication.",
+      "Troubleshooting a device requires a device name and issue type, neither of which are related to the service catalog. No plausible scenario connects general service listing to immediate device troubleshooting.",
+      "Creating a support ticket requires customer_id and category, which are not generated by listing services. No direct customer request or agent action justifies this follow-up without additional context.",
+      "Getting support ticket details requires a ticket_id, which is unrelated to the output of listing available services. No plausible workflow connects these actions directly.",
+      "Adding a device requires customer_id and device_name, which are not outputs of the target function. No natural progression exists from viewing the service catalog to adding a device.",
+      "Managing billing requires customer_id and billing preferences, none of which are available or implied after listing services. This is not a plausible immediate follow-up.",
+      "This is the same as the target function — self — ignored",
+      "After reviewing all available services, a customer may ask for pricing with a senior discount applied. The agent can use the service price from get_services output and pass it as original_price to get_senior_discount.",
+      "Modifying a support ticket requires a ticket_id, status, and priority — none of which are related to listing available services. No plausible scenario links these actions directly.",
+      "Recording a payment requires customer_id, amount, method, and date — none of which are available or implied after listing services. This is not a plausible immediate follow-up."
+    ],
+    [
+      "A customer may ask for the senior discount on a specific service, so the agent first retrieves the service details to get the original price. The user-provided input is the service_id.",
+      "The function deals with device-specific information and troubleshooting, which is unrelated to applying a discount on a service price. No common customer scenario links device details directly after calculating a senior discount.",
+      "After applying the senior discount, the agent may need to verify or display the updated billing details to show the adjusted charges. The user-provided input is the customer_id.",
+      "The agent might apply the senior discount during a service management workflow, such as adding or reviewing services, and then proceed to manage the service. The user-provided input is the customer_id and action (e.g., 'list').",
+      "Troubleshooting a device is unrelated to pricing or discounts. No plausible follow-up scenario connects this after a discount calculation.",
+      "Creating a support ticket is not a typical follow-up after calculating a discount unless there is an issue, which is not implied. This would be an edge case, not a routine flow.",
+      "Getting support ticket details is not logically connected to applying a discount. No user intent would lead to this immediate follow-up.",
+      "Adding a device is unrelated to service pricing or discounts. No routine workflow connects this after a discount calculation.",
+      "After applying a senior discount, the agent may update billing preferences (e.g., auto-pay or paperless) as part of a broader account review. The user-provided inputs are customer_id, paperless, auto_pay, and billing_cycle.",
+      "The agent may use the discounted price in a broader context of listing all available services, especially when comparing plans for a senior customer. The function has no inputs, so it can be called independently after discount calculation.",
+      "This is the same as the target function. Self — ignored.",
+      "Modifying a support ticket is unrelated to pricing or discounts. No plausible immediate follow-up scenario exists.",
+      "Recording a payment is a separate financial action not directly tied to applying a discount. While both relate to billing, one does not typically follow the other without intermediate steps."
+    ],
+    [
+      "Mismatched intent: Getting service details is unrelated to modifying a support ticket's status or priority.",
+      "Mismatched intent: Device details are not relevant to updating a support ticket's state.",
+      "Mismatched intent: Billing details do not align with modifying a support ticket.",
+      "Mismatched intent: Managing services is a separate workflow from ticket modification.",
+      "Mismatched intent: Troubleshooting a device may precede creating a ticket, but not follow modifying one.",
+      "Invalid follow-up: Creating a new support ticket is a distinct action and not a typical follow-up to modifying an existing one.",
+      "Plausible follow-up: After modifying a ticket, an agent may need to verify the changes by retrieving the updated ticket details. User-provided input: ticket_id.",
+      "Mismatched intent: Adding a device is unrelated to support ticket modification.",
+      "Mismatched intent: Updating billing preferences does not follow from modifying a support ticket.",
+      "Mismatched intent: Listing all services is not a natural next step after modifying a ticket.",
+      "Mismatched intent: Applying a senior discount is unrelated to support ticket management.",
+      "self — ignored",
+      "Mismatched intent: Recording a payment is unrelated to support ticket modification."
+    ],
+    [
+      "Mismatched intent: Getting service details is unrelated to payment recording and not a typical follow-up after applying a payment.",
+      "Mismatched intent: Device details are not relevant after recording a payment unless tied to billing, which is not standard.",
+      "Plausible follow-up: After recording a payment, the agent may verify the updated balance and billing state by retrieving full billing details. User-provided input: customer_id.",
+      "Mismatched intent: Managing services (add/remove) is a separate workflow and not a routine follow-up after a payment unless explicitly requested, which would require confirmation per policy.",
+      "Mismatched intent: Troubleshooting a device is unrelated to payment processing.",
+      "Plausible follow-up: If a payment fails or the customer disputes a charge, the agent may create a billing-related support ticket. User-provided inputs: customer_id, category='billing'.",
+      "Plausible follow-up: After recording a payment, the agent might check an existing support ticket (e.g., about a prior payment issue) to update or close it. User-provided input: ticket_id.",
+      "Mismatched intent: Adding a device is unrelated to payment and requires separate confirmation; not a typical follow-up.",
+      "Plausible follow-up: After a payment, the agent may update billing preferences (e.g., enable auto-pay) if requested. Per policy, changes require user confirmation. User-provided inputs: customer_id, paperless, auto_pay, billing_cycle.",
+      "Mismatched intent: Getting all services is a catalog inquiry, not a logical follow-up to payment recording.",
+      "Mismatched intent: Senior discount calculation is a pricing helper, not a typical action after recording a payment.",
+      "Plausible follow-up: After resolving a billing issue via payment, the agent may update a related support ticket’s status (e.g., to 'resolved') and priority. User-provided inputs: ticket_id, status, priority.",
+      "self — ignored"
+    ]
+  ],
+  "is_root": [
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    false,
+    true,
+    true
+  ],
+  "is_root_reason": [
+    "Customer can reasonably ask for details about a specific service (e.g., 'Tell me about the Unlimited Mobile Plan') by providing a known service_id like 'mobile_unlimited'. The service_id is human-readable and commonly known, making it a valid entry point without requiring prior discovery steps.",
+    "The function can be a root because the input 'device_name' is human-facing and commonly known (e.g., iPhone 15 Pro). Customers can reasonably ask for specs of a specific device without prerequisite steps.",
+    "GetBillingDetails can be a natural entry point when a customer contacts support to 'check my bill' or 'review my charges'. The only required input is customer_id, which is human-facing and typically obtained at the start of the interaction via authentication (e.g., email or phone lookup). No multi-step discovery is needed.",
+    "ManageService can be a root function because the customer can directly request to add, remove, or list services using their customer_id, which is human-facing (e.g., 'john_smith_1234'). The action is explicit, and no prerequisite discovery or internal-only IDs are required. Service_id for add/remove can be provided by the user or confirmed after listing.",
+    "The function can be a root because customers commonly contact support with device-specific issues (e.g., 'My iPhone 15 Pro has no service'). The inputs (device_name and issue) are human-facing and typically provided directly by the user in natural language.",
+    "The function can be a root because it requires only the customer_id (which can be obtained via authentication) and category (provided by user intent). These inputs are either human-facing or derivable after basic lookup, and no multi-step prerequisites are needed before creating a ticket.",
+    "The function can be a root because customers often contact support with a ticket ID to check its status. The only required input is ticket_id, which is human-facing (e.g., provided in an email or previous communication) and does not require internal discovery or multi-step prerequisites.",
+    "The function can be a root because it requires only customer_id (obtainable via lookup) and device_name (from a known catalog), both of which are human-facing or derivable. Customers commonly request to add a new device, making this a plausible first action after authentication.",
+    "ManageBilling can be a root function because it only requires the customer_id (which can be provided by the user via email or phone and confirmed by authentication) and explicit preferences for paperless, auto_pay, and billing_cycle — all of which are directly specifiable by the customer in a support request.",
+    "The function can be a root because it requires no inputs and provides public catalog information. Customers can reasonably initiate contact to explore available services, and no prerequisite steps or customer-specific identifiers are needed.",
+    "The function requires an original_price input, which is not a user-facing identifier like customer_id or service_id. The price must be obtained from another function (e.g., GetServiceDetails) first, making it dependent on prior context. Thus, it cannot be a standalone entry point.",
+    "The function can be a root because a customer may contact support requesting to update a ticket's status or priority, and the ticket_id is a human-facing identifier that customers typically know. The required inputs (ticket_id, status, priority) are either provided directly by the user or selected from enumerated options.",
+    "The function can be a root because a customer may initiate contact to make a payment. Required inputs (customer_id, amount, method, date) are either known to the customer or can be provided in natural language. Customer_id is human-facing (e.g., 'john_smith_1234'), and other inputs are standard payment details."
+  ]
+}
