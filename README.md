@@ -23,6 +23,22 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
+## Create `.env`
+
+Before running any script, create a `.env` file in the project root and add the required API keys.
+
+```bash
+OPENAI_API_KEY=your_openai_api_key
+HOSTED_VLLM_API_KEY=your_hosted_vllm_api_key
+VLLM_API_KEY=your_vllm_api_key
+```
+
+- `OPENAI_API_KEY`: Required when using OpenAI models
+- `HOSTED_VLLM_API_KEY`: Required when using a hosted model
+- `VLLM_API_KEY`: Required when using a hosted model
+
+If you are using a hosted model, make sure both `HOSTED_VLLM_API_KEY` and `VLLM_API_KEY` are set before running the generator or any other script that depends on model access.
+
 ## Usage
 
 The workflow consists of **two steps**:
