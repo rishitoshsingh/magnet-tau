@@ -5,7 +5,7 @@
   "base_api": "https://openai.rc.asu.edu/v1",
   "max_blends": 15,
   "instructions_per_blend": 3,
-  "recursion_limit": 200,
+  "recursion_limit": 2000,
   "emotion_bank_path": "emotions/emotions.json",
   "output_path": "emotions/emotion_instructions.generated.json",
   "graph_png_path": "emotions/emotion_instructions.generated.graph.png"
