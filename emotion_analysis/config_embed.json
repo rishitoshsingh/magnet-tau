@@ -1,0 +1,24 @@
+{
+  "encoder": {
+    "type": "llm",
+    "batch_size": 32,
+    "model": "openai/text-embedding-3-small",
+    "api_base": "https://api.openai.com/v1"
+  },
+  "reranker": {
+    "enabled": false,
+    "model": "hosted_vllm/qwen3-30b-a3b-instruct-2507",
+    "api_base": "https://openai.rc.asu.edu/v1",
+    "top_k": 5
+  },
+  "inputs": {
+    "tasks_path": "output/traces/airline_adjacency_matrix_0.0_generated_tasks.json",
+    "emotions_path": "emotions/emotion_instructions.generated.json"
+  },
+  "outputs": {
+    "root_dir": "emotion_analysis/output_embed",
+    "task_embeddings_path": "emotion_analysis/output_embed/task_embeddings.json",
+    "emotion_embeddings_path": "emotion_analysis/output_embed/emotion_embeddings.json",
+    "analysis_dir": "emotion_analysis/output_embed/analysis"
+  }
+}

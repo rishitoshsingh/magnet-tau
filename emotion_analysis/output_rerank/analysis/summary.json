@@ -1,0 +1,13 @@
+{
+  "task_count": 9,
+  "emotion_instruction_count": 273,
+  "blend_count": 91,
+  "average_top_similarity": 0.4714,
+  "reranker_enabled": true,
+  "outputs": {
+    "blend_stats_csv": "/Users/rishitoshsingh/Documents/projects/magnet-tau/emotion_analysis/output_rerank/analysis/blend_stats.csv",
+    "rankings_csv": "/Users/rishitoshsingh/Documents/projects/magnet-tau/emotion_analysis/output_rerank/analysis/task_to_instruction_rankings.csv",
+    "plot_json": "/Users/rishitoshsingh/Documents/projects/magnet-tau/emotion_analysis/output_rerank/analysis/plot_points.json",
+    "plot_html": "/Users/rishitoshsingh/Documents/projects/magnet-tau/emotion_analysis/output_rerank/analysis/embedding_plot.html"
+  }
+}

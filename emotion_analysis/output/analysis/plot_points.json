@@ -1,0 +1,2234 @@
+[
+  {
+    "kind": "emotion",
+    "label": "happy_blend_1_instruction_1",
+    "group": "happy",
+    "blend": "joyful + excited",
+    "x": -0.322651,
+    "y": -0.312083
+  },
+  {
+    "kind": "emotion",
+    "label": "happy_blend_1_instruction_2",
+    "group": "happy",
+    "blend": "joyful + excited",
+    "x": -0.328511,
+    "y": -0.309554
+  },
+  {
+    "kind": "emotion",
+    "label": "happy_blend_1_instruction_3",
+    "group": "happy",
+    "blend": "joyful + excited",
+    "x": -0.315356,
+    "y": -0.313614
+  },
+  {
+    "kind": "emotion",
+    "label": "happy_blend_2_instruction_1",
+    "group": "happy",
+    "blend": "content + cheerful",
+    "x": -0.330122,
+    "y": -0.184358
+  },
+  {
+    "kind": "emotion",
+    "label": "happy_blend_2_instruction_2",
+    "group": "happy",
+    "blend": "content + cheerful",
+    "x": -0.337208,
+    "y": -0.193848
+  },
+  {
+    "kind": "emotion",
+    "label": "happy_blend_2_instruction_3",
+    "group": "happy",
+    "blend": "content + cheerful",
+    "x": -0.346096,
+    "y": -0.189696
+  },
+  {
+    "kind": "emotion",
+    "label": "happy_blend_3_instruction_1",
+    "group": "happy",
+    "blend": "optimistic + hopeful",
+    "x": -0.310009,
+    "y": -0.142539
+  },
+  {
+    "kind": "emotion",
+    "label": "happy_blend_3_instruction_2",
+    "group": "happy",
+    "blend": "optimistic + hopeful",
+    "x": -0.314019,
+    "y": -0.176306
+  },
+  {
+    "kind": "emotion",
+    "label": "happy_blend_3_instruction_3",
+    "group": "happy",
+    "blend": "optimistic + hopeful",
+    "x": -0.322114,
+    "y": -0.136381
+  },
+  {
+    "kind": "emotion",
+    "label": "happy_blend_4_instruction_1",
+    "group": "happy",
+    "blend": "playful + amused",
+    "x": -0.294943,
+    "y": -0.329589
+  },
+  {
+    "kind": "emotion",
+    "label": "happy_blend_4_instruction_2",
+    "group": "happy",
+    "blend": "playful + amused",
+    "x": -0.314424,
+    "y": -0.318063
+  },
+  {
+    "kind": "emotion",
+    "label": "happy_blend_4_instruction_3",
+    "group": "happy",
+    "blend": "playful + amused",
+    "x": -0.295867,
+    "y": -0.324587
+  },
+  {
+    "kind": "emotion",
+    "label": "happy_blend_5_instruction_1",
+    "group": "happy",
+    "blend": "interested + curious",
+    "x": -0.242907,
+    "y": -0.135588
+  },
+  {
+    "kind": "emotion",
+    "label": "happy_blend_5_instruction_2",
+    "group": "happy",
+    "blend": "interested + curious",
+    "x": -0.241552,
+    "y": -0.14963
+  },
+  {
+    "kind": "emotion",
+    "label": "happy_blend_5_instruction_3",
+    "group": "happy",
+    "blend": "interested + curious",
+    "x": -0.289215,
+    "y": -0.173534
+  },
+  {
+    "kind": "emotion",
+    "label": "happy_blend_6_instruction_1",
+    "group": "happy",
+    "blend": "energetic + cheerful",
+    "x": -0.336337,
+    "y": -0.299859
+  },
+  {
+    "kind": "emotion",
+    "label": "happy_blend_6_instruction_2",
+    "group": "happy",
+    "blend": "energetic + cheerful",
+    "x": -0.332623,
+    "y": -0.311151
+  },
+  {
+    "kind": "emotion",
+    "label": "happy_blend_6_instruction_3",
+    "group": "happy",
+    "blend": "energetic + cheerful",
+    "x": -0.351821,
+    "y": -0.287242
+  },
+  {
+    "kind": "emotion",
+    "label": "happy_blend_7_instruction_1",
+    "group": "happy",
+    "blend": "creative + playful",
+    "x": -0.33087,
+    "y": -0.291752
+  },
+  {
+    "kind": "emotion",
+    "label": "happy_blend_7_instruction_2",
+    "group": "happy",
+    "blend": "creative + playful",
+    "x": -0.303665,
+    "y": -0.289811
+  },
+  {
+    "kind": "emotion",
+    "label": "happy_blend_7_instruction_3",
+    "group": "happy",
+    "blend": "creative + playful",
+    "x": -0.304671,
+    "y": -0.308024
+  },
+  {
+    "kind": "emotion",
+    "label": "happy_blend_8_instruction_1",
+    "group": "happy",
+    "blend": "joyful + energetic",
+    "x": -0.348353,
+    "y": -0.312218
+  },
+  {
+    "kind": "emotion",
+    "label": "happy_blend_8_instruction_2",
+    "group": "happy",
+    "blend": "joyful + energetic",
+    "x": -0.339246,
+    "y": -0.321449
+  },
+  {
+    "kind": "emotion",
+    "label": "happy_blend_8_instruction_3",
+    "group": "happy",
+    "blend": "joyful + energetic",
+    "x": -0.356195,
+    "y": -0.329004
+  },
+  {
+    "kind": "emotion",
+    "label": "happy_blend_9_instruction_1",
+    "group": "happy",
+    "blend": "hopeful + interested",
+    "x": -0.302861,
+    "y": -0.174087
+  },
+  {
+    "kind": "emotion",
+    "label": "happy_blend_9_instruction_2",
+    "group": "happy",
+    "blend": "hopeful + interested",
+    "x": -0.32941,
+    "y": -0.18888
+  },
+  {
+    "kind": "emotion",
+    "label": "happy_blend_9_instruction_3",
+    "group": "happy",
+    "blend": "hopeful + interested",
+    "x": -0.299944,
+    "y": -0.178878
+  },
+  {
+    "kind": "emotion",
+    "label": "happy_blend_10_instruction_1",
+    "group": "happy",
+    "blend": "optimistic + curious",
+    "x": -0.346403,
+    "y": -0.183758
+  },
+  {
+    "kind": "emotion",
+    "label": "happy_blend_10_instruction_2",
+    "group": "happy",
+    "blend": "optimistic + curious",
+    "x": -0.350459,
+    "y": -0.162639
+  },
+  {
+    "kind": "emotion",
+    "label": "happy_blend_10_instruction_3",
+    "group": "happy",
+    "blend": "optimistic + curious",
+    "x": -0.345404,
+    "y": -0.176357
+  },
+  {
+    "kind": "emotion",
+    "label": "happy_blend_11_instruction_1",
+    "group": "happy",
+    "blend": "cheerful + amused + playful",
+    "x": -0.354233,
+    "y": -0.341308
+  },
+  {
+    "kind": "emotion",
+    "label": "happy_blend_11_instruction_2",
+    "group": "happy",
+    "blend": "cheerful + amused + playful",
+    "x": -0.332617,
+    "y": -0.339796
+  },
+  {
+    "kind": "emotion",
+    "label": "happy_blend_11_instruction_3",
+    "group": "happy",
+    "blend": "cheerful + amused + playful",
+    "x": -0.328864,
+    "y": -0.331264
+  },
+  {
+    "kind": "emotion",
+    "label": "happy_blend_12_instruction_1",
+    "group": "happy",
+    "blend": "excited + interested + energetic",
+    "x": -0.254731,
+    "y": -0.247982
+  },
+  {
+    "kind": "emotion",
+    "label": "happy_blend_12_instruction_2",
+    "group": "happy",
+    "blend": "excited + interested + energetic",
+    "x": -0.24409,
+    "y": -0.26691
+  },
+  {
+    "kind": "emotion",
+    "label": "happy_blend_12_instruction_3",
+    "group": "happy",
+    "blend": "excited + interested + energetic",
+    "x": -0.258031,
+    "y": -0.259201
+  },
+  {
+    "kind": "emotion",
+    "label": "happy_blend_13_instruction_1",
+    "group": "happy",
+    "blend": "content + hopeful + cheerful",
+    "x": -0.32709,
+    "y": -0.132353
+  },
+  {
+    "kind": "emotion",
+    "label": "happy_blend_13_instruction_2",
+    "group": "happy",
+    "blend": "content + hopeful + cheerful",
+    "x": -0.333331,
+    "y": -0.182671
+  },
+  {
+    "kind": "emotion",
+    "label": "happy_blend_13_instruction_3",
+    "group": "happy",
+    "blend": "content + hopeful + cheerful",
+    "x": -0.342496,
+    "y": -0.156344
+  },
+  {
+    "kind": "emotion",
+    "label": "happy_blend_14_instruction_1",
+    "group": "happy",
+    "blend": "creative + curious + optimistic",
+    "x": -0.339882,
+    "y": -0.239966
+  },
+  {
+    "kind": "emotion",
+    "label": "happy_blend_14_instruction_2",
+    "group": "happy",
+    "blend": "creative + curious + optimistic",
+    "x": -0.352276,
+    "y": -0.257692
+  },
+  {
+    "kind": "emotion",
+    "label": "happy_blend_14_instruction_3",
+    "group": "happy",
+    "blend": "creative + curious + optimistic",
+    "x": -0.337392,
+    "y": -0.230415
+  },
+  {
+    "kind": "emotion",
+    "label": "happy_blend_15_instruction_1",
+    "group": "happy",
+    "blend": "joyful + cheerful",
+    "x": -0.32304,
+    "y": -0.203642
+  },
+  {
+    "kind": "emotion",
+    "label": "happy_blend_15_instruction_2",
+    "group": "happy",
+    "blend": "joyful + cheerful",
+    "x": -0.325043,
+    "y": -0.211801
+  },
+  {
+    "kind": "emotion",
+    "label": "happy_blend_15_instruction_3",
+    "group": "happy",
+    "blend": "joyful + cheerful",
+    "x": -0.34331,
+    "y": -0.173943
+  },
+  {
+    "kind": "emotion",
+    "label": "scared_blend_1_instruction_1",
+    "group": "scared",
+    "blend": "anxious + overwhelmed + helpless",
+    "x": 0.358761,
+    "y": 0.158677
+  },
+  {
+    "kind": "emotion",
+    "label": "scared_blend_1_instruction_2",
+    "group": "scared",
+    "blend": "anxious + overwhelmed + helpless",
+    "x": 0.372645,
+    "y": 0.175319
+  },
+  {
+    "kind": "emotion",
+    "label": "scared_blend_1_instruction_3",
+    "group": "scared",
+    "blend": "anxious + overwhelmed + helpless",
+    "x": 0.367358,
+    "y": 0.170134
+  },
+  {
+    "kind": "emotion",
+    "label": "scared_blend_2_instruction_1",
+    "group": "scared",
+    "blend": "nervous + insecure + embarrassed",
+    "x": 0.31737,
+    "y": 0.315636
+  },
+  {
+    "kind": "emotion",
+    "label": "scared_blend_2_instruction_2",
+    "group": "scared",
+    "blend": "nervous + insecure + embarrassed",
+    "x": 0.329552,
+    "y": 0.2796
+  },
+  {
+    "kind": "emotion",
+    "label": "scared_blend_2_instruction_3",
+    "group": "scared",
+    "blend": "nervous + insecure + embarrassed",
+    "x": 0.335812,
+    "y": 0.293034
+  },
+  {
+    "kind": "emotion",
+    "label": "scared_blend_3_instruction_1",
+    "group": "scared",
+    "blend": "confused + perplexed + worried",
+    "x": 0.321573,
+    "y": 0.266985
+  },
+  {
+    "kind": "emotion",
+    "label": "scared_blend_3_instruction_2",
+    "group": "scared",
+    "blend": "confused + perplexed + worried",
+    "x": 0.342205,
+    "y": 0.23449
+  },
+  {
+    "kind": "emotion",
+    "label": "scared_blend_3_instruction_3",
+    "group": "scared",
+    "blend": "confused + perplexed + worried",
+    "x": 0.344835,
+    "y": 0.226071
+  },
+  {
+    "kind": "emotion",
+    "label": "scared_blend_4_instruction_1",
+    "group": "scared",
+    "blend": "overwhelmed + inadequate + discouraged",
+    "x": 0.382502,
+    "y": 0.200788
+  },
+  {
+    "kind": "emotion",
+    "label": "scared_blend_4_instruction_2",
+    "group": "scared",
+    "blend": "overwhelmed + inadequate + discouraged",
+    "x": 0.383754,
+    "y": 0.20262
+  },
+  {
+    "kind": "emotion",
+    "label": "scared_blend_4_instruction_3",
+    "group": "scared",
+    "blend": "overwhelmed + inadequate + discouraged",
+    "x": 0.398837,
+    "y": 0.207427
+  },
+  {
+    "kind": "emotion",
+    "label": "scared_blend_5_instruction_1",
+    "group": "scared",
+    "blend": "helpless + weak + discouraged",
+    "x": 0.362479,
+    "y": 0.261413
+  },
+  {
+    "kind": "emotion",
+    "label": "scared_blend_5_instruction_2",
+    "group": "scared",
+    "blend": "helpless + weak + discouraged",
+    "x": 0.350487,
+    "y": 0.269823
+  },
+  {
+    "kind": "emotion",
+    "label": "scared_blend_5_instruction_3",
+    "group": "scared",
+    "blend": "helpless + weak + discouraged",
+    "x": 0.352624,
+    "y": 0.227647
+  },
+  {
+    "kind": "emotion",
+    "label": "scared_blend_6_instruction_1",
+    "group": "scared",
+    "blend": "anxious + worried + nervous",
+    "x": 0.260149,
+    "y": 0.165521
+  },
+  {
+    "kind": "emotion",
+    "label": "scared_blend_6_instruction_2",
+    "group": "scared",
+    "blend": "anxious + worried + nervous",
+    "x": 0.275652,
+    "y": 0.20878
+  },
+  {
+    "kind": "emotion",
+    "label": "scared_blend_6_instruction_3",
+    "group": "scared",
+    "blend": "anxious + worried + nervous",
+    "x": 0.269009,
+    "y": 0.172801
+  },
+  {
+    "kind": "emotion",
+    "label": "scared_blend_7_instruction_1",
+    "group": "scared",
+    "blend": "bewildered + confused + overwhelmed",
+    "x": 0.359146,
+    "y": 0.217165
+  },
+  {
+    "kind": "emotion",
+    "label": "scared_blend_7_instruction_2",
+    "group": "scared",
+    "blend": "bewildered + confused + overwhelmed",
+    "x": 0.36467,
+    "y": 0.213792
+  },
+  {
+    "kind": "emotion",
+    "label": "scared_blend_7_instruction_3",
+    "group": "scared",
+    "blend": "bewildered + confused + overwhelmed",
+    "x": 0.367235,
+    "y": 0.25945
+  },
+  {
+    "kind": "emotion",
+    "label": "scared_blend_8_instruction_1",
+    "group": "scared",
+    "blend": "insecure + inadequate + embarrassed",
+    "x": 0.349862,
+    "y": 0.335498
+  },
+  {
+    "kind": "emotion",
+    "label": "scared_blend_8_instruction_2",
+    "group": "scared",
+    "blend": "insecure + inadequate + embarrassed",
+    "x": 0.381758,
+    "y": 0.32184
+  },
+  {
+    "kind": "emotion",
+    "label": "scared_blend_8_instruction_3",
+    "group": "scared",
+    "blend": "insecure + inadequate + embarrassed",
+    "x": 0.373862,
+    "y": 0.33651
+  },
+  {
+    "kind": "emotion",
+    "label": "scared_blend_9_instruction_1",
+    "group": "scared",
+    "blend": "perplexed + helpless + anxious",
+    "x": 0.342146,
+    "y": 0.228855
+  },
+  {
+    "kind": "emotion",
+    "label": "scared_blend_9_instruction_2",
+    "group": "scared",
+    "blend": "perplexed + helpless + anxious",
+    "x": 0.333984,
+    "y": 0.220288
+  },
+  {
+    "kind": "emotion",
+    "label": "scared_blend_9_instruction_3",
+    "group": "scared",
+    "blend": "perplexed + helpless + anxious",
+    "x": 0.31902,
+    "y": 0.235893
+  },
+  {
+    "kind": "emotion",
+    "label": "scared_blend_10_instruction_1",
+    "group": "scared",
+    "blend": "worried + overwhelmed + insecure",
+    "x": 0.339633,
+    "y": 0.295586
+  },
+  {
+    "kind": "emotion",
+    "label": "scared_blend_10_instruction_2",
+    "group": "scared",
+    "blend": "worried + overwhelmed + insecure",
+    "x": 0.364056,
+    "y": 0.281676
+  },
+  {
+    "kind": "emotion",
+    "label": "scared_blend_10_instruction_3",
+    "group": "scared",
+    "blend": "worried + overwhelmed + insecure",
+    "x": 0.341892,
+    "y": 0.325667
+  },
+  {
+    "kind": "emotion",
+    "label": "scared_blend_11_instruction_1",
+    "group": "scared",
+    "blend": "nervous + anxious + embarrassed",
+    "x": 0.295753,
+    "y": 0.242953
+  },
+  {
+    "kind": "emotion",
+    "label": "scared_blend_11_instruction_2",
+    "group": "scared",
+    "blend": "nervous + anxious + embarrassed",
+    "x": 0.307552,
+    "y": 0.221486
+  },
+  {
+    "kind": "emotion",
+    "label": "scared_blend_11_instruction_3",
+    "group": "scared",
+    "blend": "nervous + anxious + embarrassed",
+    "x": 0.277344,
+    "y": 0.205168
+  },
+  {
+    "kind": "emotion",
+    "label": "scared_blend_12_instruction_1",
+    "group": "scared",
+    "blend": "weak + overwhelmed + discouraged",
+    "x": 0.347755,
+    "y": 0.23667
+  },
+  {
+    "kind": "emotion",
+    "label": "scared_blend_12_instruction_2",
+    "group": "scared",
+    "blend": "weak + overwhelmed + discouraged",
+    "x": 0.32637,
+    "y": 0.23768
+  },
+  {
+    "kind": "emotion",
+    "label": "scared_blend_12_instruction_3",
+    "group": "scared",
+    "blend": "weak + overwhelmed + discouraged",
+    "x": 0.358879,
+    "y": 0.170667
+  },
+  {
+    "kind": "emotion",
+    "label": "scared_blend_13_instruction_1",
+    "group": "scared",
+    "blend": "confused + inadequate + helpless",
+    "x": 0.363053,
+    "y": 0.282724
+  },
+  {
+    "kind": "emotion",
+    "label": "scared_blend_13_instruction_2",
+    "group": "scared",
+    "blend": "confused + inadequate + helpless",
+    "x": 0.360998,
+    "y": 0.298475
+  },
+  {
+    "kind": "emotion",
+    "label": "scared_blend_13_instruction_3",
+    "group": "scared",
+    "blend": "confused + inadequate + helpless",
+    "x": 0.363076,
+    "y": 0.319671
+  },
+  {
+    "kind": "emotion",
+    "label": "scared_blend_14_instruction_1",
+    "group": "scared",
+    "blend": "bewildered + perplexed + worried",
+    "x": 0.357406,
+    "y": 0.203054
+  },
+  {
+    "kind": "emotion",
+    "label": "scared_blend_14_instruction_2",
+    "group": "scared",
+    "blend": "bewildered + perplexed + worried",
+    "x": 0.374898,
+    "y": 0.218114
+  },
+  {
+    "kind": "emotion",
+    "label": "scared_blend_14_instruction_3",
+    "group": "scared",
+    "blend": "bewildered + perplexed + worried",
+    "x": 0.360881,
+    "y": 0.241401
+  },
+  {
+    "kind": "emotion",
+    "label": "scared_blend_15_instruction_1",
+    "group": "scared",
+    "blend": "insecure + anxious + overwhelmed",
+    "x": 0.278932,
+    "y": 0.301211
+  },
+  {
+    "kind": "emotion",
+    "label": "scared_blend_15_instruction_2",
+    "group": "scared",
+    "blend": "insecure + anxious + overwhelmed",
+    "x": 0.318506,
+    "y": 0.263882
+  },
+  {
+    "kind": "emotion",
+    "label": "scared_blend_15_instruction_3",
+    "group": "scared",
+    "blend": "insecure + anxious + overwhelmed",
+    "x": 0.319296,
+    "y": 0.288745
+  },
+  {
+    "kind": "emotion",
+    "label": "sad_blend_1_instruction_1",
+    "group": "sad",
+    "blend": "disappointed + miserable",
+    "x": 0.291376,
+    "y": -0.105662
+  },
+  {
+    "kind": "emotion",
+    "label": "sad_blend_1_instruction_2",
+    "group": "sad",
+    "blend": "disappointed + miserable",
+    "x": 0.287666,
+    "y": -0.10851
+  },
+  {
+    "kind": "emotion",
+    "label": "sad_blend_1_instruction_3",
+    "group": "sad",
+    "blend": "disappointed + miserable",
+    "x": 0.300225,
+    "y": -0.125226
+  },
+  {
+    "kind": "emotion",
+    "label": "sad_blend_2_instruction_1",
+    "group": "sad",
+    "blend": "lonely + apathetic",
+    "x": 0.283438,
+    "y": -0.076872
+  },
+  {
+    "kind": "emotion",
+    "label": "sad_blend_2_instruction_2",
+    "group": "sad",
+    "blend": "lonely + apathetic",
+    "x": 0.272706,
+    "y": -0.1046
+  },
+  {
+    "kind": "emotion",
+    "label": "sad_blend_2_instruction_3",
+    "group": "sad",
+    "blend": "lonely + apathetic",
+    "x": 0.292256,
+    "y": -0.086545
+  },
+  {
+    "kind": "emotion",
+    "label": "sad_blend_3_instruction_1",
+    "group": "sad",
+    "blend": "guilty + remorseful",
+    "x": 0.249907,
+    "y": 0.054503
+  },
+  {
+    "kind": "emotion",
+    "label": "sad_blend_3_instruction_2",
+    "group": "sad",
+    "blend": "guilty + remorseful",
+    "x": 0.250884,
+    "y": 0.029236
+  },
+  {
+    "kind": "emotion",
+    "label": "sad_blend_3_instruction_3",
+    "group": "sad",
+    "blend": "guilty + remorseful",
+    "x": 0.23821,
+    "y": 0.057385
+  },
+  {
+    "kind": "emotion",
+    "label": "sad_blend_4_instruction_1",
+    "group": "sad",
+    "blend": "ashamed + embarrassed",
+    "x": 0.313278,
+    "y": 0.165014
+  },
+  {
+    "kind": "emotion",
+    "label": "sad_blend_4_instruction_2",
+    "group": "sad",
+    "blend": "ashamed + embarrassed",
+    "x": 0.32695,
+    "y": 0.140436
+  },
+  {
+    "kind": "emotion",
+    "label": "sad_blend_4_instruction_3",
+    "group": "sad",
+    "blend": "ashamed + embarrassed",
+    "x": 0.328457,
+    "y": 0.128443
+  },
+  {
+    "kind": "emotion",
+    "label": "sad_blend_5_instruction_1",
+    "group": "sad",
+    "blend": "depressed + bored",
+    "x": 0.255298,
+    "y": -0.187909
+  },
+  {
+    "kind": "emotion",
+    "label": "sad_blend_5_instruction_2",
+    "group": "sad",
+    "blend": "depressed + bored",
+    "x": 0.254404,
+    "y": -0.163482
+  },
+  {
+    "kind": "emotion",
+    "label": "sad_blend_5_instruction_3",
+    "group": "sad",
+    "blend": "depressed + bored",
+    "x": 0.251565,
+    "y": -0.183924
+  },
+  {
+    "kind": "emotion",
+    "label": "sad_blend_6_instruction_1",
+    "group": "sad",
+    "blend": "devastated + lonely",
+    "x": 0.247333,
+    "y": -0.013909
+  },
+  {
+    "kind": "emotion",
+    "label": "sad_blend_6_instruction_2",
+    "group": "sad",
+    "blend": "devastated + lonely",
+    "x": 0.264087,
+    "y": -0.037833
+  },
+  {
+    "kind": "emotion",
+    "label": "sad_blend_6_instruction_3",
+    "group": "sad",
+    "blend": "devastated + lonely",
+    "x": 0.255218,
+    "y": -0.015389
+  },
+  {
+    "kind": "emotion",
+    "label": "sad_blend_7_instruction_1",
+    "group": "sad",
+    "blend": "disappointed + ashamed",
+    "x": 0.322141,
+    "y": 0.055494
+  },
+  {
+    "kind": "emotion",
+    "label": "sad_blend_7_instruction_2",
+    "group": "sad",
+    "blend": "disappointed + ashamed",
+    "x": 0.320877,
+    "y": 0.091432
+  },
+  {
+    "kind": "emotion",
+    "label": "sad_blend_7_instruction_3",
+    "group": "sad",
+    "blend": "disappointed + ashamed",
+    "x": 0.308534,
+    "y": 0.07232
+  },
+  {
+    "kind": "emotion",
+    "label": "sad_blend_8_instruction_1",
+    "group": "sad",
+    "blend": "miserable + apathetic + indifferent",
+    "x": 0.269459,
+    "y": -0.176074
+  },
+  {
+    "kind": "emotion",
+    "label": "sad_blend_8_instruction_2",
+    "group": "sad",
+    "blend": "miserable + apathetic + indifferent",
+    "x": 0.285992,
+    "y": -0.180504
+  },
+  {
+    "kind": "emotion",
+    "label": "sad_blend_8_instruction_3",
+    "group": "sad",
+    "blend": "miserable + apathetic + indifferent",
+    "x": 0.274723,
+    "y": -0.185918
+  },
+  {
+    "kind": "emotion",
+    "label": "sad_blend_9_instruction_1",
+    "group": "sad",
+    "blend": "guilty + ashamed + remorseful",
+    "x": 0.261811,
+    "y": 0.072382
+  },
+  {
+    "kind": "emotion",
+    "label": "sad_blend_9_instruction_2",
+    "group": "sad",
+    "blend": "guilty + ashamed + remorseful",
+    "x": 0.290695,
+    "y": 0.086653
+  },
+  {
+    "kind": "emotion",
+    "label": "sad_blend_9_instruction_3",
+    "group": "sad",
+    "blend": "guilty + ashamed + remorseful",
+    "x": 0.292603,
+    "y": 0.076743
+  },
+  {
+    "kind": "emotion",
+    "label": "sad_blend_10_instruction_1",
+    "group": "sad",
+    "blend": "lonely + depressed + bored",
+    "x": 0.277949,
+    "y": -0.082396
+  },
+  {
+    "kind": "emotion",
+    "label": "sad_blend_10_instruction_2",
+    "group": "sad",
+    "blend": "lonely + depressed + bored",
+    "x": 0.259637,
+    "y": -0.123805
+  },
+  {
+    "kind": "emotion",
+    "label": "sad_blend_10_instruction_3",
+    "group": "sad",
+    "blend": "lonely + depressed + bored",
+    "x": 0.272917,
+    "y": -0.108762
+  },
+  {
+    "kind": "emotion",
+    "label": "sad_blend_11_instruction_1",
+    "group": "sad",
+    "blend": "devastated + guilty",
+    "x": 0.292412,
+    "y": -0.008956
+  },
+  {
+    "kind": "emotion",
+    "label": "sad_blend_11_instruction_2",
+    "group": "sad",
+    "blend": "devastated + guilty",
+    "x": 0.28039,
+    "y": -0.007975
+  },
+  {
+    "kind": "emotion",
+    "label": "sad_blend_11_instruction_3",
+    "group": "sad",
+    "blend": "devastated + guilty",
+    "x": 0.304246,
+    "y": -0.014436
+  },
+  {
+    "kind": "emotion",
+    "label": "sad_blend_12_instruction_1",
+    "group": "sad",
+    "blend": "disappointed + bored + indifferent",
+    "x": 0.324273,
+    "y": -0.171189
+  },
+  {
+    "kind": "emotion",
+    "label": "sad_blend_12_instruction_2",
+    "group": "sad",
+    "blend": "disappointed + bored + indifferent",
+    "x": 0.304275,
+    "y": -0.176144
+  },
+  {
+    "kind": "emotion",
+    "label": "sad_blend_12_instruction_3",
+    "group": "sad",
+    "blend": "disappointed + bored + indifferent",
+    "x": 0.297769,
+    "y": -0.170686
+  },
+  {
+    "kind": "emotion",
+    "label": "sad_blend_13_instruction_1",
+    "group": "sad",
+    "blend": "ashamed + apathetic",
+    "x": 0.33574,
+    "y": 0.077225
+  },
+  {
+    "kind": "emotion",
+    "label": "sad_blend_13_instruction_2",
+    "group": "sad",
+    "blend": "ashamed + apathetic",
+    "x": 0.341631,
+    "y": 0.043705
+  },
+  {
+    "kind": "emotion",
+    "label": "sad_blend_13_instruction_3",
+    "group": "sad",
+    "blend": "ashamed + apathetic",
+    "x": 0.369466,
+    "y": 0.06701
+  },
+  {
+    "kind": "emotion",
+    "label": "sad_blend_14_instruction_1",
+    "group": "sad",
+    "blend": "miserable + lonely + disappointed",
+    "x": 0.33364,
+    "y": -0.076823
+  },
+  {
+    "kind": "emotion",
+    "label": "sad_blend_14_instruction_2",
+    "group": "sad",
+    "blend": "miserable + lonely + disappointed",
+    "x": 0.310581,
+    "y": -0.115202
+  },
+  {
+    "kind": "emotion",
+    "label": "sad_blend_14_instruction_3",
+    "group": "sad",
+    "blend": "miserable + lonely + disappointed",
+    "x": 0.327485,
+    "y": -0.140162
+  },
+  {
+    "kind": "emotion",
+    "label": "sad_blend_15_instruction_1",
+    "group": "sad",
+    "blend": "embarrassed + guilty + remorseful",
+    "x": 0.246224,
+    "y": 0.06941
+  },
+  {
+    "kind": "emotion",
+    "label": "sad_blend_15_instruction_2",
+    "group": "sad",
+    "blend": "embarrassed + guilty + remorseful",
+    "x": 0.273557,
+    "y": 0.056055
+  },
+  {
+    "kind": "emotion",
+    "label": "sad_blend_15_instruction_3",
+    "group": "sad",
+    "blend": "embarrassed + guilty + remorseful",
+    "x": 0.230177,
+    "y": 0.072485
+  },
+  {
+    "kind": "emotion",
+    "label": "angry_blend_1_instruction_1",
+    "group": "angry",
+    "blend": "angry + frustrated + stressed",
+    "x": 0.209237,
+    "y": -0.2842
+  },
+  {
+    "kind": "emotion",
+    "label": "angry_blend_1_instruction_2",
+    "group": "angry",
+    "blend": "angry + frustrated + stressed",
+    "x": 0.230696,
+    "y": -0.26834
+  },
+  {
+    "kind": "emotion",
+    "label": "angry_blend_1_instruction_3",
+    "group": "angry",
+    "blend": "angry + frustrated + stressed",
+    "x": 0.219141,
+    "y": -0.291725
+  },
+  {
+    "kind": "emotion",
+    "label": "angry_blend_2_instruction_1",
+    "group": "angry",
+    "blend": "irritated + annoyed + distant",
+    "x": 0.267199,
+    "y": -0.297395
+  },
+  {
+    "kind": "emotion",
+    "label": "angry_blend_2_instruction_2",
+    "group": "angry",
+    "blend": "irritated + annoyed + distant",
+    "x": 0.271273,
+    "y": -0.27213
+  },
+  {
+    "kind": "emotion",
+    "label": "angry_blend_2_instruction_3",
+    "group": "angry",
+    "blend": "irritated + annoyed + distant",
+    "x": 0.257535,
+    "y": -0.294223
+  },
+  {
+    "kind": "emotion",
+    "label": "angry_blend_3_instruction_1",
+    "group": "angry",
+    "blend": "furious + hurt + sarcastic",
+    "x": 0.230809,
+    "y": -0.341229
+  },
+  {
+    "kind": "emotion",
+    "label": "angry_blend_3_instruction_2",
+    "group": "angry",
+    "blend": "furious + hurt + sarcastic",
+    "x": 0.223387,
+    "y": -0.325745
+  },
+  {
+    "kind": "emotion",
+    "label": "angry_blend_3_instruction_3",
+    "group": "angry",
+    "blend": "furious + hurt + sarcastic",
+    "x": 0.239527,
+    "y": -0.359284
+  },
+  {
+    "kind": "emotion",
+    "label": "angry_blend_4_instruction_1",
+    "group": "angry",
+    "blend": "stressed + frustrated + irritated",
+    "x": 0.221587,
+    "y": -0.261297
+  },
+  {
+    "kind": "emotion",
+    "label": "angry_blend_4_instruction_2",
+    "group": "angry",
+    "blend": "stressed + frustrated + irritated",
+    "x": 0.255832,
+    "y": -0.257837
+  },
+  {
+    "kind": "emotion",
+    "label": "angry_blend_4_instruction_3",
+    "group": "angry",
+    "blend": "stressed + frustrated + irritated",
+    "x": 0.22812,
+    "y": -0.257828
+  },
+  {
+    "kind": "emotion",
+    "label": "angry_blend_5_instruction_1",
+    "group": "angry",
+    "blend": "jealous + annoyed + distant",
+    "x": 0.217869,
+    "y": -0.242665
+  },
+  {
+    "kind": "emotion",
+    "label": "angry_blend_5_instruction_2",
+    "group": "angry",
+    "blend": "jealous + annoyed + distant",
+    "x": 0.20491,
+    "y": -0.27495
+  },
+  {
+    "kind": "emotion",
+    "label": "angry_blend_5_instruction_3",
+    "group": "angry",
+    "blend": "jealous + annoyed + distant",
+    "x": 0.207657,
+    "y": -0.254935
+  },
+  {
+    "kind": "emotion",
+    "label": "angry_blend_6_instruction_1",
+    "group": "angry",
+    "blend": "angry + sarcastic + stressed",
+    "x": 0.161557,
+    "y": -0.305475
+  },
+  {
+    "kind": "emotion",
+    "label": "angry_blend_6_instruction_2",
+    "group": "angry",
+    "blend": "angry + sarcastic + stressed",
+    "x": 0.162795,
+    "y": -0.279955
+  },
+  {
+    "kind": "emotion",
+    "label": "angry_blend_6_instruction_3",
+    "group": "angry",
+    "blend": "angry + sarcastic + stressed",
+    "x": 0.175063,
+    "y": -0.276177
+  },
+  {
+    "kind": "emotion",
+    "label": "angry_blend_7_instruction_1",
+    "group": "angry",
+    "blend": "hurt + distant + frustrated",
+    "x": 0.327149,
+    "y": -0.234427
+  },
+  {
+    "kind": "emotion",
+    "label": "angry_blend_7_instruction_2",
+    "group": "angry",
+    "blend": "hurt + distant + frustrated",
+    "x": 0.31543,
+    "y": -0.230009
+  },
+  {
+    "kind": "emotion",
+    "label": "angry_blend_7_instruction_3",
+    "group": "angry",
+    "blend": "hurt + distant + frustrated",
+    "x": 0.310508,
+    "y": -0.245964
+  },
+  {
+    "kind": "emotion",
+    "label": "angry_blend_8_instruction_1",
+    "group": "angry",
+    "blend": "furious + stressed + irritated",
+    "x": 0.228758,
+    "y": -0.333902
+  },
+  {
+    "kind": "emotion",
+    "label": "angry_blend_8_instruction_2",
+    "group": "angry",
+    "blend": "furious + stressed + irritated",
+    "x": 0.228042,
+    "y": -0.340036
+  },
+  {
+    "kind": "emotion",
+    "label": "angry_blend_8_instruction_3",
+    "group": "angry",
+    "blend": "furious + stressed + irritated",
+    "x": 0.230102,
+    "y": -0.335671
+  },
+  {
+    "kind": "emotion",
+    "label": "angry_blend_9_instruction_1",
+    "group": "angry",
+    "blend": "sarcastic + annoyed + frustrated",
+    "x": 0.163292,
+    "y": -0.346099
+  },
+  {
+    "kind": "emotion",
+    "label": "angry_blend_9_instruction_2",
+    "group": "angry",
+    "blend": "sarcastic + annoyed + frustrated",
+    "x": 0.180019,
+    "y": -0.349636
+  },
+  {
+    "kind": "emotion",
+    "label": "angry_blend_9_instruction_3",
+    "group": "angry",
+    "blend": "sarcastic + annoyed + frustrated",
+    "x": 0.16748,
+    "y": -0.344928
+  },
+  {
+    "kind": "emotion",
+    "label": "angry_blend_10_instruction_1",
+    "group": "angry",
+    "blend": "angry + jealous + frustrated",
+    "x": 0.186751,
+    "y": -0.274909
+  },
+  {
+    "kind": "emotion",
+    "label": "angry_blend_10_instruction_2",
+    "group": "angry",
+    "blend": "angry + jealous + frustrated",
+    "x": 0.175461,
+    "y": -0.225654
+  },
+  {
+    "kind": "emotion",
+    "label": "angry_blend_10_instruction_3",
+    "group": "angry",
+    "blend": "angry + jealous + frustrated",
+    "x": 0.189803,
+    "y": -0.244077
+  },
+  {
+    "kind": "emotion",
+    "label": "angry_blend_11_instruction_1",
+    "group": "angry",
+    "blend": "distant + stressed + hurt",
+    "x": 0.310521,
+    "y": -0.176577
+  },
+  {
+    "kind": "emotion",
+    "label": "angry_blend_11_instruction_2",
+    "group": "angry",
+    "blend": "distant + stressed + hurt",
+    "x": 0.31933,
+    "y": -0.189756
+  },
+  {
+    "kind": "emotion",
+    "label": "angry_blend_11_instruction_3",
+    "group": "angry",
+    "blend": "distant + stressed + hurt",
+    "x": 0.318345,
+    "y": -0.174048
+  },
+  {
+    "kind": "emotion",
+    "label": "angry_blend_12_instruction_1",
+    "group": "angry",
+    "blend": "irritated + sarcastic + stressed",
+    "x": 0.213387,
+    "y": -0.360309
+  },
+  {
+    "kind": "emotion",
+    "label": "angry_blend_12_instruction_2",
+    "group": "angry",
+    "blend": "irritated + sarcastic + stressed",
+    "x": 0.23505,
+    "y": -0.329318
+  },
+  {
+    "kind": "emotion",
+    "label": "angry_blend_12_instruction_3",
+    "group": "angry",
+    "blend": "irritated + sarcastic + stressed",
+    "x": 0.225449,
+    "y": -0.358853
+  },
+  {
+    "kind": "emotion",
+    "label": "angry_blend_13_instruction_1",
+    "group": "angry",
+    "blend": "frustrated + distant + annoyed",
+    "x": 0.291828,
+    "y": -0.292545
+  },
+  {
+    "kind": "emotion",
+    "label": "angry_blend_13_instruction_2",
+    "group": "angry",
+    "blend": "frustrated + distant + annoyed",
+    "x": 0.292137,
+    "y": -0.319929
+  },
+  {
+    "kind": "emotion",
+    "label": "angry_blend_13_instruction_3",
+    "group": "angry",
+    "blend": "frustrated + distant + annoyed",
+    "x": 0.297879,
+    "y": -0.307613
+  },
+  {
+    "kind": "emotion",
+    "label": "angry_blend_14_instruction_1",
+    "group": "angry",
+    "blend": "furious + angry + hurt",
+    "x": 0.220634,
+    "y": -0.323421
+  },
+  {
+    "kind": "emotion",
+    "label": "angry_blend_14_instruction_2",
+    "group": "angry",
+    "blend": "furious + angry + hurt",
+    "x": 0.211643,
+    "y": -0.319807
+  },
+  {
+    "kind": "emotion",
+    "label": "angry_blend_14_instruction_3",
+    "group": "angry",
+    "blend": "furious + angry + hurt",
+    "x": 0.214113,
+    "y": -0.318029
+  },
+  {
+    "kind": "emotion",
+    "label": "angry_blend_15_instruction_1",
+    "group": "angry",
+    "blend": "jealous + stressed + frustrated",
+    "x": 0.192091,
+    "y": -0.218419
+  },
+  {
+    "kind": "emotion",
+    "label": "angry_blend_15_instruction_2",
+    "group": "angry",
+    "blend": "jealous + stressed + frustrated",
+    "x": 0.188269,
+    "y": -0.226053
+  },
+  {
+    "kind": "emotion",
+    "label": "angry_blend_15_instruction_3",
+    "group": "angry",
+    "blend": "jealous + stressed + frustrated",
+    "x": 0.163768,
+    "y": -0.232913
+  },
+  {
+    "kind": "emotion",
+    "label": "calm_blend_1_instruction_1",
+    "group": "calm",
+    "blend": "relaxed + secure",
+    "x": -0.214692,
+    "y": 0.099482
+  },
+  {
+    "kind": "emotion",
+    "label": "calm_blend_1_instruction_2",
+    "group": "calm",
+    "blend": "relaxed + secure",
+    "x": -0.185787,
+    "y": 0.124009
+  },
+  {
+    "kind": "emotion",
+    "label": "calm_blend_1_instruction_3",
+    "group": "calm",
+    "blend": "relaxed + secure",
+    "x": -0.203541,
+    "y": 0.113697
+  },
+  {
+    "kind": "emotion",
+    "label": "calm_blend_2_instruction_1",
+    "group": "calm",
+    "blend": "thankful",
+    "x": -0.232874,
+    "y": 0.075663
+  },
+  {
+    "kind": "emotion",
+    "label": "calm_blend_2_instruction_2",
+    "group": "calm",
+    "blend": "thankful",
+    "x": -0.247524,
+    "y": 0.047399
+  },
+  {
+    "kind": "emotion",
+    "label": "calm_blend_2_instruction_3",
+    "group": "calm",
+    "blend": "thankful",
+    "x": -0.242397,
+    "y": 0.074736
+  },
+  {
+    "kind": "emotion",
+    "label": "calm_blend_3_instruction_1",
+    "group": "calm",
+    "blend": "serene + pensive",
+    "x": -0.139338,
+    "y": 0.071128
+  },
+  {
+    "kind": "emotion",
+    "label": "calm_blend_3_instruction_2",
+    "group": "calm",
+    "blend": "serene + pensive",
+    "x": -0.162275,
+    "y": 0.082755
+  },
+  {
+    "kind": "emotion",
+    "label": "calm_blend_3_instruction_3",
+    "group": "calm",
+    "blend": "serene + pensive",
+    "x": -0.126847,
+    "y": 0.068022
+  },
+  {
+    "kind": "emotion",
+    "label": "calm_blend_4_instruction_1",
+    "group": "calm",
+    "blend": "loving + thankful",
+    "x": -0.300113,
+    "y": 0.049352
+  },
+  {
+    "kind": "emotion",
+    "label": "calm_blend_4_instruction_2",
+    "group": "calm",
+    "blend": "loving + thankful",
+    "x": -0.28464,
+    "y": 0.038169
+  },
+  {
+    "kind": "emotion",
+    "label": "calm_blend_4_instruction_3",
+    "group": "calm",
+    "blend": "loving + thankful",
+    "x": -0.277642,
+    "y": 0.058462
+  },
+  {
+    "kind": "emotion",
+    "label": "calm_blend_5_instruction_1",
+    "group": "calm",
+    "blend": "secure + thankful",
+    "x": -0.266285,
+    "y": 0.196846
+  },
+  {
+    "kind": "emotion",
+    "label": "calm_blend_5_instruction_2",
+    "group": "calm",
+    "blend": "secure + thankful",
+    "x": -0.285694,
+    "y": 0.176034
+  },
+  {
+    "kind": "emotion",
+    "label": "calm_blend_5_instruction_3",
+    "group": "calm",
+    "blend": "secure + thankful",
+    "x": -0.278221,
+    "y": 0.198896
+  },
+  {
+    "kind": "emotion",
+    "label": "calm_blend_6_instruction_1",
+    "group": "calm",
+    "blend": "relaxed + pensive",
+    "x": -0.134039,
+    "y": 0.073492
+  },
+  {
+    "kind": "emotion",
+    "label": "calm_blend_6_instruction_2",
+    "group": "calm",
+    "blend": "relaxed + pensive",
+    "x": -0.139401,
+    "y": 0.083572
+  },
+  {
+    "kind": "emotion",
+    "label": "calm_blend_6_instruction_3",
+    "group": "calm",
+    "blend": "relaxed + pensive",
+    "x": -0.120363,
+    "y": 0.077164
+  },
+  {
+    "kind": "emotion",
+    "label": "calm_blend_7_instruction_1",
+    "group": "calm",
+    "blend": "serene + secure",
+    "x": -0.19795,
+    "y": 0.150205
+  },
+  {
+    "kind": "emotion",
+    "label": "calm_blend_7_instruction_2",
+    "group": "calm",
+    "blend": "serene + secure",
+    "x": -0.207782,
+    "y": 0.153988
+  },
+  {
+    "kind": "emotion",
+    "label": "calm_blend_7_instruction_3",
+    "group": "calm",
+    "blend": "serene + secure",
+    "x": -0.213867,
+    "y": 0.176203
+  },
+  {
+    "kind": "emotion",
+    "label": "calm_blend_8_instruction_1",
+    "group": "calm",
+    "blend": "relief + relaxed",
+    "x": -0.107938,
+    "y": 0.05481
+  },
+  {
+    "kind": "emotion",
+    "label": "calm_blend_8_instruction_2",
+    "group": "calm",
+    "blend": "relief + relaxed",
+    "x": -0.124719,
+    "y": 0.017234
+  },
+  {
+    "kind": "emotion",
+    "label": "calm_blend_8_instruction_3",
+    "group": "calm",
+    "blend": "relief + relaxed",
+    "x": -0.153552,
+    "y": 0.030002
+  },
+  {
+    "kind": "emotion",
+    "label": "calm_blend_9_instruction_1",
+    "group": "calm",
+    "blend": "thankful + loving + secure",
+    "x": -0.325115,
+    "y": 0.091858
+  },
+  {
+    "kind": "emotion",
+    "label": "calm_blend_9_instruction_2",
+    "group": "calm",
+    "blend": "thankful + loving + secure",
+    "x": -0.297242,
+    "y": 0.108059
+  },
+  {
+    "kind": "emotion",
+    "label": "calm_blend_9_instruction_3",
+    "group": "calm",
+    "blend": "thankful + loving + secure",
+    "x": -0.300403,
+    "y": 0.092217
+  },
+  {
+    "kind": "emotion",
+    "label": "calm_blend_10_instruction_1",
+    "group": "calm",
+    "blend": "pensive",
+    "x": -0.127451,
+    "y": 0.055579
+  },
+  {
+    "kind": "emotion",
+    "label": "calm_blend_10_instruction_2",
+    "group": "calm",
+    "blend": "pensive",
+    "x": -0.12623,
+    "y": 0.055764
+  },
+  {
+    "kind": "emotion",
+    "label": "calm_blend_10_instruction_3",
+    "group": "calm",
+    "blend": "pensive",
+    "x": -0.139184,
+    "y": 0.039488
+  },
+  {
+    "kind": "emotion",
+    "label": "calm_blend_11_instruction_1",
+    "group": "calm",
+    "blend": "serene + thankful",
+    "x": -0.278968,
+    "y": 0.114876
+  },
+  {
+    "kind": "emotion",
+    "label": "calm_blend_11_instruction_2",
+    "group": "calm",
+    "blend": "serene + thankful",
+    "x": -0.283837,
+    "y": 0.100381
+  },
+  {
+    "kind": "emotion",
+    "label": "calm_blend_11_instruction_3",
+    "group": "calm",
+    "blend": "serene + thankful",
+    "x": -0.290316,
+    "y": 0.12548
+  },
+  {
+    "kind": "emotion",
+    "label": "calm_blend_12_instruction_1",
+    "group": "calm",
+    "blend": "relaxed + thankful + secure",
+    "x": -0.316978,
+    "y": 0.124039
+  },
+  {
+    "kind": "emotion",
+    "label": "calm_blend_12_instruction_2",
+    "group": "calm",
+    "blend": "relaxed + thankful + secure",
+    "x": -0.3201,
+    "y": 0.107723
+  },
+  {
+    "kind": "emotion",
+    "label": "calm_blend_12_instruction_3",
+    "group": "calm",
+    "blend": "relaxed + thankful + secure",
+    "x": -0.314622,
+    "y": 0.114714
+  },
+  {
+    "kind": "emotion",
+    "label": "calm_blend_13_instruction_1",
+    "group": "calm",
+    "blend": "loving + serene",
+    "x": -0.257073,
+    "y": 0.047853
+  },
+  {
+    "kind": "emotion",
+    "label": "calm_blend_13_instruction_2",
+    "group": "calm",
+    "blend": "loving + serene",
+    "x": -0.265342,
+    "y": 0.045258
+  },
+  {
+    "kind": "emotion",
+    "label": "calm_blend_13_instruction_3",
+    "group": "calm",
+    "blend": "loving + serene",
+    "x": -0.229413,
+    "y": 0.059085
+  },
+  {
+    "kind": "emotion",
+    "label": "calm_blend_14_instruction_1",
+    "group": "calm",
+    "blend": "pensive + secure",
+    "x": -0.191369,
+    "y": 0.193835
+  },
+  {
+    "kind": "emotion",
+    "label": "calm_blend_14_instruction_2",
+    "group": "calm",
+    "blend": "pensive + secure",
+    "x": -0.191287,
+    "y": 0.200597
+  },
+  {
+    "kind": "emotion",
+    "label": "calm_blend_14_instruction_3",
+    "group": "calm",
+    "blend": "pensive + secure",
+    "x": -0.179196,
+    "y": 0.19424
+  },
+  {
+    "kind": "emotion",
+    "label": "calm_blend_15_instruction_1",
+    "group": "calm",
+    "blend": "relief + thankful + relaxed",
+    "x": -0.200225,
+    "y": 0.102953
+  },
+  {
+    "kind": "emotion",
+    "label": "calm_blend_15_instruction_2",
+    "group": "calm",
+    "blend": "relief + thankful + relaxed",
+    "x": -0.22214,
+    "y": 0.088191
+  },
+  {
+    "kind": "emotion",
+    "label": "calm_blend_15_instruction_3",
+    "group": "calm",
+    "blend": "relief + thankful + relaxed",
+    "x": -0.217895,
+    "y": 0.093996
+  },
+  {
+    "kind": "emotion",
+    "label": "strong_blend_1_instruction_1",
+    "group": "strong",
+    "blend": "proud + respected",
+    "x": -0.336489,
+    "y": 0.230883
+  },
+  {
+    "kind": "emotion",
+    "label": "strong_blend_1_instruction_2",
+    "group": "strong",
+    "blend": "proud + respected",
+    "x": -0.326066,
+    "y": 0.216707
+  },
+  {
+    "kind": "emotion",
+    "label": "strong_blend_1_instruction_3",
+    "group": "strong",
+    "blend": "proud + respected",
+    "x": -0.295354,
+    "y": 0.220249
+  },
+  {
+    "kind": "emotion",
+    "label": "strong_blend_2_instruction_1",
+    "group": "strong",
+    "blend": "confident + empowered",
+    "x": -0.275748,
+    "y": 0.147612
+  },
+  {
+    "kind": "emotion",
+    "label": "strong_blend_2_instruction_2",
+    "group": "strong",
+    "blend": "confident + empowered",
+    "x": -0.299692,
+    "y": 0.148769
+  },
+  {
+    "kind": "emotion",
+    "label": "strong_blend_2_instruction_3",
+    "group": "strong",
+    "blend": "confident + empowered",
+    "x": -0.27701,
+    "y": 0.139045
+  },
+  {
+    "kind": "emotion",
+    "label": "strong_blend_3_instruction_1",
+    "group": "strong",
+    "blend": "appreciated + respected",
+    "x": -0.360688,
+    "y": 0.168455
+  },
+  {
+    "kind": "emotion",
+    "label": "strong_blend_3_instruction_2",
+    "group": "strong",
+    "blend": "appreciated + respected",
+    "x": -0.367593,
+    "y": 0.147028
+  },
+  {
+    "kind": "emotion",
+    "label": "strong_blend_3_instruction_3",
+    "group": "strong",
+    "blend": "appreciated + respected",
+    "x": -0.360472,
+    "y": 0.174812
+  },
+  {
+    "kind": "emotion",
+    "label": "strong_blend_4_instruction_1",
+    "group": "strong",
+    "blend": "proud + confident",
+    "x": -0.26686,
+    "y": 0.251339
+  },
+  {
+    "kind": "emotion",
+    "label": "strong_blend_4_instruction_2",
+    "group": "strong",
+    "blend": "proud + confident",
+    "x": -0.296451,
+    "y": 0.237881
+  },
+  {
+    "kind": "emotion",
+    "label": "strong_blend_4_instruction_3",
+    "group": "strong",
+    "blend": "proud + confident",
+    "x": -0.272881,
+    "y": 0.237828
+  },
+  {
+    "kind": "emotion",
+    "label": "strong_blend_5_instruction_1",
+    "group": "strong",
+    "blend": "empowered + confident + respected",
+    "x": -0.270951,
+    "y": 0.236433
+  },
+  {
+    "kind": "emotion",
+    "label": "strong_blend_5_instruction_2",
+    "group": "strong",
+    "blend": "empowered + confident + respected",
+    "x": -0.290547,
+    "y": 0.249981
+  },
+  {
+    "kind": "emotion",
+    "label": "strong_blend_5_instruction_3",
+    "group": "strong",
+    "blend": "empowered + confident + respected",
+    "x": -0.290743,
+    "y": 0.223392
+  },
+  {
+    "kind": "emotion",
+    "label": "strong_blend_6_instruction_1",
+    "group": "strong",
+    "blend": "proud + appreciated",
+    "x": -0.327611,
+    "y": 0.215747
+  },
+  {
+    "kind": "emotion",
+    "label": "strong_blend_6_instruction_2",
+    "group": "strong",
+    "blend": "proud + appreciated",
+    "x": -0.306526,
+    "y": 0.1774
+  },
+  {
+    "kind": "emotion",
+    "label": "strong_blend_6_instruction_3",
+    "group": "strong",
+    "blend": "proud + appreciated",
+    "x": -0.298102,
+    "y": 0.191653
+  },
+  {
+    "kind": "emotion",
+    "label": "strong_blend_7_instruction_1",
+    "group": "strong",
+    "blend": "respected + empowered + confident",
+    "x": -0.256622,
+    "y": 0.269658
+  },
+  {
+    "kind": "emotion",
+    "label": "strong_blend_7_instruction_2",
+    "group": "strong",
+    "blend": "respected + empowered + confident",
+    "x": -0.271577,
+    "y": 0.241195
+  },
+  {
+    "kind": "emotion",
+    "label": "strong_blend_7_instruction_3",
+    "group": "strong",
+    "blend": "respected + empowered + confident",
+    "x": -0.250449,
+    "y": 0.240007
+  },
+  {
+    "kind": "emotion",
+    "label": "strong_blend_8_instruction_1",
+    "group": "strong",
+    "blend": "appreciated + empowered",
+    "x": -0.35485,
+    "y": 0.16921
+  },
+  {
+    "kind": "emotion",
+    "label": "strong_blend_8_instruction_2",
+    "group": "strong",
+    "blend": "appreciated + empowered",
+    "x": -0.330083,
+    "y": 0.175072
+  },
+  {
+    "kind": "emotion",
+    "label": "strong_blend_8_instruction_3",
+    "group": "strong",
+    "blend": "appreciated + empowered",
+    "x": -0.334146,
+    "y": 0.167333
+  },
+  {
+    "kind": "emotion",
+    "label": "strong_blend_9_instruction_1",
+    "group": "strong",
+    "blend": "proud + respected + confident",
+    "x": -0.317504,
+    "y": 0.196024
+  },
+  {
+    "kind": "emotion",
+    "label": "strong_blend_9_instruction_2",
+    "group": "strong",
+    "blend": "proud + respected + confident",
+    "x": -0.293641,
+    "y": 0.200623
+  },
+  {
+    "kind": "emotion",
+    "label": "strong_blend_9_instruction_3",
+    "group": "strong",
+    "blend": "proud + respected + confident",
+    "x": -0.308296,
+    "y": 0.201777
+  },
+  {
+    "kind": "emotion",
+    "label": "strong_blend_10_instruction_1",
+    "group": "strong",
+    "blend": "confident + appreciated",
+    "x": -0.329145,
+    "y": 0.187289
+  },
+  {
+    "kind": "emotion",
+    "label": "strong_blend_10_instruction_2",
+    "group": "strong",
+    "blend": "confident + appreciated",
+    "x": -0.316924,
+    "y": 0.212516
+  },
+  {
+    "kind": "emotion",
+    "label": "strong_blend_10_instruction_3",
+    "group": "strong",
+    "blend": "confident + appreciated",
+    "x": -0.331105,
+    "y": 0.195788
+  },
+  {
+    "kind": "emotion",
+    "label": "strong_blend_11_instruction_1",
+    "group": "strong",
+    "blend": "proud + empowered",
+    "x": -0.30075,
+    "y": 0.251907
+  },
+  {
+    "kind": "emotion",
+    "label": "strong_blend_11_instruction_2",
+    "group": "strong",
+    "blend": "proud + empowered",
+    "x": -0.299179,
+    "y": 0.262893
+  },
+  {
+    "kind": "emotion",
+    "label": "strong_blend_11_instruction_3",
+    "group": "strong",
+    "blend": "proud + empowered",
+    "x": -0.293145,
+    "y": 0.241997
+  },
+  {
+    "kind": "emotion",
+    "label": "strong_blend_12_instruction_1",
+    "group": "strong",
+    "blend": "respected + appreciated + confident",
+    "x": -0.336142,
+    "y": 0.196855
+  },
+  {
+    "kind": "emotion",
+    "label": "strong_blend_12_instruction_2",
+    "group": "strong",
+    "blend": "respected + appreciated + confident",
+    "x": -0.355759,
+    "y": 0.186251
+  },
+  {
+    "kind": "emotion",
+    "label": "strong_blend_12_instruction_3",
+    "group": "strong",
+    "blend": "respected + appreciated + confident",
+    "x": -0.356222,
+    "y": 0.212983
+  },
+  {
+    "kind": "emotion",
+    "label": "strong_blend_13_instruction_1",
+    "group": "strong",
+    "blend": "proud + confident + empowered",
+    "x": -0.280977,
+    "y": 0.223304
+  },
+  {
+    "kind": "emotion",
+    "label": "strong_blend_13_instruction_2",
+    "group": "strong",
+    "blend": "proud + confident + empowered",
+    "x": -0.303906,
+    "y": 0.230047
+  },
+  {
+    "kind": "emotion",
+    "label": "strong_blend_13_instruction_3",
+    "group": "strong",
+    "blend": "proud + confident + empowered",
+    "x": -0.283223,
+    "y": 0.212173
+  },
+  {
+    "kind": "emotion",
+    "label": "strong_blend_14_instruction_1",
+    "group": "strong",
+    "blend": "appreciated + respected + empowered",
+    "x": -0.314152,
+    "y": 0.202998
+  },
+  {
+    "kind": "emotion",
+    "label": "strong_blend_14_instruction_2",
+    "group": "strong",
+    "blend": "appreciated + respected + empowered",
+    "x": -0.305103,
+    "y": 0.203714
+  },
+  {
+    "kind": "emotion",
+    "label": "strong_blend_14_instruction_3",
+    "group": "strong",
+    "blend": "appreciated + respected + empowered",
+    "x": -0.302717,
+    "y": 0.202276
+  },
+  {
+    "kind": "emotion",
+    "label": "strong_blend_15_instruction_1",
+    "group": "strong",
+    "blend": "proud + appreciated + respected + confident",
+    "x": -0.315845,
+    "y": 0.181214
+  },
+  {
+    "kind": "emotion",
+    "label": "strong_blend_15_instruction_2",
+    "group": "strong",
+    "blend": "proud + appreciated + respected + confident",
+    "x": -0.33388,
+    "y": 0.174738
+  },
+  {
+    "kind": "emotion",
+    "label": "strong_blend_15_instruction_3",
+    "group": "strong",
+    "blend": "proud + appreciated + respected + confident",
+    "x": -0.321955,
+    "y": 0.184786
+  },
+  {
+    "kind": "emotion",
+    "label": "surprised_blend_1_instruction_1",
+    "group": "surprised",
+    "blend": "surprised",
+    "x": -0.009818,
+    "y": -0.026028
+  },
+  {
+    "kind": "emotion",
+    "label": "surprised_blend_1_instruction_2",
+    "group": "surprised",
+    "blend": "surprised",
+    "x": -0.020689,
+    "y": -0.035086
+  },
+  {
+    "kind": "emotion",
+    "label": "surprised_blend_1_instruction_3",
+    "group": "surprised",
+    "blend": "surprised",
+    "x": -0.024244,
+    "y": -0.057525
+  },
+  {
+    "kind": "task",
+    "label": "task_0",
+    "group": "strong",
+    "blend": "confident + appreciated",
+    "x": -0.211372,
+    "y": 0.125224
+  },
+  {
+    "kind": "task",
+    "label": "task_0",
+    "group": "strong",
+    "blend": "confident + appreciated",
+    "x": -0.133985,
+    "y": 0.100269
+  },
+  {
+    "kind": "task",
+    "label": "task_0",
+    "group": "strong",
+    "blend": "confident + appreciated",
+    "x": -0.155446,
+    "y": 0.121306
+  },
+  {
+    "kind": "task",
+    "label": "task_1",
+    "group": "calm",
+    "blend": "serene + thankful",
+    "x": 0.0158,
+    "y": 0.041304
+  },
+  {
+    "kind": "task",
+    "label": "task_1",
+    "group": "calm",
+    "blend": "serene + thankful",
+    "x": 0.017976,
+    "y": 0.025789
+  },
+  {
+    "kind": "task",
+    "label": "task_1",
+    "group": "calm",
+    "blend": "serene + thankful",
+    "x": 0.01294,
+    "y": 0.087534
+  }
+]
