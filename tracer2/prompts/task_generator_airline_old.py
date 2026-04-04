@@ -145,8 +145,9 @@ Task:
   * It includes all required params for every tool call in that TURN
   * It reads naturally but provides all information upfront
 - Write one combined story tying all turns together.
+- Output "feeling": one string in natural language describing how the customer feels (e.g. "The customer is feeling stressed about making a tight connection, and impatient to get rebooked quickly."). It must match the tone implied by the story and instructions.
 - You MUST output the "actions" field: a flat list of every tool call from the trace in order. Use each tool "name" exactly as in the trace (e.g. search_direct_flight and search_onestop_flight — do NOT use get_direct_flights or get_onestop_flights in actions). Populate "kwargs" with values from your reverse-tool lookups. Do not omit actions.
-- Return ONLY the JSON object in the required TracerAgentOutput structure (user_id, instructions, story, actions — all four required).
+- Return ONLY the JSON object in the required TracerAgentOutput structure (user_id, instructions, story, feeling, actions — all five required).
 
 Example of good instruction format (booking): "Hi, I'm olivia_smith_4705. I want to book flight HAT033 from JFK to SFO on 2024-05-20 for 2 passengers, economy. Please charge my credit card ending in 1070466 (payment_id credit_card_1070466)."
 Example (cancel/update): "Hi, I'm olivia_smith_4705. I need to cancel my reservation MEMLVX and get a refund to my credit card credit_card_1070466."

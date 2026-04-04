@@ -227,6 +227,7 @@ def main():
             print(f"{'='*60}")
             print(f"User ID: {candidate.user_id}")
             print(f"Story: {candidate.story}")
+            print(f"Feeling: {candidate.feeling}")
             print(f"Num instructions: {len(candidate.instructions)}")
 
             combined_instruction = _combine_instruction(
@@ -285,6 +286,7 @@ def main():
                         "instructions": candidate.instructions,
                         "instruction": combined_instruction,
                         "story": candidate.story,
+                        "feeling": candidate.feeling,
                         "action_trace": candidate.action_trace,
                         "ground_truth_actions": [a.model_dump() for a in (candidate.actions or [])],
                         "generator_traj": generator_messages,
@@ -303,6 +305,7 @@ def main():
                     "instructions": candidate.instructions,
                     "instruction": combined_instruction,
                     "story": candidate.story,
+                    "feeling": candidate.feeling,
                     "action_trace": candidate.action_trace,
                     "ground_truth_actions": [a.model_dump() for a in (candidate.actions or [])],
                     "generator_traj": generator_messages,

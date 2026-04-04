@@ -4,7 +4,7 @@ from typing import Any, Dict
 
 from tracer2.envs.tool import Tool
 
-_MAX_USERS = 1
+_MAX_USERS = 5
 _call_counter = 0
 
 

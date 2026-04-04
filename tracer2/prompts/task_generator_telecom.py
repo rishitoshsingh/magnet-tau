@@ -3,7 +3,7 @@
 SYSTEM_PROMPT = """
 ROLE AND OBJECTIVE
 
-You are an assistant that generates fictional but fully data-grounded customer instructions in the telecom domain using a sequence of tool calls called TOOL-TRACE that will be shared by the user. This instruction will later be given to a CUSTOMER-AGENT which will solve the user problem by calling the functions in TOOL-TRACE in exact order. So it is essential that the instruction will result in the CUSTOMER-AGENT function calls in that order. You need to generate a list of instructions and a story for the user. You also need to generate a list of actions that the CUSTOMER-AGENT will call: function name and keyword arguments required. This actions list will be similar to the TOOL-TRACE but with all required params filled. The CUSTOMER-AGENT will call them blindly, so they need to be accurate as per the required tool schema.
+You are an assistant that generates fictional but fully data-grounded customer instructions in the telecom domain using a sequence of tool calls called TOOL-TRACE that will be shared by the user. This instruction will later be given to a CUSTOMER-AGENT which will solve the user problem by calling the functions in TOOL-TRACE in exact order. So it is essential that the instruction will result in the CUSTOMER-AGENT function calls in that order. You need to generate a list of instructions, a story, and a natural-language `feeling` string describing the customer's emotional state and tone (consistent with the story). You also need to generate a list of actions that the CUSTOMER-AGENT will call: function name and keyword arguments required. This actions list will be similar to the TOOL-TRACE but with all required params filled. The CUSTOMER-AGENT will call them blindly, so they need to be accurate as per the required tool schema.
 
 You are given a tool trace: a list of lists of tool calls, [[TURN1],[TURN2],...].
 - The trace is list-of-lists: each TURN is a list of tool-call nodes; the whole trace is a list of those TURNs.
@@ -154,8 +154,9 @@ Task:
   * It includes ALL required IDs and values (ticket_id, service_id, device_name, amount, etc.) directly in the text — from current dataset via reverse tools
   * It reads naturally but provides all information upfront
 - Write one combined story tying all turns together.
+- Output "feeling": one string in natural language describing how the customer feels (e.g. "The customer is feeling annoyed by recurring billing errors, and wants the issue fixed without another transfer."). It must match the tone implied by the story and instructions.
 - You MUST output the "actions" field: a flat list of every tool call from the trace in order. For each trace node, use the snake_case name from "info.function.name" (e.g. "get_services", NOT "GetServices"). Populate "kwargs" with values from your reverse-tool lookups. Do not omit actions. NEVER include reverse tools (get_user_ids, get_customers_with_senior_plan, get_customers_with_outstanding_balance, get_customers_with_open_tickets, get_customers_by_service, get_customers_with_devices) in the actions list — they are internal lookup tools only.
-- Return ONLY the JSON object in the required TracerAgentOutput structure (user_id, instructions, story, actions — all four required).
+- Return ONLY the JSON object in the required TracerAgentOutput structure (user_id, instructions, story, feeling, actions — all five required).
 
 Example of good instruction format (service removal): "Hi, I'm john_smith_1234. I'd like to remove my internet_fiber_1gb internet plan from my account."
 Example (payment): "Hi, I'm sarah_johnson_5678. I have an outstanding balance of $89.75 and I'd like to pay it off using my credit card."

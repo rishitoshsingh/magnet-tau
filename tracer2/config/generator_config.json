@@ -1,14 +1,14 @@
 {
-  "env": "telecom",
-  "trace_path": "output/traces/telecom_adjacency_matrix_0.0_traces.json",
+  "env": "airline",
+  "trace_path": "output/traces/airline_adjacency_matrix_0.0_traces.json",
   "output_path": null,
-  "generator_model_provider": "openai",
-  "generator_model": "openai/llama4-scout-17b",
+  "generator_model_provider": "hosted_vllm",
+  "generator_model": "qwen3-235b-a22b-instruct-2507",
   "generator_temperature": 0.2,
   "api_base": "https://openai.rc.asu.edu/v1",
   "start_index": 0,
-  "end_index": 5,
+  "end_index": 10,
   "task_ids": null,
-  "tasks_per_trace": 1,
+  "tasks_per_trace": 3,
   "print_thoughts": "false"
 }

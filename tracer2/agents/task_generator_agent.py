@@ -240,7 +240,7 @@ class _ReActToolEnv:
             else:
                 observation = (
                     "Error: invalid final output. Use respond with content set to ONLY a JSON object "
-                    "matching TracerAgentOutput: {user_id, instructions, story, actions}. "
+                    "matching TracerAgentOutput: {user_id, instructions, story, feeling, actions}. "
                     f"Validation error: {err}"
                 )
                 done = False
@@ -292,7 +292,7 @@ class TraceTaskGeneratorAgent:
         generator_wiki = (
             system_prompt_final
             + "\n\nWhen you are ready to finish, use Action with name='respond' and arguments {\"content\": <JSON>}."
-            + "\nThat JSON MUST match TracerAgentOutput exactly: {user_id, instructions, story, actions}."
+            + "\nThat JSON MUST match TracerAgentOutput exactly: {user_id, instructions, story, feeling, actions}."
             + "\nDo not include any text outside the JSON."
         )
 
@@ -394,6 +394,7 @@ class TraceTaskGeneratorAgent:
                     user_id=parsed.user_id,
                     instructions=parsed.instructions,
                     story=parsed.story,
+                    feeling=parsed.feeling,
                     action_trace=trace,
                     actions=actions,
                     attempt=attempt,

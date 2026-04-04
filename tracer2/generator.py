@@ -321,6 +321,7 @@ def main():
 
                 print(f"  [run {run}] User ID: {candidate.user_id}")
                 print(f"  [run {run}] Story: {candidate.story[:80]}...")
+                print(f"  [run {run}] Feeling: {candidate.feeling[:80]}...")
                 print(f"  [run {run}] Num instructions: {len(candidate.instructions)}")
 
                 combined_instruction = _combine_instruction(
@@ -352,6 +353,7 @@ def main():
                     "instructions": candidate.instructions,
                     "instruction": combined_instruction,
                     "story": candidate.story,
+                    "feeling": candidate.feeling,
                     "action_trace": candidate.action_trace,
                     "ground_truth_actions": [a.model_dump() for a in (candidate.actions or [])],
                     # "reward_result": reward_result_dump,

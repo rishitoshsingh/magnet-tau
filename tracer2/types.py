@@ -33,12 +33,14 @@ class TracerAgentOutput(BaseModel):
 
     `trace` is a list of TURNs: [[TURN1],[TURN2],...]. The generator must emit one
     instruction per TURN, each containing all required params needed to execute
-    that TURN's tool calls. `actions` is a flat list of ground-truth Action (name, kwargs).
+    that TURN's tool calls. `feeling` describes the customer's emotional state and tone.
+    `actions` is a flat list of ground-truth Action (name, kwargs).
     """
 
     user_id: str
     instructions: List[str]
     story: str
+    feeling: str
     actions: List["Action"]
 
 
@@ -56,6 +58,7 @@ class GeneratedTaskCandidate(BaseModel):
     user_id: str
     instructions: List[str]
     story: str
+    feeling: str
     action_trace: Any  # raw trace JSON
     actions: Actions = []  # list of Action (name, kwargs)
     attempt: int = 0
