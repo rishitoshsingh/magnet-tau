@@ -29,18 +29,17 @@ class Persona(BaseModel):
 
 
 class TracerAgentOutput(BaseModel):
-    """Final JSON emitted by the generator agent.
+    """Final JSON emitted by the main task generator agent.
 
     `trace` is a list of TURNs: [[TURN1],[TURN2],...]. The generator must emit one
     instruction per TURN, each containing all required params needed to execute
-    that TURN's tool calls. `feeling` describes the customer's emotional state and tone.
+    that TURN's tool calls. Emotional tone (`feeling`) is produced by a separate pass.
     `actions` is a flat list of ground-truth Action (name, kwargs).
     """
 
     user_id: str
     instructions: List[str]
     story: str
-    feeling: str
     actions: List["Action"]
 
 
@@ -58,7 +57,7 @@ class GeneratedTaskCandidate(BaseModel):
     user_id: str
     instructions: List[str]
     story: str
-    feeling: str
+    feeling: str = ""
     action_trace: Any  # raw trace JSON
     actions: Actions = []  # list of Action (name, kwargs)
     attempt: int = 0

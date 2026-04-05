@@ -70,8 +70,7 @@ Task:
   * It includes all required params for every tool call in that TURN
   * It reads naturally but provides all information upfront
 - Write one combined story tying all turns together.
-- Output "feeling": one string in natural language describing how the customer feels; it must match the tone implied by the story and instructions.
-- Return ONLY the JSON object in the required TracerAgentOutput structure (user_id, instructions, story, feeling, actions — all five required).
+- Return ONLY the JSON object in the required TracerAgentOutput structure (user_id, instructions, story, actions — all four required).
 
 Example of good instruction format:
 "Hi, my email is noah.brown7922@example.com. Please look up my order #W2611340 and tell me where it's being shipped. Then update my default address to: 943 Maple Drive, Suite 356, Chicago, IL, USA 60621."

@@ -3,7 +3,7 @@
 SYSTEM_PROMPT = """
 ROLE AND OBJECTIVE
 
-You are an assistant that generates fictional but fully data-grounded patient instructions in the telehealth domain using a sequence of tool calls called TOOL-TRACE that will be shared by the user. This instruction will later be given to a PATIENT-AGENT which will solve the user problem by calling the functions in TOOL-TRACE in exact order. So it is essential that the instruction will result in the PATIENT-AGENT function calls in that order. You need to generate a list of instructions, a story, and a natural-language `feeling` string describing the patient's emotional state and tone (consistent with the story). You also need to generate a list of actions that the PATIENT-AGENT will call: function name and keyword arguments required. This actions list will be similar to the TOOL-TRACE but with all required params filled. The PATIENT-AGENT will call them blindly, so they need to be accurate as per the required tool schema.
+You are an assistant that generates fictional but fully data-grounded patient instructions in the telehealth domain using a sequence of tool calls called TOOL-TRACE that will be shared by the user. This instruction will later be given to a PATIENT-AGENT which will solve the user problem by calling the functions in TOOL-TRACE in exact order. So it is essential that the instruction will result in the PATIENT-AGENT function calls in that order. You need to generate a list of instructions, a story, and a list of actions that the PATIENT-AGENT will call: function name and keyword arguments required. This actions list will be similar to the TOOL-TRACE but with all required params filled. The PATIENT-AGENT will call them blindly, so they need to be accurate as per the required tool schema.
 
 You are given a tool trace: a list of lists of tool calls, [[TURN1],[TURN2],...].
 - The trace is list-of-lists: each TURN is a list of tool-call nodes; the whole trace is a list of those TURNs.
@@ -152,9 +152,8 @@ Task:
   * It includes all required params for every tool call in that TURN
   * It reads naturally but provides all information upfront
 - Write one combined story tying all turns together.
-- Output "feeling": one string in natural language describing how the patient feels (e.g. "The patient is feeling anxious about their symptoms, and relieved to get a timely appointment."). It must match the tone implied by the story and instructions.
 - You MUST output the "actions" field: a flat list of every tool call from the trace in order. Use each tool "name" exactly as in the trace. Populate "kwargs" with values from your reverse-tool lookups. Do not omit actions.
-- Return ONLY the JSON object in the required TracerAgentOutput structure (user_id, instructions, story, feeling, actions — all five required).
+- Return ONLY the JSON object in the required TracerAgentOutput structure (user_id, instructions, story, actions — all four required).
 
 Example of good instruction format: "Hi, my email is sarah.johnson@example.com. I need to reschedule my appointment APPT003 with Dr. Garcia. Can you move it to 2024-02-10 at 14:00? Also, I'd like to know if there are any cheaper suppliers for my Lisinopril prescription in record REC002."
 

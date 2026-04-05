@@ -16,6 +16,7 @@ import litellm
 
 litellm.drop_params = True
 
+from tracer2.agents.feeling_generator_agent import FeelingGeneratorAgent
 from tracer2.agents.in_domain_checker_agent import InDomainCheckerAgent
 from tracer2.agents.task_generator_agent import TraceTaskGeneratorAgent
 from tracer2.agents.task_post_processor_agent import TaskPostProcessorAgent
@@ -172,6 +173,12 @@ def parse_args():
     p.add_argument("--generator-model", default="gpt-5.2")
     p.add_argument("--generator-temperature", type=float, default=0.2)
     p.add_argument(
+        "--feeling-temperature",
+        type=float,
+        default=0.9,
+        help="Temperature for the separate feeling-generation pass (same model/provider as generator).",
+    )
+    p.add_argument(
         "--api-base",
         default=None,
         help="Optional base URL for the LLM API (e.g. https://your-vllm-host/v1 for hosted vLLM).",
@@ -265,6 +272,11 @@ def main():
             PREFERENCE_SYSTEM_PROMPT as TELEHEALTH_PREFERENCE_SYSTEM_PROMPT,
             format_preference_user_prompt as telehealth_format_preference_user_prompt,
         )
+
+        build_env = _build_telehealth_env
+        preference_system_prompt = TELEHEALTH_PREFERENCE_SYSTEM_PROMPT
+        format_preference_user_prompt = telehealth_format_preference_user_prompt
+        forward_tools = telehealth_tools_module.ALL_TOOLS
     else:
         raise ValueError(f"Unsupported env: {args.env}")
 
@@ -294,6 +306,13 @@ def main():
         api_base=args.api_base,
     )
 
+    feeling_agent = FeelingGeneratorAgent(
+        model=args.generator_model,
+        provider=args.generator_model_provider,
+        temperature=args.feeling_temperature,
+        api_base=args.api_base,
+    )
+
     if args.task_ids is not None and len(args.task_ids) > 0:
         idxs = [int(x) for x in args.task_ids]
     else:
@@ -319,9 +338,15 @@ def main():
                     _,
                 ) = generator.generate(trace=trace, attempt=0, verifier_feedback=None)
 
+                feeling_text, feeling_traj = feeling_agent.generate_feeling(
+                    domain=args.env, candidate=candidate
+                )
+                candidate = candidate.model_copy(update={"feeling": feeling_text})
+
                 print(f"  [run {run}] User ID: {candidate.user_id}")
                 print(f"  [run {run}] Story: {candidate.story[:80]}...")
-                print(f"  [run {run}] Feeling: {candidate.feeling[:80]}...")
+                _feel_preview = (candidate.feeling or "")[:80]
+                print(f"  [run {run}] Feeling: {_feel_preview}...")
                 print(f"  [run {run}] Num instructions: {len(candidate.instructions)}")
 
                 combined_instruction = _combine_instruction(
@@ -354,6 +379,7 @@ def main():
                     "instruction": combined_instruction,
                     "story": candidate.story,
                     "feeling": candidate.feeling,
+                    "feeling_traj": feeling_traj,
                     "action_trace": candidate.action_trace,
                     "ground_truth_actions": [a.model_dump() for a in (candidate.actions or [])],
                     # "reward_result": reward_result_dump,

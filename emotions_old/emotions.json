@@ -263,12 +263,7 @@
                 {
                     "name": "respected",
                     "definition": "A dignified state in which the person feels others regard them seriously, treat them fairly, and acknowledge their worth."
-                }
-            ]
-        },
-        {
-            "category": "surprised",
-            "sub_categories": [
+                },
                 {
                     "name": "surprised",
                     "definition": "A sudden reactive state triggered by unexpected information or events, which may feel positive, negative, or simply startling depending on context."

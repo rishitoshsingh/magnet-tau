@@ -17,6 +17,7 @@ import litellm
 
 litellm.drop_params = True
 
+from tracer2.agents.feeling_generator_agent import FeelingGeneratorAgent
 from tracer2.agents.task_critique_agent import TaskCritiqueAgent
 from tracer2.agents.task_generator_agent import TraceTaskGeneratorAgent
 from tracer2.agents.task_verifier_agent import TaskVerifierAgent
@@ -115,6 +116,12 @@ def parse_args():
     p.add_argument("--generator-model-provider", default="openai")
     p.add_argument("--generator-model", default="gpt-5.2")
     p.add_argument("--generator-temperature", type=float, default=0.2)
+    p.add_argument(
+        "--feeling-temperature",
+        type=float,
+        default=0.9,
+        help="Temperature for the separate feeling-generation pass (same model/provider as generator).",
+    )
 
     p.add_argument("--verifier-model-provider", default="openai")
     p.add_argument("--verifier-model", default="gpt-5.2")
@@ -188,6 +195,12 @@ def main():
         temperature=args.generator_temperature,
     )
 
+    feeling_agent = FeelingGeneratorAgent(
+        model=args.generator_model,
+        provider=args.generator_model_provider,
+        temperature=args.feeling_temperature,
+    )
+
     verifier = TaskVerifierAgent(
         model=args.verifier_model,
         provider=args.verifier_model_provider,
@@ -221,6 +234,11 @@ def main():
                 _,
                 _,
             ) = generator.generate(trace=trace, attempt=attempt, verifier_feedback=feedback)
+
+            feeling_text, feeling_traj = feeling_agent.generate_feeling(
+                domain=args.env, candidate=candidate
+            )
+            candidate = candidate.model_copy(update={"feeling": feeling_text})
 
             print(f"\n{'='*60}")
             print(f"Trace idx={idx}, Attempt={attempt}")
@@ -287,6 +305,7 @@ def main():
                         "instruction": combined_instruction,
                         "story": candidate.story,
                         "feeling": candidate.feeling,
+                        "feeling_traj": feeling_traj,
                         "action_trace": candidate.action_trace,
                         "ground_truth_actions": [a.model_dump() for a in (candidate.actions or [])],
                         "generator_traj": generator_messages,
@@ -306,6 +325,7 @@ def main():
                     "instruction": combined_instruction,
                     "story": candidate.story,
                     "feeling": candidate.feeling,
+                    "feeling_traj": feeling_traj,
                     "action_trace": candidate.action_trace,
                     "ground_truth_actions": [a.model_dump() for a in (candidate.actions or [])],
                     "generator_traj": generator_messages,

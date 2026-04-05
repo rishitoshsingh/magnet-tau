@@ -5,6 +5,7 @@
   "generator_model_provider": "hosted_vllm",
   "generator_model": "qwen3-235b-a22b-instruct-2507",
   "generator_temperature": 0.2,
+  "feeling_temperature": 0.9,
   "api_base": "https://openai.rc.asu.edu/v1",
   "start_index": 0,
   "end_index": 10,

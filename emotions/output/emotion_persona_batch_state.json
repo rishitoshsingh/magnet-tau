@@ -1,0 +1,19 @@
+{
+  "batch_id": "batch_69d18db29078819087ab15c053411b23",
+  "input_file_id": "file-PPcvgD4Jg5YAoBJDLEMDoB",
+  "jsonl_path": "/Users/rishitoshsingh/Documents/projects/magnet-tau/emotions/output/emotion_persona_batch_input.jsonl",
+  "specs_path": "/Users/rishitoshsingh/Documents/projects/magnet-tau/emotions/output/emotion_persona_batch_specs.json",
+  "schema_path": "/Users/rishitoshsingh/Documents/projects/magnet-tau/emotions/emotion_persona_schema.json",
+  "model": "gpt-4o-mini",
+  "instructions_per_spec": 2,
+  "temperature": 0.8,
+  "spec_count": 594,
+  "created_at": "2026-04-04T22:16:19.042232+00:00",
+  "output_json_path": "/Users/rishitoshsingh/Documents/projects/magnet-tau/emotions/output/emotion_persona_instructions.json",
+  "batch_status": "completed",
+  "config_path": "/Users/rishitoshsingh/Documents/projects/magnet-tau/emotions/config.json",
+  "output_file_id": "file-HnNxWcEeA8h1sK3f1h3stH",
+  "completed_at": "2026-04-04T22:21:31.226835+00:00",
+  "merged_item_count": 594,
+  "parse_error_count": 0
+}
