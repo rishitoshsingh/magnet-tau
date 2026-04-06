@@ -260,8 +260,14 @@ def main():
         from tracer2.envs.telecom.reverse_tools import ALL_TOOLS as REVERSE_TOOLS
         from tracer2.envs.telecom import tools as telecom_tools_module
         from tracer2.prompts.task_generator_telecom import SYSTEM_PROMPT, USER_PROMPT
+        from tracer2.prompts.task_preference_telecom import (
+            PREFERENCE_SYSTEM_PROMPT as TELECOM_PREFERENCE_SYSTEM_PROMPT,
+            format_preference_user_prompt as telecom_format_preference_user_prompt,
+        )
 
         build_env = _build_telecom_env
+        preference_system_prompt = TELECOM_PREFERENCE_SYSTEM_PROMPT
+        format_preference_user_prompt = telecom_format_preference_user_prompt
         forward_tools = telecom_tools_module.ALL_TOOLS
     elif args.env == "telehealth":
         from tracer2.envs.telehealth.data import load_data

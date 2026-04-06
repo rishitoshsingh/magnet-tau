@@ -9,3 +9,5 @@ output/traces/*
 */__pycache__/
 __pycache__/
 CLAUDE.md
+
+.venv/
