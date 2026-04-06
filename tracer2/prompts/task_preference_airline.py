@@ -1,5 +1,5 @@
 # Preference-generator prompt for airline: combine story + instructions, then rewrite into PREFERENCE form.
-# Only customer-facing information (user_id, reservation_id, etc.); no cost, compensation, or internal IDs.
+# Customer-facing info only: reframe internal IDs (e.g. payment_id) as what a real customer would say.
 
 from typing import List
 
@@ -12,13 +12,14 @@ You will be given a STORY and a list of INSTRUCTIONS. Do the following in order:
 3. REWRITE that combined narrative as a PREFERENCE instruction using those looked-up details. Express what the user wants in natural language: e.g. "I want to fly in the evening", "I prefer economy", "I'd like a morning flight from JFK to LAX". Use the tool results so the preference matches actual flight/reservation data (time of day, cabin, route).
 4. Restrict the instruction to CUSTOMER-FACING INFORMATION ONLY:
    - INCLUDE: user_id, reservation_id (confirmation code), flight numbers, origin/destination, dates, cabin preference, passenger count, reason for contacting (e.g. "my flight was cancelled", "I want to change my trip").
-   - DO NOT INCLUDE: cost of the reservation, fare price, compensation amount, refund amount, certificate amount, payment_id, or any internal ID or dollar amount. The customer would not know these; rephrase so they state their situation and what they want (e.g. "I'd like compensation for my cancelled flight" not "give me a $300 certificate").
+   - Do NOT paste internal IDs (e.g. raw payment_id, opaque system IDs). If the story or tool output implies a specific payment method, REFRAME it the way a customer would: e.g. "the card ending in 4242", "my Visa on file", "the PayPal account I paid with" — only use last-four, card brand, or similar details when they appear in tool/story data; do not invent digits.
+   - Do NOT include: exact fare/compensation/refund/certificate dollar amounts, or internal-only identifiers. The customer states their situation and what they want (e.g. "I'd like compensation for my cancelled flight" not "give me a $300 certificate").
 
 You have access to the SAME lookup tools as the task generator. You MUST call them to find flight/reservation details (times, cabin, route) before writing the preference, so the preference is accurate — e.g. "I like to fly in the evening" only if the looked-up flight is in the evening.
 
 Output ONLY valid JSON with a single key: {"preference_instruction": "<one combined string>"}. No other keys or text.
 
-Example: "I'm [user_id]. My reservation [ABC123] had a cancelled flight and I'd like to be compensated. I also want to book a new flight from JFK to LAX in the evening, economy, for 2 passengers." (No dollar amounts, no payment_id.)
+Example: "I'm [user_id]. My reservation [ABC123] had a cancelled flight and I'd like to be compensated. I paid with the card ending in 4242 and want the refund there. I also want to book a new flight from JFK to LAX in the evening, economy, for 2 passengers." (No raw payment_id; no exact dollar amounts.)
 """
 
 PREFERENCE_USER_PROMPT_INTRO = """Rewrite the following user instructions into PREFERENCE form.
@@ -27,7 +28,7 @@ Steps:
 1. Combine the STORY and all INSTRUCTIONS below into one narrative.
 2. Use the provided tools to look up details for any flights or reservations mentioned (e.g. get_flight_details, get_reservation_details). From the results, get time of day, cabin, route — then express preferences grounded in that data (e.g. "I like to fly in the evening" if the flight is evening).
 3. Write the preference instruction using those looked-up details (e.g. "I prefer evening flights", "I want economy"). Include only customer-facing information: user_id, reservation_id, flight numbers, route, dates, cabin, passenger count, reason for contacting.
-4. Do NOT include: cost of reservation, compensation amount, refund amount, payment_id, or any internal ID or price.
+4. Do not paste payment_id or other internal IDs — rephrase payments as a customer would (e.g. "card ending in …", card brand) using details from tools/story when available. Do not include exact dollar amounts for fares, compensation, or refunds.
 
 STORY (context): {story}
 

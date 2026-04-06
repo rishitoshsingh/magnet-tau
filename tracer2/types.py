@@ -2,10 +2,9 @@
 
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Literal, Optional, Union
 
 from pydantic import BaseModel
-from typing import Literal
 
 
 class Persona(BaseModel):
@@ -83,9 +82,13 @@ RESPOND_ACTION_FIELD_NAME = "content"
 class Task(BaseModel):
     user_id: str
     actions: List[Action]
-    instruction: Union[str, List[str]]
+    instruction: str
     outputs: List[str]
-
+    emotion_family: Optional[str] = None
+    emotion_leaf: Optional[str] = None
+    dimension_politeness: Optional[float] = None
+    dimension_urgency: Optional[float] = None
+    dimension_trust_in_agent: Optional[float] = None
 
 class RewardOutputInfo(BaseModel):
     r_outputs: float

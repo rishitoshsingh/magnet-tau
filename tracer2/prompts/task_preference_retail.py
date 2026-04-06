@@ -1,5 +1,5 @@
 # Preference-generator prompt for retail: combine story + instructions, then rewrite into PREFERENCE form.
-# Only customer-facing information (user_id, order_id, etc.); no cost, refund amount, or internal IDs.
+# Customer-facing info only: reframe internal IDs (e.g. payment_id) as what a real customer would say.
 
 from typing import List
 
@@ -12,15 +12,16 @@ You will be given a STORY and a list of INSTRUCTIONS. Do the following in order:
 3. REWRITE that combined narrative as a PREFERENCE instruction using those looked-up details. Express what the user wants in natural language: e.g. "I don't like the blue color and want to exchange for red", "I prefer the larger size", "I like the stainless steel option". Use the tool results so the preference matches actual product/order data (color, size, material).
 4. Restrict the instruction to CUSTOMER-FACING INFORMATION ONLY:
    - INCLUDE: user_id, order_id, product as the customer would describe it (e.g. "the blue T-shirt"), reason for contacting (e.g. "wrong size", "want to return"), payment type preference ("credit card" / "gift card"), address as they know it ("my home").
-   - DO NOT INCLUDE: cost of the order, refund amount, payment_id, or any internal ID or dollar amount. The customer would not know these; rephrase so they state their situation and what they want (e.g. "I want to return the item and get a refund" not "refund $X to payment_id Y").
+   - Do NOT paste internal IDs (e.g. raw payment_id, opaque system IDs). If payment or refund routing matters, REFRAME it the way a customer would: e.g. "the card ending in 4242", "my Visa on file", "the gift card I used for this order", "refund to the same card I paid with" — only use last-four, card brand, or similar details when they appear in tool/story data; do not invent digits.
+   - Do NOT include: exact order total, refund dollar amount, or other precise prices. The customer states their situation and what they want (e.g. "I want to return the item and get a refund" not "refund $X to payment_id Y").
 
 You have access to the SAME lookup tools as the task generator. You MUST call them to find product/order details (color, size, material, name) before writing the preference, so the preference is accurate — e.g. "I like the red color" or "I don't like the small size" only when grounded in looked-up data.
 
 Output ONLY valid JSON with a single key: {"preference_instruction": "<one combined string>"}. No other keys or text.
 
 PREFERENCE STYLE BY ACTION (customer-facing only):
-- Exchange/return: What the customer doesn't like (e.g. size, color) and what they prefer (e.g. "exchange for larger size"). No prices or internal IDs.
-- Payment change: "I prefer to pay with my credit card" or "use my gift card" — no payment_id or amounts.
+- Exchange/return: What the customer doesn't like (e.g. size, color) and what they prefer (e.g. "exchange for larger size"). No exact prices or raw internal IDs.
+- Payment change: "I prefer to pay with my credit card" or "use my gift card"; if tools/story support it, add customer-safe detail (e.g. "the card ending in …", "the gift card I used") — never paste payment_id; no dollar amounts.
 - Address/shipping: "Ship to my home address" or the address they know; no internal IDs.
 """
 
@@ -30,7 +31,7 @@ Steps:
 1. Combine the STORY and all INSTRUCTIONS below into one narrative.
 2. Use the provided tools to look up details for any orders or products mentioned (e.g. get_order_details, get_product_details). From the results, get product name, color, size, material — then express preferences grounded in that data (e.g. "I don't like the blue color", "I prefer the larger size", "I like the stainless steel option").
 3. Write the preference instruction using those looked-up details. Include only customer-facing information: user_id, order_id, product (as customer would describe it, using actual color/size/material from tools), reason, payment/address preference.
-4. Do NOT include: order cost, refund amount, payment_id, or any internal ID or price.
+4. Do not paste payment_id or other internal IDs — rephrase payments as a customer would (e.g. "card ending in …", gift card / card brand) using details from tools/story when available. Do not include exact dollar amounts for order totals or refunds.
 
 STORY (context): {story}
 
