@@ -15,6 +15,8 @@ You will be given a STORY and a list of INSTRUCTIONS. Do the following in order:
    - Do NOT paste internal IDs (e.g. raw payment_id, opaque system IDs). If the story or tool output implies a specific payment method, REFRAME it the way a customer would: e.g. "the card ending in 4242", "my Visa on file", "the PayPal account I paid with" — only use last-four, card brand, or similar details when they appear in tool/story data; do not invent digits.
    - Do NOT include: exact fare/compensation/refund/certificate dollar amounts, or internal-only identifiers. The customer states their situation and what they want (e.g. "I'd like compensation for my cancelled flight" not "give me a $300 certificate").
 
+ORDER OF REQUESTS: The INSTRUCTIONS are numbered in the order the user stated their asks. Your single `preference_instruction` must follow that same order: cover what instruction 1 asks for first, then instruction 2, then 3, and so on. You may use natural connectors between sentences, but do not reorder requests (never put a later instruction's ask before an earlier one).
+
 You have access to the SAME lookup tools as the task generator. You MUST call them to find flight/reservation details (times, cabin, route) before writing the preference, so the preference is accurate — e.g. "I like to fly in the evening" only if the looked-up flight is in the evening.
 
 Output ONLY valid JSON with a single key: {"preference_instruction": "<one combined string>"}. No other keys or text.
@@ -27,7 +29,7 @@ PREFERENCE_USER_PROMPT_INTRO = """Rewrite the following user instructions into P
 Steps:
 1. Combine the STORY and all INSTRUCTIONS below into one narrative.
 2. Use the provided tools to look up details for any flights or reservations mentioned (e.g. get_flight_details, get_reservation_details). From the results, get time of day, cabin, route — then express preferences grounded in that data (e.g. "I like to fly in the evening" if the flight is evening).
-3. Write the preference instruction using those looked-up details (e.g. "I prefer evening flights", "I want economy"). Include only customer-facing information: user_id, reservation_id, flight numbers, route, dates, cabin, passenger count, reason for contacting.
+3. Write the preference instruction using those looked-up details (e.g. "I prefer evening flights", "I want economy"). Include only customer-facing information: user_id, reservation_id, flight numbers, route, dates, cabin, passenger count, reason for contacting. Keep the same order of requests as the numbered INSTRUCTIONS (first instruction first, then the next).
 4. Do not paste payment_id or other internal IDs — rephrase payments as a customer would (e.g. "card ending in …", card brand) using details from tools/story when available. Do not include exact dollar amounts for fares, compensation, or refunds.
 
 STORY (context): {story}

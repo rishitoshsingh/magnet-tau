@@ -26,8 +26,10 @@ You will be given a STORY and a list of INSTRUCTIONS. Do the following in order:
      "device is uncomfortable"), and high-level billing preferences ("I'd like it billed to my insurance" vs "I'd rather self-pay").
    - DO NOT INCLUDE: exact copay amounts, voucher IDs, internal payment IDs, insurance authorization numbers, internal
      record IDs beyond what a patient would reasonably know, or any dollar amounts. Rephrase so the patient states their
-     situation and what they want (e.g. "I'd like to cancel this appointment and avoid a cancellation fee" not
+     situation and what they want (e.g.      "I'd like to cancel this appointment and avoid a cancellation fee" not
      "cancel and waive a $25 fee").
+
+ORDER OF REQUESTS: The INSTRUCTIONS are numbered in the order the patient stated their asks. Your single `preference_instruction` must follow that same order: cover what instruction 1 asks for first, then instruction 2, then 3, and so on. You may use natural connectors between sentences, but do not reorder requests (never put a later instruction's ask before an earlier one).
 
 You have access to the SAME lookup tools as the task generator. You MUST call them to find appointment/provider/record
 details before writing the preference, so the preference is accurate — e.g. "I prefer afternoon visits" only if the
@@ -55,7 +57,7 @@ Steps:
    "I prefer a once-daily pill", "I prefer a different type of monitoring device").
 3. Write the preference instruction using those looked-up details. Include only patient-facing information:
    patient_id/identity, appointment_id(s), provider names/specialties, medication descriptions and schedules as they
-   would describe them, device descriptions, and high-level billing/insurance preferences.
+   would describe them, device descriptions, and high-level billing/insurance preferences. Keep the same order of requests as the numbered INSTRUCTIONS (first instruction first, then the next).
 4. Do NOT include: copay amounts, voucher IDs, internal payment IDs, insurance authorization numbers, or any exact prices.
 
 STORY (context): {story}
