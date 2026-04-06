@@ -7,9 +7,9 @@
   "generator_temperature": 0.2,
   "feeling_temperature": 0.9,
   "api_base": "https://openai.rc.asu.edu/v1",
-  "start_index": 0,
-  "end_index": 10,
+  "start_index": 10,
+  "end_index": 50,
   "task_ids": null,
-  "tasks_per_trace": 3,
+  "tasks_per_trace": 2,
   "print_thoughts": "false"
 }
