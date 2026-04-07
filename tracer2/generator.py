@@ -363,7 +363,7 @@ def main():
                 # Step 2: Build Task and env (same as generate_verify)
                 task = Task(
                     user_id=candidate.user_id,
-                    instruction=candidate.instructions,
+                    instruction=combined_instruction,
                     actions=candidate.actions or [],
                     outputs=[],
                 )
