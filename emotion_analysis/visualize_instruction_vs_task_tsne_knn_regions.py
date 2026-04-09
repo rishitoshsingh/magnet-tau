@@ -1,7 +1,23 @@
+"""
+Instruction vs task t-SNE with kNN decision regions in 2D t-SNE space.
+
+Regions and task marker colors both come from the same KNeighborsClassifier
+fit on instruction (x, y) with true emotion families.
+
+Run from repo root (recommended):
+  python3 emotion_analysis/visualize_instruction_vs_task_tsne_knn_regions.py --config emotion_analysis/config.json
+
+Or from emotion_analysis/ (uses local ``config.json`` if the default path is missing):
+  cd emotion_analysis && python3 visualize_instruction_vs_task_tsne_knn_regions.py --config config.json
+"""
+
+from __future__ import annotations
+
 import argparse
 import json
+import sys
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Tuple
 
 import numpy as np
 
@@ -30,15 +46,6 @@ FAMILY_COLORS: Dict[str, str] = {
 def _hex_to_rgb(h: str) -> np.ndarray:
     h = h.lstrip("#")
     return np.array([int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16)], dtype=np.float64)
-
-
-def _rgb_to_hex(rgb: np.ndarray) -> str:
-    x = np.clip(np.round(rgb), 0, 255).astype(int)
-    return f"#{x[0]:02x}{x[1]:02x}{x[2]:02x}"
-
-
-def _invert_map(mapping: Dict[str, int]) -> Dict[int, str]:
-    return {int(v): k for k, v in mapping.items()}
 
 
 def _select_device(torch_module) -> str:
@@ -99,7 +106,6 @@ def _concat_outputs(outputs: Dict[str, Any], dim_order: List[str], feature_space
 def _to_representation(features: np.ndarray, representation: str) -> np.ndarray:
     if representation == "logits":
         return features
-    # probs
     x = features - features.max(axis=1, keepdims=True)
     ex = np.exp(x)
     den = ex.sum(axis=1, keepdims=True)
@@ -125,51 +131,11 @@ def _joint_tsne(features: np.ndarray, perplexity: float, random_state: int) -> n
     return tsne.fit_transform(features)
 
 
-def _idw_cell_color(
-    cx: float,
-    cy: float,
-    xy_sites: np.ndarray,
-    families: List[str],
-    k: int,
-    power: float,
-) -> str:
-    dist = np.linalg.norm(xy_sites - np.array([cx, cy], dtype=np.float64), axis=1)
-    dist = np.maximum(dist, 1e-10)
-    if len(dist) <= k:
-        idx = np.arange(len(dist))
-    else:
-        idx = np.argpartition(dist, k)[:k]
-    w = 1.0 / (dist[idx] ** power)
-    w /= w.sum()
-    rgb = np.zeros(3, dtype=np.float64)
-    for wi, j in zip(w, idx):
-        fam = str(families[j]).lower()
-        rgb += wi * _hex_to_rgb(FAMILY_COLORS.get(fam, "#777777"))
-    return _rgb_to_hex(rgb)
-
-
-def _write_png_heatmap_tasks(
+def _plot_extent_with_tasks(
     xy_instruction: np.ndarray,
-    families_instruction: List[str],
     task_rows: List[Dict[str, Any]],
-    out_path: Path,
-    *,
-    feature_space: str,
-    representation: str,
-    grid_n: int = 88,
-    k_neighbors: int = 18,
-    idw_power: float = 2.0,
-    pad_frac: float = 0.06,
-) -> None:
-    """IDW heatmap from instruction t-SNE sites; save static PNG with task markers."""
-    try:
-        import matplotlib
-        matplotlib.use("Agg")
-        import matplotlib.pyplot as plt
-        from matplotlib.lines import Line2D
-    except ImportError as exc:
-        raise ImportError("matplotlib is required for t-SNE PNG plots. Run: pip install matplotlib") from exc
-
+    pad_frac: float,
+) -> Tuple[float, float, float, float]:
     if task_rows:
         all_xy = np.vstack([xy_instruction, np.array([[r["x"], r["y"]] for r in task_rows], dtype=np.float64)])
     else:
@@ -178,25 +144,61 @@ def _write_png_heatmap_tasks(
     min_y, max_y = float(all_xy[:, 1].min()), float(all_xy[:, 1].max())
     dx = max_x - min_x
     dy = max_y - min_y
-    pad_x = max(dx, dy, 1e-6) * pad_frac
-    pad_y = max(dx, dy, 1e-6) * pad_frac
-    min_x -= pad_x
-    max_x += pad_x
-    min_y -= pad_y
-    max_y += pad_y
+    pad = max(dx, dy, 1e-6) * pad_frac
+    return min_x - pad, max_x + pad, min_y - pad, max_y + pad
 
-    heat = np.zeros((grid_n, grid_n, 3), dtype=np.float32)
-    k_cell = min(k_neighbors, len(families_instruction)) if families_instruction else 1
-    for i in range(grid_n):
-        for j in range(grid_n):
-            x0 = min_x + (i / grid_n) * (max_x - min_x)
-            x1 = min_x + ((i + 1) / grid_n) * (max_x - min_x)
-            y0 = min_y + (j / grid_n) * (max_y - min_y)
-            y1 = min_y + ((j + 1) / grid_n) * (max_y - min_y)
-            cxc = (x0 + x1) / 2
-            cyc = (y0 + y1) / 2
-            fill = _idw_cell_color(cxc, cyc, xy_instruction, families_instruction, k_cell, idw_power)
-            heat[j, i, :] = (_hex_to_rgb(fill) / 255.0).astype(np.float32)
+
+def _fit_tsne_family_knn(
+    xy_instruction: np.ndarray,
+    families_instruction: List[str],
+    k_neighbors: int,
+):
+    from sklearn.neighbors import KNeighborsClassifier
+
+    n = len(xy_instruction)
+    if n < 1:
+        raise ValueError("Need at least one instruction point for t-SNE kNN.")
+    k_req = max(3, int(k_neighbors))
+    k_eff = max(1, min(k_req, n))
+    y = np.array([str(f).lower() for f in families_instruction], dtype=object)
+    clf = KNeighborsClassifier(n_neighbors=k_eff, metric="euclidean", weights="distance")
+    clf.fit(xy_instruction.astype(np.float64), y)
+    return clf, k_eff
+
+
+def _write_png_tsne_knn_regions(
+    clf,
+    k_eff: int,
+    xy_instruction: np.ndarray,
+    task_rows: List[Dict[str, Any]],
+    out_path: Path,
+    *,
+    feature_space: str,
+    representation: str,
+    grid_n: int = 88,
+    pad_frac: float = 0.06,
+) -> None:
+    try:
+        import matplotlib
+        matplotlib.use("Agg")
+        import matplotlib.pyplot as plt
+        from matplotlib.lines import Line2D
+    except ImportError as exc:
+        raise ImportError("matplotlib is required for t-SNE PNG plots. Run: pip install matplotlib") from exc
+
+    min_x, max_x, min_y, max_y = _plot_extent_with_tasks(xy_instruction, task_rows, pad_frac)
+    span_x = max_x - min_x
+    span_y = max_y - min_y
+    cx = min_x + (np.arange(grid_n, dtype=np.float64) + 0.5) / grid_n * span_x
+    cy = min_y + (np.arange(grid_n, dtype=np.float64) + 0.5) / grid_n * span_y
+    xc, yc = np.meshgrid(cx, cy)
+    grid_xy = np.stack([xc.ravel(), yc.ravel()], axis=1)
+    preds = clf.predict(grid_xy)
+    rgb = np.array(
+        [_hex_to_rgb(FAMILY_COLORS.get(str(p).lower(), "#777777")) for p in preds],
+        dtype=np.float32,
+    )
+    heat = (rgb / 255.0).reshape(grid_n, grid_n, 3)
 
     fig, ax = plt.subplots(figsize=(12, 7), dpi=120)
     ax.imshow(heat, extent=[min_x, max_x, min_y, max_y], origin="lower", alpha=0.92, interpolation="nearest")
@@ -210,7 +212,9 @@ def _write_png_heatmap_tasks(
     handles = [Line2D([0], [0], marker="o", color="w", markerfacecolor=c, markeredgecolor="#111111", markersize=8, label=n)
                for n, c in FAMILY_COLORS.items()]
     ax.legend(handles=handles, loc="upper right", frameon=True, fontsize=9)
-    ax.set_title(f"instruction vs task model-output t-SNE ({feature_space}, {representation})")
+    ax.set_title(
+        f"instruction vs task t-SNE — kNN regions ({feature_space}, {representation}; k={k_eff})"
+    )
     ax.set_xlabel("t-SNE 1")
     ax.set_ylabel("t-SNE 2")
     ax.grid(False)
@@ -220,9 +224,10 @@ def _write_png_heatmap_tasks(
     plt.close(fig)
 
 
-def visualize_instruction_vs_task_tsne_for_model(config: Dict[str, Any], model_cfg: Dict[str, Any]) -> List[Path]:
+def visualize_instruction_vs_task_tsne_knn_regions_for_model(
+    config: Dict[str, Any], model_cfg: Dict[str, Any]
+) -> List[Path]:
     import torch
-    import torch.nn.functional as F
 
     model_dir = output_dir_for_model(config, model_cfg)
     for name in ("trained_encoder.pt", "label_maps.json", "training_metadata.json", "emotion_embeddings.json"):
@@ -233,7 +238,6 @@ def visualize_instruction_vs_task_tsne_for_model(config: Dict[str, Any], model_c
     label_maps = json.loads((model_dir / "label_maps.json").read_text(encoding="utf-8"))
     train_meta = json.loads((model_dir / "training_metadata.json").read_text(encoding="utf-8"))
     emotions_payload = json.loads((model_dir / "emotion_embeddings.json").read_text(encoding="utf-8"))
-    family_from_idx = _invert_map(label_maps["family_to_idx"])
     dim_order = list(label_maps["dim_to_idx"].keys())
 
     x_instruction = np.array([row["vector"] for row in emotions_payload["records"]], dtype=np.float32)
@@ -251,15 +255,13 @@ def visualize_instruction_vs_task_tsne_for_model(config: Dict[str, Any], model_c
     random_state = int(vis.get("instruction_task_tsne_random_state", 42))
     grid_n = int(vis.get("instruction_task_heatmap_grid", vis.get("learned_tsne_heatmap_grid", 88)))
     k_nb = int(vis.get("instruction_task_heatmap_k", vis.get("learned_tsne_heatmap_k", 18)))
-    idw_p = float(vis.get("instruction_task_idw_power", vis.get("learned_tsne_idw_power", 2.0)))
     cap = vis.get("max_tasks")
 
     device = _select_device(torch)
     model = _load_model(model_dir, label_maps, train_meta, device)
-    print(f"[instruction-vs-task-tsne] device={device}")
+    print(f"[instruction-vs-task-tsne-knn-regions] device={device}")
     knn_models = load_encoder_knn_models(model_dir)
 
-    # Compute instruction features once — reused across every per-file t-SNE
     if knn_models and feature_space == "family":
         with torch.no_grad():
             z_i = model.backbone(torch.tensor(x_instruction, device=device)).detach().cpu().numpy().astype(np.float32)
@@ -302,7 +304,7 @@ def visualize_instruction_vs_task_tsne_for_model(config: Dict[str, Any], model_c
             meta.append(f"{task_path.name}:{task.get('task_id', i)}")
         if skipped_here:
             print(
-                f"[instruction-vs-task-tsne] Skipped {skipped_here} task(s) in {task_path.name} "
+                f"[instruction-vs-task-tsne-knn-regions] Skipped {skipped_here} task(s) in {task_path.name} "
                 "(empty embed text; omitted from plot)."
             )
 
@@ -312,7 +314,7 @@ def visualize_instruction_vs_task_tsne_for_model(config: Dict[str, Any], model_c
             meta = meta[:cap_int]
 
         if not texts:
-            print(f"[instruction-vs-task-tsne] No tasks to plot for {task_path.name}, skipping.")
+            print(f"[instruction-vs-task-tsne-knn-regions] No tasks to plot for {task_path.name}, skipping.")
             continue
 
         x_task = encode_texts(dict(model_cfg), texts).astype(np.float32)
@@ -344,15 +346,7 @@ def visualize_instruction_vs_task_tsne_for_model(config: Dict[str, Any], model_c
         xy_instruction_plot = xy[:n_instruction]
         xy_task = xy[n_instruction:]
 
-        if use_knn:
-            fc = knn_models["family"]
-            fam_probs_t = np.stack([fc.predict_proba(z_tn[j : j + 1])[0] for j in range(len(z_tn))])
-            pred_idx = None
-        else:
-            fam_logits_task = out_task["family"].detach()
-            fam_probs_t = F.softmax(fam_logits_task, dim=1).cpu().numpy()
-            pred_idx = np.argmax(fam_probs_t, axis=1)
-        n_fam = fam_probs_t.shape[1]
+        clf_tsne, k_tsne_eff = _fit_tsne_family_knn(xy_instruction_plot, families_instruction, k_nb)
 
         rows: List[Dict[str, Any]] = []
         for i, rec in enumerate(emotions_payload["records"]):
@@ -368,19 +362,13 @@ def visualize_instruction_vs_task_tsne_for_model(config: Dict[str, Any], model_c
 
         task_rows_plot: List[Dict[str, Any]] = []
         for i, label in enumerate(meta):
-            if pred_idx is None:
-                classes = knn_models["family"].classes_
-                bi = int(np.argmax(fam_probs_t[i]))
-                fam = family_from_idx[int(classes[bi])]
-                probs = {
-                    family_from_idx[int(classes[k])]: float(fam_probs_t[i, k])
-                    for k in range(len(classes))
-                }
-                pmax = float(fam_probs_t[i][bi])
-            else:
-                fam = family_from_idx[int(pred_idx[i])]
-                probs = {family_from_idx[j]: float(fam_probs_t[i, j]) for j in range(n_fam)}
-                pmax = float(fam_probs_t[i, pred_idx[i]])
+            xy_one = xy_task[i : i + 1].astype(np.float64)
+            proba_vec = clf_tsne.predict_proba(xy_one)[0]
+            classes = [str(c).lower() for c in clf_tsne.classes_]
+            bi = int(np.argmax(proba_vec))
+            fam = classes[bi]
+            probs = {classes[j]: float(proba_vec[j]) for j in range(len(classes))}
+            pmax = float(proba_vec[bi])
             row = {
                 "kind": "task_model_output",
                 "label": label,
@@ -394,26 +382,26 @@ def visualize_instruction_vs_task_tsne_for_model(config: Dict[str, Any], model_c
             task_rows_plot.append(row)
 
         stem = task_path.stem
-        points_path = out_dir / f"instruction_vs_{stem}_tsne_points.json"
-        png_path = out_dir / f"instruction_vs_{stem}_tsne.png"
-        meta_out_path = out_dir / f"instruction_vs_{stem}_tsne_meta.json"
+        suffix = "_tsne_knn_regions"
+        points_path = out_dir / f"instruction_vs_{stem}{suffix}_points.json"
+        png_path = out_dir / f"instruction_vs_{stem}{suffix}.png"
+        meta_out_path = out_dir / f"instruction_vs_{stem}{suffix}_meta.json"
 
         points_path.write_text(json.dumps(rows, indent=2), encoding="utf-8")
-        _write_png_heatmap_tasks(
+        _write_png_tsne_knn_regions(
+            clf_tsne,
+            k_tsne_eff,
             xy_instruction_plot,
-            families_instruction,
             task_rows_plot,
             png_path,
             feature_space=feature_space,
             representation=eff_representation,
             grid_n=grid_n,
-            k_neighbors=max(3, k_nb),
-            idw_power=idw_p,
         )
         meta_out_path.write_text(
             json.dumps(
                 {
-                    "kind": "instruction_vs_task_model_output_tsne",
+                    "kind": "instruction_vs_task_tsne_knn_regions",
                     "task_file": str(task_path),
                     "n_instruction_points": n_instruction,
                     "n_task_points": len(texts),
@@ -422,9 +410,10 @@ def visualize_instruction_vs_task_tsne_for_model(config: Dict[str, Any], model_c
                     "feature_dim": int(all_features.shape[1]),
                     "perplexity": perplexity,
                     "random_state": random_state,
+                    "region_mode": "tsne_knn",
                     "heatmap_grid": grid_n,
-                    "heatmap_k": k_nb,
-                    "idw_power": idw_p,
+                    "heatmap_k_config": k_nb,
+                    "tsne_knn_k_effective": k_tsne_eff,
                     "points_json": str(points_path),
                     "plot_png": str(png_path),
                 },
@@ -433,19 +422,30 @@ def visualize_instruction_vs_task_tsne_for_model(config: Dict[str, Any], model_c
             encoding="utf-8",
         )
         out_paths.append(png_path)
-        print(f"[instruction-vs-task-tsne] Wrote {png_path}")
+        print(f"[instruction-vs-task-tsne-knn-regions] Wrote {png_path}")
 
     return out_paths
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Plot t-SNE of instruction outputs and task outputs.")
+    parser = argparse.ArgumentParser(
+        description="t-SNE instruction vs tasks with kNN decision regions in 2D (same kNN colors tasks and field)."
+    )
     parser.add_argument("--config", default="emotion_analysis/config.json")
     args = parser.parse_args()
 
-    config = load_config(args.config)
+    config_path = Path(args.config)
+    if not config_path.is_file():
+        alt = Path("config.json")
+        if alt.is_file():
+            config_path = alt
+        else:
+            print(f"Config not found: {args.config}", file=sys.stderr)
+            sys.exit(1)
+
+    config = load_config(str(config_path))
     model_cfg = get_embedding_model_cfg(config)
-    out_paths = visualize_instruction_vs_task_tsne_for_model(config, model_cfg)
+    out_paths = visualize_instruction_vs_task_tsne_knn_regions_for_model(config, model_cfg)
     for p in out_paths:
         print(f"Wrote {p}")
 

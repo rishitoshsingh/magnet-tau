@@ -25,4 +25,4 @@ python emotion_analysis/run_all.py --config emotion_analysis/config.json
 - `task_prediction_outputs.json` — list of written prediction file paths
 - `<task_stem>_with_emotion_predictions.json` — original task file with `novel_emotion_prediction` added to each task (written next to the input file)
 - `analysis/instruction_model_output_tsne.png` — t-SNE of instructions only, colored by emotion family
-- `analysis/instruction_vs_<task_stem>_tsne.png` — one heatmap per task file showing tasks plotted over the emotion region background
+- `analysis/instruction_vs_<task_stem>_tsne_knn_regions.png` — one plot per task file: t-SNE with kNN decision regions in 2D (task colors match the field)
