@@ -59,21 +59,28 @@ Recommended graph JSON files:
 | `telecom` | `output/graphs/openai_gpt-5.2/telecom_adjacency_matrix_0.0.json` |
 | `telehealth` | `output/graphs/openai_gpt-5.2/telehealth_adjacency_matrix_0.0.json` |
 
-## 4.1 Sampling Traces using `build_trace_v2.py` [TODO]
+## 4.1 Sampling Traces using `build_trace_v3.py` [TODO]
 
 Run once per graph JSON to generate traces for task generation.
+
+Traces are generated deterministically using two independent distributions:
+- `--walk-steps` + `--walk-steps-dist`: controls how many tools appear in each turn
+- `--num-intents` + `--num-intents-dist`: controls how many independent intents are concatenated per trace
 
 TODO before running:
 
 - set `--graph_json_path` to the target domain graph
 - adjust `--num-traces` if you want more or fewer traces
+- adjust `--walk-steps-dist` and `--num-intents-dist` to control trace shape (must each sum to 1.0)
 
 ```bash
-python build_trace_v2.py \
+python build_trace_v3.py \
   --graph_json_path output/graphs/openai_gpt-5.2/airline_adjacency_matrix_0.0.json \
-  --num-traces 50 \
+  --num-traces 1000 \
   --walk-steps 2 3 4 \
-  --extra-turn-prob 0.3 \
+  --walk-steps-dist 0.5 0.3 0.2 \
+  --num-intents 1 2 3 \
+  --num-intents-dist 0.6 0.3 0.1 \
   --random-seed 10
 ```
 
@@ -81,6 +88,25 @@ Output:
 
 ```text
 output/traces/<graph_name>_traces.json
+```
+
+Stats are printed after generation, showing trace counts broken down by number of intents and by intent pattern (actual tools per turn), for example:
+
+```text
+=== Dataset Stats ===
+Total traces: 1000
+
+Traces by num intents:
+  1 intent :    600  (60.0%)
+  2 intents:    300  (30.0%)
+  3 intents:    100  (10.0%)
+
+Traces by intent pattern (tools per turn):
+  [2]      :    180  (18.0%)
+  [3]      :    240  (24.0%)
+  [2, 2]   :     90  (9.0%)
+  [2, 3]   :    105  (10.5%)
+  ...
 ```
 
 ## 4.2 Generating Tasks using `generator.py` [TODO]
