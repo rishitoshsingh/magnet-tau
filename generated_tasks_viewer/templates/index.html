@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Generated Tasks Viewer</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="page-shell">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">Generated Task Viewer</p>
+        <h1>Explore LLM-generated task JSONs</h1>
+        <p class="hero-copy">Tasks are collapsed by default. Expand one to inspect user details, instruction, preference instruction, story, feeling text, optional emotion-prediction metadata, ground truth, action trace, and trajectories (including the feeling generator) with nested conversation messages.</p>
+      </div>
+      <form action="{{ url_for('load_path') }}" method="post" class="loader-card">
+        <label for="path">JSON path</label>
+        <div class="loader-row">
+          <input
+            id="path"
+            name="path"
+            type="text"
+            placeholder="output/traces/airline_adjacency_matrix_0.0_generated_tasks.json"
+            value="{{ path_tried or '' }}"
+          >
+          <button type="submit">Load</button>
+        </div>
+        <p class="hint">Relative paths are resolved from the project root.</p>
+        {% if loaded_path %}
+        <p class="loaded-path">Loaded: <code>{{ loaded_path }}</code></p>
+        {% endif %}
+        {% if error %}
+        <p class="error">{{ error }}</p>
+        {% endif %}
+      </form>
+    </header>
+
+    {% if tasks %}
+    <section class="results-meta">
+      <p>{{ tasks|length }} task{{ '' if tasks|length == 1 else 's' }}</p>
+    </section>
+
+    <section class="task-list">
+      {% for task in tasks %}
+      <details class="task-card">
+        <summary class="task-summary">
+          <div class="task-summary-main">
+            <span class="task-badge">Task {{ task._index }}</span>
+            <h2>user_id: {{ task.get('user_id', 'N/A') }}</h2>
+            <p class="summary-instruction">{{ task._instruction_preview or 'No instruction preview available.' }}</p>
+            {% if task._feeling_preview %}
+            <p class="summary-feeling"><span class="summary-feeling-label">Feeling</span> {{ task._feeling_preview }}</p>
+            {% endif %}
+          </div>
+          <div class="task-summary-side">
+            <span>task_id {{ task.get('task_id', 'N/A') }}</span>
+            <span>run {{ task.get('run', 'N/A') }}</span>
+          </div>
+        </summary>
+
+        <div class="task-body">
+          <div class="field-grid">
+            <section class="field-card">
+              <h3>User ID</h3>
+              <pre>{{ task.get('user_id', '') }}</pre>
+            </section>
+
+            <section class="field-card">
+              <h3>Instruction</h3>
+              <pre>{{ task.get('instruction', '') }}</pre>
+            </section>
+
+            <section class="field-card">
+              <h3>Preference instruction</h3>
+              {% set pref = task.get('preference_instruction') %}
+              {% if pref %}
+              <pre>{{ pref }}</pre>
+              {% else %}
+              <pre>{{ (task.get('preference_instructions') or []) | join('\n\n') }}</pre>
+              {% endif %}
+            </section>
+
+            <section class="field-card">
+              <h3>Story</h3>
+              <pre>{{ task.get('story', '') }}</pre>
+            </section>
+
+            <section class="field-card">
+              <h3>Feeling</h3>
+              <pre>{{ task.get('feeling', '') or '—' }}</pre>
+            </section>
+
+            {% if task.get('novel_emotion_prediction') %}
+            <section class="field-card span-2">
+              <h3>Novel emotion prediction</h3>
+              <p class="field-hint">Atlas-style match from enriched task JSONs (family, leaf, dimensions, closest persona instructions).</p>
+              <pre>{{ task.get('novel_emotion_prediction') | tojson(indent=2) }}</pre>
+            </section>
+            {% endif %}
+
+            <section class="field-card span-2">
+              <h3>Ground truth</h3>
+              {% if task.get('ground_truth_actions') %}
+              <div class="ground-truth-list">
+                {% for action in task.get('ground_truth_actions', []) %}
+                <details class="nested-card">
+                  <summary>
+                    <span>{{ loop.index }}. {{ action.get('name', 'Unnamed action') }}</span>
+                  </summary>
+                  <pre>{{ action | tojson(indent=2) }}</pre>
+                </details>
+                {% endfor %}
+              </div>
+              {% else %}
+              <pre>{{ task.get('ground_truth', {}) | tojson(indent=2) }}</pre>
+              {% endif %}
+            </section>
+          </div>
+
+          <details class="section-card">
+            <summary>Action trace ({{ task.get('action_trace', [])|length }})</summary>
+            <div class="section-content">
+              {% for turn in task.get('action_trace', []) %}
+              <details class="nested-card">
+                <summary>Turn {{ loop.index0 }} ({{ turn|length }} nodes)</summary>
+                <div class="nested-stack">
+                  {% for node in turn %}
+                  <details class="nested-card">
+                    <summary>Node {{ node.get('idx', 'N/A') }}: {{ node.get('name', 'Unnamed') }}</summary>
+                    <pre>{{ node | tojson(indent=2) }}</pre>
+                  </details>
+                  {% endfor %}
+                </div>
+              </details>
+              {% else %}
+              <p class="empty-state">No action trace available.</p>
+              {% endfor %}
+            </div>
+          </details>
+
+          <details class="section-card">
+            <summary>Trajectories</summary>
+            <div class="section-content">
+              {% for group in task._trajectory_groups %}
+              <details class="nested-card">
+                <summary>{{ group.label }} ({{ group.messages|length }} messages)</summary>
+                <div class="nested-stack">
+                  {% for message in group.messages %}
+                  <details class="message-card">
+                    <summary>
+                      <span class="role-pill role-{{ message.get('role', 'unknown') }}">{{ message.get('role', 'unknown') }}</span>
+                      <span>{{ message_preview(message) or 'Empty message' }}</span>
+                    </summary>
+                    <pre>{{ message | tojson(indent=2) }}</pre>
+                  </details>
+                  {% else %}
+                  <p class="empty-state">No conversation messages in this trajectory.</p>
+                  {% endfor %}
+                </div>
+              </details>
+              {% endfor %}
+            </div>
+          </details>
+
+          <details class="section-card">
+            <summary>Other metadata</summary>
+            <div class="section-content metadata-list">
+              {% for key, value in task.items() %}
+              {% if key not in [
+                '_index',
+                '_instruction_preview',
+                '_feeling_preview',
+                '_trajectory_groups',
+                'task_id',
+                'run',
+                'user_id',
+                'instruction',
+                'preference_instruction',
+                'preference_instructions',
+                'story',
+                'feeling',
+                'feeling_traj',
+                'novel_emotion_prediction',
+                'ground_truth',
+                'ground_truth_actions',
+                'action_trace',
+                'generator_traj',
+                'preference_traj',
+                'task_checker_traj'
+              ] %}
+              <details class="nested-card">
+                <summary>{{ key }}</summary>
+                <pre>{{ value | tojson(indent=2) }}</pre>
+              </details>
+              {% endif %}
+              {% endfor %}
+            </div>
+          </details>
+        </div>
+      </details>
+      {% endfor %}
+    </section>
+    {% else %}
+    <section class="empty-view">
+      <p>Load a generated tasks JSON file to start exploring.</p>
+      <code>python3 app.py ../output/traces/airline_adjacency_matrix_0.0_generated_tasks.json</code>
+    </section>
+    {% endif %}
+  </div>
+</body>
+</html>
