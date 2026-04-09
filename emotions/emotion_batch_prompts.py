@@ -7,7 +7,7 @@ Context:
 Rules:
 - Return ONLY valid JSON matching the requested shape. No markdown fences.
 - Produce exactly the requested number of instruction strings in the "instructions" array.
-- Each instruction: 2-4 short lines or sentences, second person ("You ...").
+- Each instruction: 3-4 short lines or sentences, second person ("You ...").
 - Reflect the emotion (family + specific feeling), politeness, urgency, and trust in the agent.
 - Do not mention benchmarks, evaluation, or hidden workflows.
 - Keep varied wording across the variants."""

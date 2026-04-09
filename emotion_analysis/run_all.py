@@ -1,34 +1,32 @@
 import argparse
 
-from dotenv import load_dotenv
-
-from analyze_and_visualize import run_analysis
-from config_utils import PROJECT_ROOT, ensure_dir, load_config, resolve_project_path
-from encode_emotions import encode_emotions
-from encode_tasks import encode_tasks
-
-
-load_dotenv(dotenv_path=PROJECT_ROOT / ".env")
+from encode_emotions import encode_emotions_for_model
+from encode_task_feelings import predict_for_model
+from train_encoder import train_for_model
+from utils import get_embedding_model_cfg, load_config
+from visualize_instruction_tsne import visualize_instruction_tsne_for_model
+from visualize_instruction_vs_task_tsne import visualize_instruction_vs_task_tsne_for_model
 
 
 def run_all(config_path: str) -> None:
     config = load_config(config_path)
-    ensure_dir(resolve_project_path(config["outputs"]["root_dir"]))
-
-    task_input = resolve_project_path(config["inputs"]["tasks_path"])
-    emotion_input = resolve_project_path(config["inputs"]["emotions_path"])
-    task_embeddings = resolve_project_path(config["outputs"]["task_embeddings_path"])
-    emotion_embeddings = resolve_project_path(config["outputs"]["emotion_embeddings_path"])
-    analysis_dir = resolve_project_path(config["outputs"]["analysis_dir"])
-
-    encode_tasks(task_input, task_embeddings, config["encoder"])
-    encode_emotions(emotion_input, emotion_embeddings, config["encoder"])
-    run_analysis(task_embeddings, emotion_embeddings, analysis_dir, config.get("reranker", {}))
+    model_cfg = get_embedding_model_cfg(config)
+    emb = encode_emotions_for_model(config, model_cfg)
+    print(f"[1/5] {emb}")
+    ckpt = train_for_model(config, model_cfg)
+    print(f"[2/5] {ckpt}")
+    pred = predict_for_model(config, model_cfg)
+    print(f"[3/5] {pred['summary_path']}")
+    inst_tsne = visualize_instruction_tsne_for_model(config, model_cfg)
+    print(f"[4/5] {inst_tsne}")
+    tsne_paths = visualize_instruction_vs_task_tsne_for_model(config, model_cfg)
+    for tsne in tsne_paths:
+        print(f"[5/5] {tsne}")
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Run the full pipeline using the central config.")
-    parser.add_argument("--config", default="emotion_analysis/config.json", help="Path to config JSON.")
+    parser = argparse.ArgumentParser(description="Run novel emotion analysis pipeline end-to-end.")
+    parser.add_argument("--config", default="emotion_analysis/config.json")
     args = parser.parse_args()
     run_all(args.config)
 

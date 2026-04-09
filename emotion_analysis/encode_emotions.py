@@ -1,92 +1,76 @@
 import argparse
 import json
 from pathlib import Path
+from typing import Dict, List
 
-from dotenv import load_dotenv
-
-from config_utils import PROJECT_ROOT, ensure_parent_dir, load_config, resolve_project_path
-from text_encoder import LiteLLMEncoder, SimpleEncoder
-
-
-load_dotenv(dotenv_path=PROJECT_ROOT / ".env")
-
-
-def build_instruction_text(category: str, blend: dict, instruction: dict) -> str:
-    blend_terms = ", ".join(blend.get("blend", []))
-    parts = [
-        f"Category: {category}",
-        f"Blend: {blend_terms}",
-        f"Rationale: {blend.get('rationale', '')}",
-        f"Instruction: {instruction.get('text', '')}",
-    ]
-    return "\n".join(parts)
+from utils import (
+    ensure_parent,
+    encode_texts,
+    get_embedding_model_cfg,
+    load_config,
+    output_dir_for_model,
+    resolve_project_path,
+)
 
 
-def build_encoder(encoder_config: dict):
-    encoder_type = encoder_config.get("type", "simple")
-    if encoder_type == "simple":
-        return SimpleEncoder(dim=encoder_config.get("dim", 512))
-    if encoder_type == "llm":
-        return LiteLLMEncoder(
-            model=encoder_config["model"],
-            api_base=encoder_config.get("api_base", ""),
-            batch_size=encoder_config.get("batch_size", 32),
-        )
-    raise ValueError(f"Unsupported encoder type: {encoder_type}")
+def build_training_text(spec: Dict[str, str], instruction_text: str) -> str:
+    # Only embed the natural-language instruction text so the classifier learns
+    # to detect emotional tone from language rather than from an explicit label
+    # prefix (which never appears at inference time on task feelings).
+    return instruction_text
 
 
-def encode_emotions(input_path: str, output_path: str, encoder_config: dict) -> None:
-    data = json.loads(Path(input_path).read_text())
-    encoder = build_encoder(encoder_config)
+def encode_emotions_for_model(config: Dict, model_cfg: Dict) -> Path:
+    input_path = resolve_project_path(config["inputs"]["emotion_persona_instructions_path"])
+    data = json.loads(input_path.read_text(encoding="utf-8"))
 
-    items = []
-    texts = []
-    for category in data.get("categories", []):
-        category_name = category.get("category")
-        for blend in category.get("blends", []):
-            for instruction in blend.get("instructions", []):
-                text = build_instruction_text(category_name, blend, instruction)
-                items.append((category_name, blend, instruction, text))
-                texts.append(text)
+    rows: List[Dict] = []
+    texts: List[str] = []
+    for item in data.get("items", []):
+        spec = item.get("spec", {})
+        for instruction in item.get("instructions", []):
+            instruction_text = str(instruction.get("text", "")).strip()
+            if not instruction_text:
+                continue
+            text_for_encoder = build_training_text(spec, instruction_text)
+            rows.append(
+                {
+                    "item_id": item.get("id"),
+                    "instruction_id": instruction.get("id"),
+                    "instruction_text": instruction_text,
+                    "spec": spec,
+                    "text_for_encoder": text_for_encoder,
+                }
+            )
+            texts.append(text_for_encoder)
 
-    vectors = encoder.encode(texts)
-    records = []
-    for item, vector in zip(items, vectors):
-        category_name, blend, instruction, text = item
-        records.append(
-            {
-                "category": category_name,
-                "blend_id": blend.get("id"),
-                "blend": blend.get("blend", []),
-                "rationale": blend.get("rationale", ""),
-                "instruction_id": instruction.get("id"),
-                "instruction_text": instruction.get("text", ""),
-                "text": text,
-                "vector": vector.tolist(),
-            }
-        )
+    vectors = encode_texts(model_cfg, texts)
+    for row, vector in zip(rows, vectors):
+        row["vector"] = vector.tolist()
 
+    out_dir = output_dir_for_model(config, model_cfg)
+    out_path = out_dir / "emotion_embeddings.json"
+    ensure_parent(out_path)
     payload = {
-        "kind": "emotion_embeddings",
-        "encoder": encoder.metadata(),
-        "embedding_dim": len(records[0]["vector"]) if records else 0,
-        "source_path": input_path,
-        "records": records,
+        "kind": "novel_emotion_embeddings",
+        "model_config": model_cfg,
+        "source_path": str(input_path),
+        "embedding_dim": int(vectors.shape[1]) if vectors.size else 0,
+        "records": rows,
     }
-    ensure_parent_dir(output_path)
-    Path(output_path).write_text(json.dumps(payload, indent=2))
+    out_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+    return out_path
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Encode emotion instructions using the central config.")
-    parser.add_argument("--config", default="emotion_analysis/config.json", help="Path to config JSON.")
+    parser = argparse.ArgumentParser(description="Encode emotion persona instructions.")
+    parser.add_argument("--config", default="emotion_analysis/config.json")
     args = parser.parse_args()
+
     config = load_config(args.config)
-    encode_emotions(
-        input_path=resolve_project_path(config["inputs"]["emotions_path"]),
-        output_path=resolve_project_path(config["outputs"]["emotion_embeddings_path"]),
-        encoder_config=config["encoder"],
-    )
+    model_cfg = get_embedding_model_cfg(config)
+    out_path = encode_emotions_for_model(config, model_cfg)
+    print(f"Wrote {out_path}")
 
 
 if __name__ == "__main__":

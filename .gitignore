@@ -2,12 +2,15 @@
 .vscode/
 .DS_Store
 
-report
+report*
 
 output/traces/*
 
 */__pycache__/
 __pycache__/
 CLAUDE.md
-
+.claude/
 .venv/
+
+emotions/output/
+emotion_analysis/output/

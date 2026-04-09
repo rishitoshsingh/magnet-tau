@@ -5,7 +5,7 @@
   "batch_input_name": "emotion_persona_batch_input.jsonl",
   "specs_snapshot_name": "emotion_persona_batch_specs.json",
   "merged_output_path": "emotions/output/emotion_persona_instructions.json",
-  "model": "gpt-4o-mini",
+  "model": "gpt-4.1",
   "instructions_per_spec": 10,
   "temperature": 0.8,
   "poll_seconds": 30,
