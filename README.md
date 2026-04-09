@@ -1,16 +1,20 @@
 # Magnet-TAU
 
-Generate tool graphs, sample traces, and produce downstream tasks.
+Synthetic task generation for multi-domain customer service agents: tool graphs, traces, generated tasks, and optional emotion enrichment.
 
-## 1. Environment Setup [TODO]
+Supported domains: **airline**, **retail**, **telecom**, **telehealth**.
 
-Python `3.10` is the target version.
+---
+
+## 1. Environment setup
+
+Python **3.10** is the target version.
 
 ### Conda
 
 ```bash
-conda create -n tracer python=3.10 -y
-conda activate tracer
+conda create -n magnet-tau python=3.10 -y
+conda activate magnet-tau
 pip install -r requirements.txt
 ```
 
@@ -18,29 +22,44 @@ pip install -r requirements.txt
 
 ```bash
 python3.10 -m venv .venv
-source .venv/bin/activate
+source .venv/bin/activate   # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-## 2. Create `.env` [TODO]
+---
 
-Create `.env` in the repo root before running any script.
+## 2. Create `.env`
+
+Create a `.env` file in the **repository root** before running scripts that call LLM or embedding APIs.
 
 ```bash
-OPENAI_API_KEY=your_openai_api_key
-HOSTED_VLLM_API_KEY=your_hosted_vllm_api_key
-VLLM_API_KEY=your_vllm_api_key
+OPENAI_API_KEY=...
+HOSTED_VLLM_API_KEY=...   # hosted models
+VLLM_API_KEY=...          # hosted models
 ```
 
-- `OPENAI_API_KEY` for OpenAI models
-- `HOSTED_VLLM_API_KEY` for hosted models
-- `VLLM_API_KEY` for hosted models
+- **OpenAI**: graph building, trace/task generation, embeddings, emotion batch jobs, etc.
+- **Hosted VLLM**: set both `HOSTED_VLLM_API_KEY` and `VLLM_API_KEY` when using that stack.
+- **LangSmith**: optional tracing for LangChain/LangGraph pipelines.
 
-If a hosted model is used, set both `HOSTED_VLLM_API_KEY` and `VLLM_API_KEY`.
+---
 
-## 3. Build Graphs using `graph_builder.py` [DONE]
+## 3. Extend telehealth data (optional)
 
-This step is already done. Re-run only if you want to rebuild graph JSONs.
+Deterministic growth of telehealth JSON data and scenario blueprints. Configure paths and targets in the config file, then run:
+
+```bash
+python data_extender/telehealth/extend_telehealth.py \
+  --config data_extender/telehealth/extend_telehealth_config.json
+```
+
+Key ideas: `input_data_dir`, `target_new_patients` / providers / devices, `target_scenarios`, `scenario_mix`, and model settings in that JSON.
+
+---
+
+## 4. Graph construction
+
+Build tool adjacency graphs (nodes = tools, edges = valid call sequences). Re-run only when you need to rebuild graphs.
 
 ```bash
 python graph_builder.py \
@@ -50,28 +69,20 @@ python graph_builder.py \
   --domains airline retail telecom telehealth
 ```
 
-Recommended graph JSON files:
+Example outputs:
 
-| Domain | Graph JSON |
+| Domain | Graph JSON (example path) |
 | --- | --- |
-| `airline` | `output/graphs/openai_gpt-5.2/airline_adjacency_matrix_0.0.json` |
-| `retail` | `output/graphs/openai_gpt-5.2/retail_adjacency_matrix_0.0.json` |
-| `telecom` | `output/graphs/openai_gpt-5.2/telecom_adjacency_matrix_0.0.json` |
-| `telehealth` | `output/graphs/openai_gpt-5.2/telehealth_adjacency_matrix_0.0.json` |
+| airline | `output/graphs/openai_gpt-5.2/airline_adjacency_matrix_0.0.json` |
+| retail | `output/graphs/openai_gpt-5.2/retail_adjacency_matrix_0.0.json` |
+| telecom | `output/graphs/openai_gpt-5.2/telecom_adjacency_matrix_0.0.json` |
+| telehealth | `output/graphs/openai_gpt-5.2/telehealth_adjacency_matrix_0.0.json` |
 
-## 4.1 Sampling Traces using `build_trace_v3.py` [TODO]
+---
 
-Run once per graph JSON to generate traces for task generation.
+## 5. Trace sampling
 
-Traces are generated deterministically using two independent distributions:
-- `--walk-steps` + `--walk-steps-dist`: controls how many tools appear in each turn
-- `--num-intents` + `--num-intents-dist`: controls how many independent intents are concatenated per trace
-
-TODO before running:
-
-- set `--graph_json_path` to the target domain graph
-- adjust `--num-traces` if you want more or fewer traces
-- adjust `--walk-steps-dist` and `--num-intents-dist` to control trace shape (must each sum to 1.0)
+Sample traces from a graph JSON with deterministic distributions (`walk_steps` / `num_intents` and their weights). Always pass `--random-seed` for reproducibility.
 
 ```bash
 python build_trace_v3.py \
@@ -84,108 +95,62 @@ python build_trace_v3.py \
   --random-seed 10
 ```
 
-Output:
+- Set `--graph_json_path` to the domain graph you want.
+- Distributions must sum to `1.0`.
 
-```text
-output/traces/<graph_name>_traces.json
-```
+Traces are written under `output/traces/` (filename derived from the graph stem).
 
-Stats are printed after generation, showing trace counts broken down by number of intents and by intent pattern (actual tools per turn), for example:
+---
 
-```text
-=== Dataset Stats ===
-Total traces: 1000
+## 6. Task generator
 
-Traces by num intents:
-  1 intent :    600  (60.0%)
-  2 intents:    300  (30.0%)
-  3 intents:    100  (10.0%)
-
-Traces by intent pattern (tools per turn):
-  [2]      :    180  (18.0%)
-  [3]      :    240  (24.0%)
-  [2, 2]   :     90  (9.0%)
-  [2, 3]   :    105  (10.5%)
-  ...
-```
-
-## 4.2 Generating Tasks using `generator.py` [TODO]
-
-Update `tracer2/config/generator_config.json`, then run:
-
-TODO before running:
-
-- set `env` to the target domain
-- set `trace_path` to the matching traces file
-- set `generator_model_provider`, `generator_model`, and `api_base` for the model you want to use
-- optionally use `task_ids`, `start_index`, and `end_index` to control which tasks are generated
+`tracer2/generator.py` turns traces into natural-language tasks (multi-agent LangGraph pipeline). Point a **per-domain** config at the matching traces file and model settings.
 
 ```bash
-python -m tracer2.generator --config tracer2/config/generator_config.json
+python -m tracer2.generator --config tracer2/config/generator_config_airline.json
 ```
 
-Key config fields:
+Typical config fields: `env`, `trace_path`, `generator_model_provider`, `generator_model`, `api_base`, and optional `start_index` / `end_index` / `task_ids`.
 
-- `env`
-- `trace_path`
-- `generator_model_provider`
-- `generator_model`
-- `api_base`
-- `start_index`
-- `end_index`
-- `task_ids`
+Generated tasks are written under `output/tasks/` (exact path depends on your generator config).
 
-## 5. Generate Emotion Bank [DONE]
+---
 
-Use `emotions/build_emotion_instruction_graph.py`.
+## 7. Emotion persona instructions
 
-```bash
-python emotions/build_emotion_instruction_graph.py \
-  --config emotions/emotion_instruction_graph_config.json
-```
+Batch generation of emotion persona instructions (OpenAI Batch API), config, and outputs are documented here:
 
-Output:
+**[emotions/README.md](emotions/README.md)**
+
+---
+
+## 8. Emotion analysis
+
+Encode emotion instructions, train the encoder + kNN, run inference on tasks, and produce analysis plots (`run_all.py`).
+
+**This step is what adds emotion instruction / novel-emotion predictions onto your generated tasks** (e.g. sidecar or suffixed JSON with `novel_emotion_prediction` per task, as configured in `emotion_analysis/config.json`). Without running it, tracer output alone does not include that layer.
+
+**[emotion_analysis/README.md](emotion_analysis/README.md)**
+
+---
+
+## 9. Generated tasks viewer
+
+Local Flask UI to browse `*_generated_tasks.json` files (accordion layout, trajectories, action traces).
+
+**[generated_tasks_viewer/README.md](generated_tasks_viewer/README.md)**
+
+---
+
+## Pipeline sketch
 
 ```text
-emotions/emotion_instructions.generated.json
+graph_builder.py       → output/graphs/...
+extend_telehealth.py   → extended telehealth JSON (optional)
+build_trace_v3.py      → output/traces/...
+tracer2/generator.py   → output/tasks/...
+emotions/              → emotions/output/emotion_persona_instructions.json
+emotion_analysis/      → encode instructions, train encoder+kNN, attach predictions to tasks, analysis/ plots
 ```
 
-Key config options in `emotions/emotion_instruction_graph_config.json`:
-
-- `model`, `provider`, `base_api`: model backend settings
-- `max_blends`: increases the number of emotion blends per category
-- `instructions_per_blend`: increases the number of instruction variants per blend
-- `recursion_limit`: increase if the workflow needs more graph steps for larger runs
-- `emotion_bank_path`: input emotion bank JSON
-- `output_path`: generated instruction JSON
-- `graph_png_path`: workflow graph PNG
-
-## 6. Extend Telehealth Data [TODO]
-
-Use `data_extender/telehealth/extend_telehealth.py`.
-
-TODO before running:
-
-- set `input_data_dir`, for example `tau_bench/envs/telehealth/data/`
-- set `target_new_patients`, `target_family_groups`, `target_new_providers`, `target_new_devices`, and `target_scenarios`
-- adjust `scenario_mix` for the scenario distribution you want
-- set `model` and `provider`
-
-```bash
-python data_extender/telehealth/extend_telehealth.py \
-  --config data_extender/telehealth/extend_telehealth_config.json
-```
-
-Key config options in `data_extender/telehealth/extend_telehealth_config.json`:
-
-- `input_data_dir`: source telehealth dataset, for example `tau_bench/envs/telehealth/data/`
-- `target_new_patients`, `target_family_groups`, `target_new_providers`, `target_new_devices`: deterministic master-data growth
-- `target_scenarios`: number of scenario blueprints and generated scenario cases
-- `scenario_mix`: distribution across scenario types
-- `model`, `provider`: model generation settings
-
-To increase generations:
-
-- increase `target_scenarios` to generate more scenario cases
-- increase `target_new_patients`, `target_new_providers`, and `target_new_devices` to expand the underlying dataset
-- adjust `scenario_mix` if you want more of specific scenario types
+For more architecture notes (agents, envs, trace semantics), see **[CLAUDE.md](CLAUDE.md)**.
