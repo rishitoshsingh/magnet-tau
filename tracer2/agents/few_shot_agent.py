@@ -4,9 +4,8 @@ import json
 import random
 from typing import Any, Dict, List, Optional
 
-from litellm import completion
-
 from tracer2.agents.base import Agent
+from tracer2.llm_utils import completion_with_retry
 from tracer2.envs.base import Env
 from tracer2.types import RESPOND_ACTION_NAME, Action, SolveResult
 
@@ -48,10 +47,10 @@ class FewShotToolCallingAgent(Agent):
             {"role": "user", "content": obs},
         ]
         for _ in range(max_num_steps):
-            res = completion(
-                messages=messages,
+            res = completion_with_retry(
                 model=self.model,
                 custom_llm_provider=self.provider,
+                messages=messages,
                 tools=self.tools_info,
                 temperature=self.temperature,
             )

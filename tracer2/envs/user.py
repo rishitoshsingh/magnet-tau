@@ -2,7 +2,7 @@
 
 import abc
 import enum
-from litellm import completion
+from tracer2.llm_utils import completion_with_retry as completion
 
 from typing import Optional, List, Dict, Any, Union
 
