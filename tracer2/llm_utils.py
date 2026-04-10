@@ -38,8 +38,7 @@ def _get_router(full_model: str, api_base: Optional[str]) -> Router:
             ),
             num_retries=6,
             retry_after=30,       # minimum seconds between retries
-            allowed_fails=5,     # failures per minute before cooldown kicks in
-            cooldown_time=60,    # seconds to cool down after allowed_fails errors
+            disable_cooldowns=True,  # cooldowns require multiple deployments; with one model they block all calls
         )
     return _routers[key]
 
