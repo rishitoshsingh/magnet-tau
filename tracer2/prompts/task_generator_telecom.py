@@ -98,7 +98,7 @@ Your final output must be valid JSON and must match this exact schema. No extra 
 }
 
 All four fields are REQUIRED:
-  • user_id (the customer_id, from reverse tools)
+  • user_id (the customer's email, from reverse tools; used for authentication)
   • instructions
   • story
   • actions
@@ -109,7 +109,7 @@ The output is invalid if the actions field is missing.
 
 INSTRUCTIONS FIELD GUIDELINES
 
-The length of the instructions array MUST equal the number of TURNs in the provided trace. Each instruction corresponds to exactly one TURN. Every instruction must explicitly include the customer_id and all relevant identifiers needed for that turn: ticket_id, service_id, device_name, payment amount, etc. Instructions must be realistic, user-facing, and conversational. They must provide all necessary information upfront so that the agent executing the trace does not need to ask follow-up questions.
+The length of the instructions array MUST equal the number of TURNs in the provided trace. Each instruction corresponds to exactly one TURN. Every instruction must explicitly include the customer's email (the user_id used for authentication), and also include the customer_id plus all relevant identifiers needed for that turn: ticket_id, service_id, device_name, payment amount, etc. Instructions must be realistic, user-facing, and conversational. They must provide all necessary information upfront so that the agent executing the trace does not need to ask follow-up questions.
 
 ⸻
 
@@ -122,6 +122,7 @@ Before responding, verify that:
   • The order of actions matches the trace exactly.
   • All required parameters are present.
   • All IDs and values were retrieved using reverse tools.
+  • Every instruction includes the customer's email (user_id) for authentication.
 
 ⸻
 
@@ -136,6 +137,8 @@ Your output must be valid JSON only. No explanations, no commentary, no addition
 USER_PROMPT = """
 You will be given a selected telecom tool trace with multiple TURNs. Reverse tools only give you the CURRENT data (what exists now). Your job is to find an INSTRUCTION (with a story) that will be valid when the agent runs the trace. Use the tool outputs to ground every ID and value.
 
+Remember: user_id is the customer's email and is used to authenticate. Include the customer's email in each instruction so the agent can authenticate. The output JSON "user_id" field must be that email (from reverse tools).
+
 Task:
 - STRICTLY USE ALL THE AVAILABLE (reverse) TOOLS to get grounded data before writing instructions. Do not skip tool calls.
 - Determine N = number of TURNs in the trace.
@@ -148,9 +151,10 @@ Task:
   * get_support_ticket_details / modify_support_ticket → get_customers_with_open_tickets() to get a real ticket_id
   * find_customer_by_email / find_customer_by_phone → get_user_ids() to get real email/phone
   * all others → get_user_ids() for any customer
-- Pick a single customer_id to use across all TURNs unless the trace clearly requires different customers.
+- Pick a single customer_id to use across all TURNs unless the trace clearly requires different customers, and use that customer's email as user_id in the output JSON.
 - For each TURN i, write instructions[i] such that:
-  * It EXPLICITLY includes the customer_id in natural language
+  * It EXPLICITLY includes the customer's email (user_id) for authentication
+  * It also includes the customer_id in natural language
   * It includes ALL required IDs and values (ticket_id, service_id, device_name, amount, etc.) directly in the text — from current dataset via reverse tools
   * It reads naturally but provides all information upfront
 - Write one combined story tying all turns together.

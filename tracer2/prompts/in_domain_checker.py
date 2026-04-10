@@ -26,6 +26,7 @@ Important guidance:
 - Do not mark a task malformed just because a normal support flow would require a confirmation turn before a write action. If the request is otherwise in-domain and sufficiently specified, it is still solvable.
 - If the request itself asks for something forbidden by the domain policy, classify it as `out_doamin`.
 - If the request is missing key information, has invalid parameters, or the replay shows entity/argument failures that point to incomplete task construction, classify it as `malformed`.
+- A valid task must have exactly one primary account identity (one user_id/customer_id/patient_id) for the conversation. Related people (for example, family members or additional passengers under that same account) are allowed. If the instruction/replay mixes multiple primary account identities in one task, classify it as `malformed`.
 - After attempting the task, use your own judgment to classify its difficulty as `easy`, `medium`, or `hard`.
 - Difficulty should be based on the replayed tool path: number of tool calls, whether they mostly read data or changed data, whether multiple dependent state-changing steps were needed, and whether errors/validation complexity suggest a harder task.
 - Difficulty hint:

@@ -26,7 +26,7 @@ You must use reverse tools to retrieve every identifier and value before includi
 
 PATIENT_ID AND AUTHENTICATION
 
-In this domain, patients are authenticated by their email address OR by their full name and date of birth. Obtain the patient's email and identity from reverse tools (query_patient_candidates → get_patient_details_complete). The user_id in the output JSON is the patient_id (e.g. "sarah_johnson_1234"). Each instruction must include the patient's email (so the agent can call find_patient_by_email) or their full name and date of birth (for find_patient_by_name_dob). All other required IDs (appointment_id, provider_id, record_id, etc.) must still appear in the instruction where needed for that TURN.
+In this domain, patients are authenticated by their email address OR by their full name and date of birth. Obtain the patient's email and identity from reverse tools (query_patient_candidates → get_patient_details_complete). The user_id in the output JSON must be the patient's email (for authentication). Each instruction must include the patient's email (so the agent can call find_patient_by_email) or their full name and date of birth (for find_patient_by_name_dob). Include patient_id and all other required IDs (appointment_id, provider_id, record_id, etc.) in the instruction where needed for that TURN.
 
 ⸻
 
@@ -81,7 +81,7 @@ Your final output must be valid JSON and must match this exact schema. No extra 
 }
 
 All four fields are REQUIRED:
-  • user_id (the patient_id, from reverse tools)
+  • user_id (the patient's email, from reverse tools; used for authentication)
   • instructions
   • story
   • actions
@@ -92,7 +92,7 @@ The output is invalid if the actions field is missing.
 
 INSTRUCTIONS FIELD GUIDELINES
 
-The length of the instructions array MUST equal the number of TURNs in the provided trace. Each instruction corresponds to exactly one TURN. Every instruction must include the patient's email (for authentication) and all relevant identifiers needed for that turn: appointment_id, provider_id, record_id, device_id, medication names, supplier details, dates, times, and numeric values. Instructions must be realistic, user-facing, and conversational. They must provide all necessary information upfront so that the agent executing the trace does not need to ask follow-up questions.
+The length of the instructions array MUST equal the number of TURNs in the provided trace. Each instruction corresponds to exactly one TURN. Every instruction must include the patient's email (the user_id used for authentication), and all relevant identifiers needed for that turn: patient_id, appointment_id, provider_id, record_id, device_id, medication names, supplier details, dates, times, and numeric values. Instructions must be realistic, user-facing, and conversational. They must provide all necessary information upfront so that the agent executing the trace does not need to ask follow-up questions.
 
 For schedule_appointment TURNs, the instruction must specify the provider, date, time, and appointment type. Use get_provider_details to verify the provider's schedule has the requested slot open.
 
@@ -128,7 +128,7 @@ Your output must be valid JSON only. No explanations, no commentary, no addition
 USER_PROMPT = """
 You will be given a selected telehealth tool trace with multiple TURNs. Reverse tools only give you the CURRENT data (what exists now). Your job is to find an INSTRUCTION (with a story) that will be valid when the agent runs the trace. Use the tool outputs to ground every ID and value.
 
-Remember: user_id is the patient_id and authentication uses the patient's email. Include the patient's email in each instruction so the agent can authenticate. The output JSON "user_id" field must be the patient_id (from reverse tools).
+Remember: user_id is the patient's email and is used to authenticate. Include the patient's email in each instruction so the agent can authenticate. The output JSON "user_id" field must be that email (from reverse tools).
 
 Task:
 - STRICTLY USE ALL THE AVAILABLE (reverse) TOOLS to get grounded data before writing instructions. Do not skip tool calls.
