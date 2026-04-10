@@ -326,6 +326,15 @@ def main():
         idxs = list(range(args.start_index, min(end, len(traces))))
 
     results: List[Dict[str, Any]] = []
+    if out_p.exists():
+        with open(out_p, "r", encoding="utf-8") as f:
+            results = json.load(f)
+        print(f"Resuming: loaded {len(results)} existing entries from {out_p}")
+
+    completed_ok = {(r["task_id"], r["run"]) for r in results if not r.get("failed", False)}
+    failed_keys  = {(r["task_id"], r["run"]) for r in results if r.get("failed", False)}
+    print(f"  Skipping {len(completed_ok)} completed, retrying {len(failed_keys)} failed")
+
     for idx in idxs:
         trace = traces[idx]
 
@@ -334,7 +343,15 @@ def main():
         print(f"{'='*60}")
 
         batch_candidates: List[tuple] = []  # (candidate, reward_result, run, result_dict or None)
+        trace_changed = False
         for run in range(args.tasks_per_trace):
+            key = (idx, run)
+            if key in completed_ok:
+                print(f"  [run {run}] Already done, skipping.")
+                continue
+            if key in failed_keys:
+                results = [r for r in results if not (r["task_id"] == idx and r["run"] == run)]
+                failed_keys.discard(key)
             try:
                 # Step 1: Generate task candidate (same as generate_verify)
                 (
@@ -451,6 +468,7 @@ def main():
                     result_dict["task_checker_action_replay"] = []
                 batch_candidates.append((candidate, run, result_dict))
                 print(f"  ✓ Success idx={idx} run={run}")
+                trace_changed = True
 
             except Exception as e:
                 print(f"  ✗ Failed idx={idx} run={run}: {e}")
@@ -462,13 +480,15 @@ def main():
                         "failed": True,
                     }
                 )
+                trace_changed = True
 
         for _, _, result_dict in batch_candidates:
             results.append(result_dict)
 
-        # Checkpoint after each trace (all runs)
-        with open(out_p, "w", encoding="utf-8") as f:
-            json.dump(results, f, indent=2)
+        # Checkpoint after each trace (only if something changed)
+        if trace_changed:
+            with open(out_p, "w", encoding="utf-8") as f:
+                json.dump(results, f, indent=2)
 
     successful = len([r for r in results if not r.get("failed", False)])
     print(f"\nCompleted: {successful}/{len(results)} tasks successfully generated")
