@@ -142,6 +142,33 @@ Local Flask UI to browse `*_generated_tasks.json` files (accordion layout, traje
 
 ---
 
+## 10. Export tasks to env `TASKS` files
+
+To turn a generated JSON list (e.g. `output/tasks/*_generated_tasks*.json`) into a Python module the eval stack expects, use **`export_tasks.py`**. It writes a file that defines `TASKS = [ Task(...), ... ]` with `from tau_emotion_bench.types import Task, Action`, and skips rows that failed or lack a usable `user_id`. If `novel_emotion_prediction` is present, the exporter can fold the top matched emotion instruction into the task text and emit optional emotion dimension fields.
+
+**1. Clone the emotion-bench checkout** (anywhere you like—sibling directory, separate workspace, etc.):
+
+```bash
+git clone https://github.com/rishitoshsingh/tau-emotion-bench.git /path/to/tau-emotion-bench
+```
+
+**2. Run the export from this repo**, pointing **`--package`** at that project’s import root and **`--output`** at the right split under the clone:
+
+- Target files: **`<clone_root>/tau_emotion_bench/env/<domain>/tasks_train.py`**, **`tasks_dev.py`**, or **`tasks_test.py`**.
+
+```bash
+python export_tasks.py output/tasks/airline_adjacency_matrix_0.0_generated_tasks.json \
+  --package tau_emotion_bench \
+  --output /path/to/tau-emotion-bench/tau_emotion_bench/env/airline/tasks_dev.py
+```
+
+- **`--package`**: must be **`tau_emotion_bench`** so imports match [tau-emotion-bench](https://github.com/rishitoshsingh/tau-emotion-bench).
+- **`--output`**: absolute or relative path inside the clone; replace `<domain>` and `tasks_*.py` for your split.
+
+If your tasks are not already split across JSON files, partition the list (or run the exporter per slice) so each export targets the right `tasks_train.py` / `tasks_dev.py` / `tasks_test.py`.
+
+---
+
 ## Pipeline sketch
 
 ```text
@@ -151,6 +178,7 @@ build_trace_v3.py      → output/traces/...
 tracer2/generator.py   → output/tasks/...
 emotions/              → emotions/output/emotion_persona_instructions.json
 emotion_analysis/      → encode instructions, train encoder+kNN, attach predictions to tasks, analysis/ plots
+export_tasks.py        → <tau-emotion-bench>/tau_emotion_bench/env/<domain>/tasks_{train,dev,test}.py
 ```
 
 For more architecture notes (agents, envs, trace semantics), see **[CLAUDE.md](CLAUDE.md)**.
