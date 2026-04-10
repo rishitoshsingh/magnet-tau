@@ -207,8 +207,8 @@ class ChatReActAgent(Agent):
                     think_text = action.kwargs.get("thought", "")
                     if think_text:
                         print(f"[Step {step + 1}] Think tool: {think_text}")
-            else:
-                print(f"[Step {step + 1}] Action: {action.name}, Arguments: {action.kwargs}")
+            # else:
+            #     print(f"[Step {step + 1}] Action: {action.name}, Arguments: {action.kwargs}")
             response = env.step(action)
             obs = response.observation
             reward = response.reward
