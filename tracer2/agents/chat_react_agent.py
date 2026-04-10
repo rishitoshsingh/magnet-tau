@@ -3,9 +3,8 @@
 import json
 from typing import Any, Dict, List, Optional, Tuple
 
-from litellm import completion
-
 from tracer2.agents.base import Agent
+from tracer2.llm_utils import completion_with_retry
 from tracer2.envs.base import Env
 from tracer2.types import (
     RESPOND_ACTION_FIELD_NAME,
@@ -117,17 +116,13 @@ class ChatReActAgent(Agent):
     def generate_next_step(
         self, messages: List[Dict[str, Any]]
     ) -> Tuple[Dict[str, Any], Action, float]:
-        completion_kwargs: Dict[str, Any] = {
-            "model": self.model,
-            "messages": messages,
-            "temperature": self.temperature,
-        }
-
-        completion_kwargs["custom_llm_provider"] = self.provider
-        if self.api_base is not None:
-            completion_kwargs["api_base"] = self.api_base
-
-        res = completion(**completion_kwargs)
+        res = completion_with_retry(
+            model=self.model,
+            custom_llm_provider=self.provider,
+            api_base=self.api_base,
+            messages=messages,
+            temperature=self.temperature,
+        )
         message = res.choices[0].message
         content = message.content or ""
 

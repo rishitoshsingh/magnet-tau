@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from typing import Any, Dict, List
 
-import litellm
+from tracer2.llm_utils import completion_with_retry
 
 
 def _sanitize_temperature(model: str, temperature: float) -> float:
@@ -157,7 +157,7 @@ class TaskCritiqueAgent:
                 {"role": "user", "content": critique_prompt},
             ]
             
-            response = litellm.completion(
+            response = completion_with_retry(
                 model=f"{self.provider}/{self.model}",
                 messages=messages,
                 temperature=self.temperature,
