@@ -16,6 +16,7 @@ PREFERENCE_SYSTEM_PROMPT = build_system_prompt(
 
 Patient-facing constraints:
 - INCLUDE: authenticated patient email identity, patient identity, appointment references, provider names/specialties, medication/device descriptions, and high-level billing preference wording.
+- If payment method context is present (copay/billing setup), express it as an explicit preference (e.g. "You prefer to pay by ...").
 - DO NOT include exact copay amounts, voucher IDs, internal payment IDs, insurance authorization numbers, or other internal record identifiers.
 
 Preference style by action:
@@ -32,7 +33,8 @@ PREFERENCE_USER_PROMPT_INTRO = build_user_prompt_intro(
 - For new or moved visit times, align wording to bookable windows from provider schedule/slot checks.
 - If later asks change direction, keep chronology explicit with transition language instead of contradiction framing.
 - Keep final wording in third-person instruction style that starts with "You are ...".
-- Keep output patient-facing and omit internal billing/auth identifiers or exact prices.""",
+- Keep output patient-facing and omit internal billing/auth identifiers or exact prices.
+- When billing is relevant, include a direct payment-method preference sentence in patient-facing language.""",
 )
 
 

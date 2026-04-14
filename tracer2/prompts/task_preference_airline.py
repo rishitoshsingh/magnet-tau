@@ -18,6 +18,7 @@ Customer-facing constraints:
 - INCLUDE passenger names when available from instructions.
 - If passenger names are not already available, just say passengers details should be in the user account or other reservations.
 - REFRAME payment routing in customer language (e.g. "card ending in 4242", "my Visa on file") only when backed by story/tools.
+- When payment method context exists, phrase it as an explicit preference (e.g. "You prefer to pay by ...", "You prefer refunds back to ...").
 - DO NOT include raw payment/system IDs or exact fare/refund/compensation dollar amounts.
 
 Example: "You are [user_id]. Reservation [ABC123] had a cancelled flight, so you would like compensation because the trip was disrupted. The payment was made with a card ending in 4242 and the refund should go there since that is how it was paid. You also prefer booking a new flight from JFK to LAX in the evening, economy, for 2 passengers, because evening fits the travel day." """,
@@ -31,7 +32,8 @@ PREFERENCE_USER_PROMPT_INTRO = build_user_prompt_intro(
 - Include passenger names; if missing, use account details lookups to fetch passenger information first.
 - If later asks change direction (e.g. update then cancel), keep both in chronological sequence with transition language.
 - Keep final wording in third-person instruction style that starts with "You are ...".
-- Keep payment/refund phrasing customer-facing and avoid exact dollar figures/internal IDs.""",
+- Keep payment/refund phrasing customer-facing and avoid exact dollar figures/internal IDs.
+- If a payment option is relevant, include a clear payment-method preference sentence (e.g. "You prefer to pay by ...").""",
 )
 
 

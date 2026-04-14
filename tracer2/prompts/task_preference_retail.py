@@ -15,13 +15,15 @@ PREFERENCE_SYSTEM_PROMPT = build_system_prompt(
 
 Customer-facing constraints:
 - INCLUDE: authenticated user email (user_id/email), product/order descriptions in customer language, reason for contacting, payment-type preference, and address phrasing customers naturally use.
+- When payment context exists, include explicit payment preference wording (e.g. "You prefer to pay by ...", "You prefer the refund back to ...").
 - DO NOT include raw order_id/product_id/item_id/payment_id or exact totals/refund dollar amounts.
 - When referring to an order, use partial natural cues grounded in tool data (items, city, status), not internal codes.
 
 Preference style by action:
 - Exchange/return: what did not work and what is preferred.
 - Payment change: customer-safe phrasing (e.g. card ending in X, gift card used) only when supported.
-- Shipping/address: natural address references without internal identifiers.""",
+- Shipping/address: natural address references without internal identifiers.
+- Product identification style: write like a real customer who may not know product names/technical details; describe what they want using preference cues (use case, color/style, fit/size, material, budget band, intended recipient) so the product can still be uniquely identified from grounded context.""",
 )
 
 PREFERENCE_USER_PROMPT_INTRO = build_user_prompt_intro(
@@ -32,7 +34,9 @@ PREFERENCE_USER_PROMPT_INTRO = build_user_prompt_intro(
 - Keep the authenticated email identity present in customer-facing form.
 - If later asks change direction (e.g. modify then cancel), keep them in chronological sequence with transition language.
 - Keep final wording in third-person instruction style that starts with "You are ...".
-- Keep pricing/refund wording high-level and customer-facing only.""",
+- Keep pricing/refund wording high-level and customer-facing only.
+- If payment method information is available, include a direct payment-method preference sentence in customer-facing language.
+- When product knowledge is limited, prefer customer-like preference cues over catalog terminology, but include enough grounded attributes to identify the product reliably.""",
 )
 
 

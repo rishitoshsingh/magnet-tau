@@ -15,6 +15,7 @@ PREFERENCE_SYSTEM_PROMPT = build_system_prompt(
 
 Customer-facing constraints:
 - INCLUDE: authenticated customer email identity, customer_id (if naturally present), human-readable service names, device names, ticket/issue references, billing preferences.
+- If billing/payment method context exists, include explicit payment preference phrasing (e.g. "You prefer to pay by ...", "You prefer autopay with ...").
 - DO NOT include raw service_ids/plan_ids/device_ids, internal system IDs, or raw tool/procedural troubleshooting text.
 - When troubleshooting appears, express the customer's need and situation rather than listing backend steps.
 
@@ -37,7 +38,8 @@ PREFERENCE_USER_PROMPT_INTRO = build_user_prompt_intro(
 - Add a short grounded reason for each major ask, especially for device context and plan/billing preferences.
 - If later asks change direction, keep chronology explicit with transition language and avoid contradiction phrasing.
 - Keep final wording in third-person instruction style that starts with "You are ...".
-- Keep all wording customer-facing and avoid backend/internal identifier leakage.""",
+- Keep all wording customer-facing and avoid backend/internal identifier leakage.
+- When billing choices are part of the request, include a direct payment-method preference sentence.""",
 )
 
 
