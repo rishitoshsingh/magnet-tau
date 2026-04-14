@@ -21,7 +21,23 @@ from tracer2.agents.in_domain_checker_agent import InDomainCheckerAgent
 from tracer2.agents.task_generator_agent import TraceTaskGeneratorAgent
 from tracer2.agents.task_post_processor_agent import TaskPostProcessorAgent
 from tracer2.envs.base import Env
+from tracer2.llm_utils import empty_usage_record
 from tracer2.types import Task
+
+
+def _run_level_llm_usage(phase_usages: List[Dict[str, Any]]) -> tuple[Optional[int], bool]:
+    """Sum per-phase ``total`` only if every phase has ``complete``; else run total is null."""
+    if not phase_usages:
+        return None, True
+    if not all(u.get("complete") for u in phase_usages):
+        return None, False
+    run_total = 0
+    for u in phase_usages:
+        t = u.get("total")
+        if t is None:
+            return None, False
+        run_total += int(t)
+    return run_total, True
 
 
 def _default_output_path(trace_path: str) -> str:
@@ -359,9 +375,10 @@ def main():
                     generator_messages,
                     _,
                     _,
+                    llm_usage_generator,
                 ) = generator.generate(trace=trace, attempt=0, verifier_feedback=None)
 
-                feeling_text, feeling_traj = feeling_agent.generate_feeling(
+                feeling_text, feeling_traj, llm_usage_feeling = feeling_agent.generate_feeling(
                     domain=args.env, candidate=candidate
                 )
                 candidate = candidate.model_copy(update={"feeling": feeling_text})
@@ -407,10 +424,17 @@ def main():
                     "ground_truth_actions": [a.model_dump() for a in (candidate.actions or [])],
                     # "reward_result": reward_result_dump,
                     "generator_traj": generator_messages,
+                    "llm_usage_generator": llm_usage_generator,
+                    "llm_usage_feeling": llm_usage_feeling,
                 }
+                llm_usage_preference = empty_usage_record()
                 # Step 4: Preference agent rewrites instructions to preference form (same tools as generator); add new keys only
                 try:
-                    preference_instructions, preference_traj = post_processor.add_preference_instructions(
+                    (
+                        preference_instructions,
+                        preference_traj,
+                        llm_usage_preference,
+                    ) = post_processor.add_preference_instructions(
                         candidate,
                         load_data,
                         REVERSE_TOOLS,
@@ -426,6 +450,9 @@ def main():
                 except Exception as pref_err:
                     print(f"  [preference] skip: {pref_err}")
                     result_dict["preference_traj"] = []
+                    llm_usage_preference = empty_usage_record()
+                result_dict["llm_usage_preference"] = llm_usage_preference
+                llm_usage_task_checker = empty_usage_record()
                 # Step 5: Solvability checker — use forward tools to test the task and estimate difficulty
                 try:
                     task_analysis = in_domain_checker.check_in_domain(
@@ -445,6 +472,7 @@ def main():
                     result_dict["difficulty_reason"] = task_analysis.get("difficulty_reason")
                     result_dict["task_checker_traj"] = task_analysis.get("trajectory", [])
                     result_dict["task_checker_action_replay"] = task_analysis.get("action_replay", [])
+                    llm_usage_task_checker = task_analysis.get("llm_usage") or empty_usage_record()
                     if task_analysis.get("solvable") is not None:
                         print(
                             "  [task_check] "
@@ -465,6 +493,18 @@ def main():
                     result_dict["difficulty_reason"] = None
                     result_dict["task_checker_traj"] = []
                     result_dict["task_checker_action_replay"] = []
+                    llm_usage_task_checker = empty_usage_record()
+                result_dict["llm_usage_task_checker"] = llm_usage_task_checker
+                run_total, run_complete = _run_level_llm_usage(
+                    [
+                        result_dict["llm_usage_generator"],
+                        result_dict["llm_usage_feeling"],
+                        result_dict["llm_usage_preference"],
+                        result_dict["llm_usage_task_checker"],
+                    ]
+                )
+                result_dict["llm_usage_run_total"] = run_total if run_complete else None
+                result_dict["llm_usage_run_complete"] = run_complete
                 batch_candidates.append((candidate, run, result_dict))
                 print(f"  ✓ Success idx={idx} run={run}")
                 trace_changed = True

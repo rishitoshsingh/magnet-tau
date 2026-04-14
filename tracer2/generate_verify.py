@@ -233,9 +233,10 @@ def main():
                 generator_messages,
                 _,
                 _,
+                _,
             ) = generator.generate(trace=trace, attempt=attempt, verifier_feedback=feedback)
 
-            feeling_text, feeling_traj = feeling_agent.generate_feeling(
+            feeling_text, feeling_traj, _ = feeling_agent.generate_feeling(
                 domain=args.env, candidate=candidate
             )
             candidate = candidate.model_copy(update={"feeling": feeling_text})

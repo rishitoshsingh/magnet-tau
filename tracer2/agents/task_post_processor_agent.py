@@ -8,6 +8,7 @@ import json
 from typing import Any, Dict, List, Optional, Tuple, Type
 
 from tracer2.agents.chat_react_agent import ChatReActAgent
+from tracer2.llm_utils import empty_usage_record, usage_record_from_solve_result
 from tracer2.envs.tool import Tool
 from tracer2.prompts.task_preference_airline import (
     PREFERENCE_SYSTEM_PROMPT as DEFAULT_PREFERENCE_SYSTEM_PROMPT,
@@ -144,7 +145,7 @@ class TaskPostProcessorAgent:
         max_steps: int = 50,
         preference_system_prompt: Optional[str] = None,
         format_preference_user_prompt=None,
-    ) -> Tuple[Optional[List[str]], List[Dict[str, Any]]]:
+    ) -> Tuple[Optional[List[str]], List[Dict[str, Any]], Dict[str, Any]]:
         """Rewrite the candidate's instructions into preference form using the same tools as the generator.
 
         Uses tools to look up details (e.g. flight time, cabin; or order/product details for retail)
@@ -154,9 +155,13 @@ class TaskPostProcessorAgent:
         format_preference_user_prompt: optional function (story, instructions) -> str (default: airline).
 
         Returns:
-            (preference_instructions list or None, trajectory messages from the ReAct run).
+            (preference_instructions list or None, trajectory messages, LLM usage record).
         """
-        empty: Tuple[Optional[List[str]], List[Dict[str, Any]]] = (None, [])
+        empty: Tuple[Optional[List[str]], List[Dict[str, Any]], Dict[str, Any]] = (
+            None,
+            [],
+            empty_usage_record(),
+        )
         if not candidate.instructions:
             return empty
         if self.model is None or self.provider is None:
@@ -197,18 +202,19 @@ class TaskPostProcessorAgent:
         try:
             res = react_agent.solve(env=env, task_index=0, max_num_steps=max_steps)
             trajectory = res.messages
+            usage = usage_record_from_solve_result(res)
         except Exception:
             return empty
 
         if env.final_response is None:
-            return (None, trajectory)
+            return (None, trajectory, usage)
 
         try:
             data = json.loads(env.final_response)
             combined = data.get("preference_instruction")
             if isinstance(combined, str) and combined.strip():
                 # Return as list of one element for backward compatibility (preference_instructions)
-                return ([combined.strip()], trajectory)
+                return ([combined.strip()], trajectory, usage)
         except Exception:
             pass
-        return (None, trajectory)
+        return (None, trajectory, usage)

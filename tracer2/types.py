@@ -111,6 +111,10 @@ class SolveResult(BaseModel):
     messages: List[Dict[str, Any]]
     info: Dict[str, Any]
     total_cost: Optional[float] = None
+    usage_prompt_tokens: Optional[int] = None
+    usage_completion_tokens: Optional[int] = None
+    usage_total_tokens: Optional[int] = None
+    usage_complete: bool = True
 
 
 class EnvInfo(BaseModel):

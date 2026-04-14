@@ -152,9 +152,7 @@ To turn a generated JSON list (e.g. `output/tasks/*_generated_tasks*.json`) into
 git clone https://github.com/rishitoshsingh/tau-emotion-bench.git /path/to/tau-emotion-bench
 ```
 
-**2. Run the export from this repo**, pointing **`--package`** at that project’s import root and **`--output`** at the right split under the clone:
-
-- Target files: **`<clone_root>/tau_emotion_bench/env/<domain>/tasks_train.py`**, **`tasks_dev.py`**, or **`tasks_test.py`**.
+**2. Run the export from this repo**, pointing **`--package`** at that project’s import root and **`--output`** under **`tau_emotion_bench/env/<domain>/`** in the clone (e.g. **`tasks_dec.py`** for a dev-style split, or other `tasks_*.py` filenames you use).
 
 ```bash
 python export_tasks.py output/tasks/airline_adjacency_matrix_0.0_generated_tasks.json \
@@ -163,9 +161,9 @@ python export_tasks.py output/tasks/airline_adjacency_matrix_0.0_generated_tasks
 ```
 
 - **`--package`**: must be **`tau_emotion_bench`** so imports match [tau-emotion-bench](https://github.com/rishitoshsingh/tau-emotion-bench).
-- **`--output`**: absolute or relative path inside the clone; replace `<domain>` and `tasks_*.py` for your split.
+- **`--output`**: absolute or relative path inside the clone at **`tau_emotion_bench/env/<domain>/tasks_dec.py`** (adjust `<domain>` and filename as needed).
 
-If your tasks are not already split across JSON files, partition the list (or run the exporter per slice) so each export targets the right `tasks_train.py` / `tasks_dev.py` / `tasks_test.py`.
+If your tasks are not already split across JSON files, partition the list (or run the exporter per slice) so each export targets the right file under `tau_emotion_bench/env/<domain>/`.
 
 ---
 
@@ -178,7 +176,7 @@ build_trace_v3.py      → output/traces/...
 tracer2/generator.py   → output/tasks/...
 emotions/              → emotions/output/emotion_persona_instructions.json
 emotion_analysis/      → encode instructions, train encoder+kNN, attach predictions to tasks, analysis/ plots
-export_tasks.py        → <tau-emotion-bench>/tau_emotion_bench/env/<domain>/tasks_{train,dev,test}.py
+export_tasks.py        → <tau-emotion-bench>/tau_emotion_bench/env/<domain>/tasks_dec.py
 ```
 
 For more architecture notes (agents, envs, trace semantics), see **[CLAUDE.md](CLAUDE.md)**.

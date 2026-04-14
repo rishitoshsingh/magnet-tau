@@ -62,6 +62,16 @@ def print_stats(
 
     print()
 
+    # --- uniqueness ---
+    trace_keys = [
+        tuple(tuple(t.name for t in turn) for turn in trace)
+        for trace in traces
+    ]
+    unique = len(set(trace_keys))
+    print(f"Unique traces:     {unique:>6}  ({100 * unique / total:.1f}%)")
+    print(f"Duplicate traces:  {total - unique:>6}  ({100 * (total - unique) / total:.1f}%)")
+    print()
+
     # --- intent pattern breakdown ---
     print("Traces by intent pattern (tools per turn):")
     col = max(len(str(list(p))) for p in pattern_counts)
@@ -113,18 +123,27 @@ def main(
         trace = generate_trace(tools, walk_step=step, num_intents=n_intents, rng=rng)
         traces.append(trace)
 
+    # Deduplicate traces (preserve first occurrence, maintain order)
+    seen: set = set()
+    unique_traces: list[TRACE] = []
+    for trace in traces:
+        key = tuple(tuple(t.name for t in turn) for turn in trace)
+        if key not in seen:
+            seen.add(key)
+            unique_traces.append(trace)
+
     out_path = os.path.join("output", "traces", os.path.basename(graph_json_path).replace(".json", "_traces.json"))
     os.makedirs(os.path.dirname(out_path), exist_ok=True)
 
     json_traces = [
         [[asdict(tool) for tool in turn] for turn in trace]
-        for trace in traces
+        for trace in unique_traces
     ]
 
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(json_traces, f, indent=2, ensure_ascii=False)
 
-    print(f"Saved {len(traces)} TRACEs to {out_path}")
+    print(f"Saved {len(unique_traces)} unique TRACEs (removed {len(traces) - len(unique_traces)} duplicates) to {out_path}")
     print_stats(traces, step_assignments, walk_steps, walk_steps_dist, num_intents, num_intents_dist)
 
 

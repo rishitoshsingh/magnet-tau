@@ -13,7 +13,7 @@ You are given a tool trace: a list of lists of tool calls, [[TURN1],[TURN2],...]
 
 REVERSE TOOLS VS TRACE TOOLS
 
-To get current data from the telehealth systems you are given access to read-only tools called reverse tools (e.g. to get patients, appointments, providers, medical records, telemetry devices, medication suppliers, regimen plans, drug interactions). These are different from the tools in TOOL-TRACE. TOOL-TRACE may contain functions that change data (e.g. schedule_appointment, cancel_appointment, reschedule_appointment, update_prescription_supplier, update_medical_record_note); you do not have access to those. You only have read-only access to the dataset via reverse tools.
+To get current data from the telehealth systems you are given access to read-only tools called reverse tools (e.g. to get patients, appointments, providers, medical records, telemetry devices, medication suppliers, regimen plans, drug interactions, check_provider_appointment_slot for valid schedule/reschedule times). These are different from the tools in TOOL-TRACE. TOOL-TRACE may contain functions that change data (e.g. schedule_appointment, cancel_appointment, reschedule_appointment, update_prescription_supplier, update_medical_record_note); you do not have access to those. You only have read-only access to the dataset via reverse tools.
 REMEMBER: TOOL-TRACE tools will be used to build the action list and instructions. Reverse tools (read-only, which you can call) will be used to ground the instruction.
 
 ⸻
@@ -38,13 +38,13 @@ Scheduling:
 - Valid appointment types: routine_checkup, follow_up, consultation, specialist_consultation, sick_visit.
 
 Rescheduling:
-- Cannot reschedule cancelled or completed appointments.
+- Rescheduling is allowed only when appointment status is "scheduled" or "pending_approval" (not cancelled or completed).
 - The provider must be available at the new date/time.
 - No scheduling conflicts at the new slot.
 
 Cancellation:
+- Cancellation is allowed only when appointment status is "scheduled" or "pending_approval".
 - Cannot cancel already-cancelled or completed appointments.
-- Only appointments with status "scheduled" or "pending_approval" can be cancelled.
 
 Updating prescription supplier:
 - The medical record must exist and contain prescriptions.
@@ -56,6 +56,11 @@ Updating medical record note:
 
 Transfer to human support:
 - Used when the request is outside the agent's capabilities.
+
+Instruction wording (no medical consulting):
+- Do not frame the patient as seeking medical advice, diagnosis, which drug is safer/better, or personalized treatment recommendations.
+- For check_drug_interactions (or similar): ask to run the portal/system interaction check and share the returned output; do not ask the agent to interpret clinical risk beyond that text.
+- If the trace includes only administrative tools, keep the instruction operational (IDs, dates, supplier choice, notes, telemetry checks)—no nested clinical counseling.
 
 AT ANY POINT if you cannot find a patient satisfying the trace constraints, start over and select a different patient.
 
@@ -94,13 +99,15 @@ INSTRUCTIONS FIELD GUIDELINES
 
 The length of the instructions array MUST equal the number of TURNs in the provided trace. Each instruction corresponds to exactly one TURN. Every instruction must include the patient's email (the user_id used for authentication), and all relevant identifiers needed for that turn: patient_id, appointment_id, provider_id, record_id, device_id, medication names, supplier details, dates, times, and numeric values. Instructions must be realistic, user-facing, and conversational. They must provide all necessary information upfront so that the agent executing the trace does not need to ask follow-up questions.
 
-For schedule_appointment TURNs, the instruction must specify the provider, date, time, and appointment type. Use get_provider_details to verify the provider's schedule has the requested slot open.
+For schedule_appointment TURNs, the instruction must specify the provider, date, time, and appointment type. Use check_provider_appointment_slot(provider_id, date, time) to verify the slot is valid and free (or use free_times_on_date / suggested_alternatives from that tool).
 
-For reschedule_appointment TURNs, the instruction must include the appointment_id and the new date/time. Verify the provider is available at the new slot.
+For reschedule_appointment TURNs, the instruction must include the appointment_id and the new date/time. Verify the appointment status is "scheduled" or "pending_approval", then use check_provider_appointment_slot(provider_id, new_date, new_time, exclude_appointment_id=that appointment_id) for the new slot.
 
 For cancel_appointment TURNs, the instruction must include the appointment_id. Verify the appointment status is "scheduled" or "pending_approval".
 
 For update_prescription_supplier TURNs, the instruction must include the record_id, medication name, and the desired supplier/brand/price from list_medication_suppliers.
+
+For check_drug_interactions TURNs, the instruction must name the primary medication and the relevant current meds for the tool; phrase it as running the portal interaction check and reporting the system output, not as asking which drug to take or what is clinically safer.
 
 ⸻
 
@@ -135,17 +142,22 @@ Task:
 - Determine N = number of TURNs in the trace.
 - For each TURN, identify the ACTION (tool name) and use reverse tools to get CURRENT data that is valid for that action (e.g. existing appointments for cancel/reschedule, available providers and their schedules for scheduling, medical records with prescriptions for supplier updates).
 - To choose a patient: use query_patient_candidates with appropriate filters based on the trace needs. For example:
-  * If the trace involves appointments, use min_appointments to find patients with existing appointments.
   * If the trace involves medical records, use min_medical_records.
   * If the trace involves telemetry, use has_telemetry_assigned=true.
   * If the trace involves regimen/medication, use has_regimen_plan=true or medication_in_regimen.
+  * Appointment-related traces — match preconditions, then use tier-1 tools to lock IDs:
+    - schedule_appointment only: you do not need min_appointments; pick a patient, then verify an open slot via list_available_providers + get_provider_details and no conflict via list_patient_appointments.
+    - reschedule_appointment and/or cancel_appointment: the appointment must be "scheduled" or "pending_approval". Use query_patient_candidates with appointment_status="scheduled" or appointment_status="pending_approval" (try the other if no match).
+    - Choosing min_appointments (n): n is the number of distinct appointment_id values the trace will use across all cancel_appointment and reschedule_appointment calls (count each ID once; same ID in two turns still means n=1). schedule_appointment does not increase n. Example: cancel APPT_A and reschedule APPT_B → n=2; two cancel turns both on APPT_A → n=1.
+    - min_appointments filters on total appointment count across all statuses; appointment_status only requires at least one row in that status. So set n as a lower bound, then for k distinct actionable visits always confirm with list_patient_appointments (or get_appointment_details per ID) that the patient has at least k distinct appointments in "scheduled" or "pending_approval" before writing instructions/actions.
+  * Otherwise if the trace only needs "some" existing appointments without status filtering, min_appointments alone is acceptable.
   Then call get_patient_details_complete to get the patient's full profile including email, name, DOB, and insurance.
-- For schedule_appointment: use list_available_providers (optionally with specialty filter) and get_provider_details to find a provider with an open slot. The date must fall on a day the provider works, and the time must be in their available_times for that day. Verify no conflicting appointment exists at that slot using list_patient_appointments.
-- For reschedule_appointment: use get_appointment_details to confirm the appointment is in "scheduled" or "pending_approval" status. Then use get_provider_details to find a new available slot for the same provider.
+- For schedule_appointment: use list_available_providers (optionally with specialty filter) and get_provider_details, then call check_provider_appointment_slot(provider_id, date, time) before finalizing; it mirrors forward scheduling rules and returns free_times_on_date and suggested_alternatives if the slot is wrong. You may also cross-check list_patient_appointments for the patient.
+- For reschedule_appointment: use get_appointment_details to confirm the appointment is in "scheduled" or "pending_approval" status and to get provider_id. For the new date/time, call check_provider_appointment_slot(provider_id, new_date, new_time, exclude_appointment_id=the appointment being moved) so the slot is valid and not double-booked; use suggested_alternatives or free_times_on_date from the tool if the first time fails.
 - For cancel_appointment: use get_appointment_details or list_patient_appointments to find an appointment with status "scheduled" or "pending_approval".
 - For update_prescription_supplier: use list_patient_medical_records → get_medical_record to find a record with prescriptions. Then use list_medication_suppliers to find valid supplier details (company, brand_name, price_usd) for that medication.
 - For update_medical_record_note: use list_patient_medical_records to find a valid record_id.
-- For check_drug_interactions: use get_patient_details_complete to get the patient's current medications list, then ground the primary_medication and current_medications params.
+- For check_drug_interactions: use get_patient_details_complete to get the patient's current medications list, then ground the primary_medication and current_medications params; write the instruction as a portal interaction check (share system output), not as asking which drug to take or what's safer.
 - For each TURN i, write instructions[i] such that:
   * It EXPLICITLY includes the patient's email for authentication
   * It includes ALL required IDs (appointment_id, provider_id, record_id, device_id, medication names, dates, times, etc.) directly in the text — from current dataset via reverse tools

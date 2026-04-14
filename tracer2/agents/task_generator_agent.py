@@ -7,6 +7,7 @@ import re
 from typing import Any, Dict, List, Optional, Tuple, Type
 
 from tracer2.agents.chat_react_agent import ChatReActAgent
+from tracer2.llm_utils import usage_record_from_solve_result
 from tracer2.envs.tool import Tool
 from tracer2.prompts.task_generator_airline import SYSTEM_PROMPT as AIRLINE_SYSTEM_PROMPT
 from tracer2.prompts.task_generator_airline import USER_PROMPT as AIRLINE_USER_PROMPT
@@ -313,7 +314,13 @@ class TraceTaskGeneratorAgent:
         trace: Any,
         attempt: int = 0,
         verifier_feedback: Optional[str] = None,
-    ) -> Tuple[GeneratedTaskCandidate, List[Dict[str, Any]], List[Dict[str, Any]], List[Dict[str, Any]]]:
+    ) -> Tuple[
+        GeneratedTaskCandidate,
+        List[Dict[str, Any]],
+        List[Dict[str, Any]],
+        List[Dict[str, Any]],
+        Dict[str, Any],
+    ]:
         feedback = verifier_feedback or ""
         requirements = _format_requirements_summary(trace)
 
@@ -373,7 +380,13 @@ class TraceTaskGeneratorAgent:
             a.model_dump() for a in (getattr(env, "actions", []) or []) if a.name != RESPOND_ACTION_NAME
         ]
         generator_tool_history = getattr(env, "tool_history", []) or []
-        return candidate, res.messages, generator_tool_actions, generator_tool_history
+        return (
+            candidate,
+            res.messages,
+            generator_tool_actions,
+            generator_tool_history,
+            usage_record_from_solve_result(res),
+        )
 
     def _parse_candidate(
         self,

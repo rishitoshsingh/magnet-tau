@@ -13,8 +13,13 @@ class GetCustomersWithOutstandingBalance(Tool):
     def invoke(data: Dict[str, Any]) -> str:
         global _call_counter
         billing = data["billing"]
+        customers = data["customers"]
         entries = [
-            {"customer_id": cid, "current_balance": record["current_balance"]}
+            {
+                "customer_id": cid,
+                "email": customers.get(cid, {}).get("demographics", {}).get("email", ""),
+                "current_balance": record["current_balance"],
+            }
             for cid, record in billing.items()
             if record.get("current_balance", 0) > 0
         ]
@@ -33,7 +38,7 @@ class GetCustomersWithOutstandingBalance(Tool):
                 "name": "get_customers_with_outstanding_balance",
                 "description": (
                     "Get a paginated batch of up to 5 customers who have an outstanding balance "
-                    "(current_balance > 0). Returns customer_id and current_balance. "
+                    "(current_balance > 0). Returns customer_id, email, and current_balance. "
                     "Use this when the trace involves recording a payment or resolving a billing dispute."
                 ),
                 "parameters": {

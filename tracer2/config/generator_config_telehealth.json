@@ -1,6 +1,6 @@
 {
   "env": "telehealth",
-  "trace_path": "output/traces/telehealth_adjacency_matrix_0.0_traces.json",
+  "trace_path": "output/traces_final/telehealth_adjacency_matrix_0.0_traces.json",
   "output_path": null,
   "generator_model_provider": "hosted_vllm",
   "generator_model": "qwen3-235b-a22b-instruct-2507",
@@ -8,8 +8,7 @@
   "feeling_temperature": 0.9,
   "api_base": "https://openai.rc.asu.edu/v1",
   "start_index": 0,
-  "end_index": 10,
+  "end_index": 20,
   "task_ids": null,
-  "tasks_per_trace": 1,
-  "print_thoughts": "false"
+  "tasks_per_trace": 2,
 }

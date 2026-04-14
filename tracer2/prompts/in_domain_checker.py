@@ -101,8 +101,8 @@ TELECOM_SYSTEM_PROMPT = """# Telecom Solvability Rules
 
 TELEHEALTH_SYSTEM_PROMPT = """# Telehealth Solvability Rules
 
-- The telehealth agent can help only with supported patient portal tasks such as scheduling, rescheduling, cancelling appointments, viewing patient/provider information, and related portal support.
-- The request is out of domain if it asks for medical advice, interpretation of medical results, unsupported care decisions, or other policy-forbidden behavior.
+- The telehealth agent can help with supported patient portal tasks: scheduling/rescheduling/cancelling appointments; patient/provider/appointment/medical-record information; prescription supplier updates; medical record notes; drug-interaction tool output; telemetry or regimen data per environment tools; and related portal support.
+- Out of domain if the user seeks medical advice, treatment recommendations, which drug is safer/better, interpretation of labs or clinical risk beyond quoting tool output, or diagnosis.
 - Patient authentication is required before sensitive information or actions, but that normal authentication step does not by itself make a valid task malformed.
 - The agent can only help one patient per conversation, except the narrow policy allowance for aged parents or children.
 - Scheduling and rescheduling require a valid provider, an available date/time, and a supported appointment type.

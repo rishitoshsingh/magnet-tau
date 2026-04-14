@@ -12,9 +12,13 @@ _call_counter = 0
 
 def _user_ids_filtered_by_status(
     data: Dict[str, Any],
-    status_filter: Optional[str],
+    status_filters: Optional[List[str]],
 ) -> List[str]:
-    """Return user_ids that have at least one order. If status_filter is 'pending' or 'delivered', only users with at least one order of that status."""
+    """Return user_ids that have at least one order.
+
+    If status_filters is provided, user must have at least one order for EACH
+    requested status (e.g. ["pending", "delivered"]).
+    """
     users = data["users"]
     orders = data["orders"]
     result = []
@@ -22,9 +26,11 @@ def _user_ids_filtered_by_status(
         order_ids = user.get("orders", [])
         if not order_ids:
             continue
-        if status_filter is None:
+        if not status_filters:
             result.append(user_id)
-        elif any(orders.get(oid, {}).get("status") == status_filter for oid in order_ids):
+            continue
+        user_statuses = {orders.get(oid, {}).get("status") for oid in order_ids}
+        if all(status in user_statuses for status in status_filters):
             result.append(user_id)
     return result
 
@@ -45,11 +51,11 @@ class GetUsersWithOrders(Tool):
     @staticmethod
     def invoke(
         data: Dict[str, Any],
-        status: Optional[str] = None,
+        statuses: Optional[List[str]] = None,
     ) -> str:
         global _call_counter
         users = data["users"]
-        user_ids = _user_ids_filtered_by_status(data, status)
+        user_ids = _user_ids_filtered_by_status(data, statuses)
         random.shuffle(user_ids)
         if not user_ids:
             return json.dumps([])
@@ -63,6 +69,7 @@ class GetUsersWithOrders(Tool):
             counts = _counts_by_status(data, uid)
             result.append({
                 "user_id": uid,
+                "email": users[uid].get("email"),
                 "total_orders": len(order_ids),
                 "delivered_count": counts["delivered"],
                 "pending_count": counts["pending"],
@@ -78,17 +85,23 @@ class GetUsersWithOrders(Tool):
                 "name": "get_users_with_orders",
                 "description": (
                     "Get users who have at least one order. "
-                    "Returns for each user: user_id, total_orders, delivered_count, pending_count, cancelled_count (no full user or order details). "
-                    "Optional parameter status: if 'pending' or 'delivered', only return users who have at least one order with that status. "
+                    "Returns for each user: user_id, email, total_orders, delivered_count, pending_count, cancelled_count (no full user or order details). "
+                    "Optional parameter statuses: return users who have at least one order for EACH requested status "
+                    "(e.g. ['pending', 'delivered']). "
+                    "If no filter is provided, return all users with orders (paginated). "
                     "Results are randomized; each call returns up to 5 users with a rotating offset."
                 ),
                 "parameters": {
                     "type": "object",
                     "properties": {
-                        "status": {
-                            "type": "string",
-                            "enum": ["pending", "delivered"],
-                            "description": "Optional. If provided, only return users who have at least one order with this status.",
+                        "statuses": {
+                            "type": "array",
+                            "items": {"type": "string", "enum": ["pending", "delivered"]},
+                            "uniqueItems": True,
+                            "description": (
+                                "Optional. Multi-status filter. If provided, returns only users who have at least one order "
+                                "for EACH status in this list (e.g. ['pending', 'delivered'])."
+                            ),
                         },
                     },
                     "required": [],

@@ -4,7 +4,7 @@ import json
 from typing import Any, Dict, List, Optional, Tuple
 
 from tracer2.agents.base import Agent
-from tracer2.llm_utils import completion_with_retry
+from tracer2.llm_utils import completion_usage_tokens, completion_with_retry
 from tracer2.envs.base import Env
 from tracer2.types import (
     RESPOND_ACTION_FIELD_NAME,
@@ -115,7 +115,7 @@ class ChatReActAgent(Agent):
 
     def generate_next_step(
         self, messages: List[Dict[str, Any]]
-    ) -> Tuple[Dict[str, Any], Action, float]:
+    ) -> Tuple[Dict[str, Any], Action, float, Optional[int], Optional[int], Optional[int], bool]:
         res = completion_with_retry(
             model=self.model,
             custom_llm_provider=self.provider,
@@ -127,6 +127,13 @@ class ChatReActAgent(Agent):
         content = message.content or ""
 
         cost = (getattr(res, "_hidden_params", None) or {}).get("response_cost") or 0.0
+        p_use, c_use, t_use = completion_usage_tokens(res)
+        step_usage_complete = t_use is not None
+
+        def _finish(message_dict: Dict[str, Any], action: Action) -> Tuple[
+            Dict[str, Any], Action, float, Optional[int], Optional[int], Optional[int], bool
+        ]:
+            return message_dict, action, cost, p_use, c_use, t_use, step_usage_complete
 
         action_info = self._extract_first_action(content)
         if not action_info:
@@ -134,7 +141,7 @@ class ChatReActAgent(Agent):
                 name=RESPOND_ACTION_NAME,
                 kwargs={RESPOND_ACTION_FIELD_NAME: content.strip()},
             )
-            return message.model_dump(), action, cost
+            return _finish(message.model_dump(), action)
 
         action_parsed, action_end = action_info
         # Normalize the logged content to the first executed Thought/Action block.
@@ -148,7 +155,7 @@ class ChatReActAgent(Agent):
                 name=RESPOND_ACTION_NAME,
                 kwargs={RESPOND_ACTION_FIELD_NAME: content.strip()},
             )
-            return message_dict, action, cost
+            return _finish(message_dict, action)
         if isinstance(arguments, str):
             try:
                 arguments = json.loads(arguments)
@@ -159,7 +166,7 @@ class ChatReActAgent(Agent):
                 name=RESPOND_ACTION_NAME,
                 kwargs={RESPOND_ACTION_FIELD_NAME: content.strip()},
             )
-            return message_dict, action, cost
+            return _finish(message_dict, action)
 
         # Ensure respond content is always a string (APIs may return parsed dict)
         if name == RESPOND_ACTION_NAME and RESPOND_ACTION_FIELD_NAME in arguments:
@@ -168,7 +175,7 @@ class ChatReActAgent(Agent):
                 arguments = {**arguments, RESPOND_ACTION_FIELD_NAME: json.dumps(raw)}
 
         action = Action(name=name, kwargs=arguments)
-        return message_dict, action, cost
+        return _finish(message_dict, action)
 
     def _extract_thought(self, content: str) -> Optional[str]:
         """Extract the Thought line(s) from ReAct-style content (between Thought: and Action:)."""
@@ -190,9 +197,21 @@ class ChatReActAgent(Agent):
             {"role": "user", "content": response.observation},
         ]
         total_cost = 0.0
+        sum_prompt = 0
+        sum_completion = 0
+        sum_total = 0
+        usage_complete = True
         info = {}
         for step in range(max_num_steps):
-            message, action, cost = self.generate_next_step(messages)
+            message, action, cost, p_u, c_u, t_u, step_ok = self.generate_next_step(messages)
+            if not step_ok:
+                usage_complete = False
+            if p_u is not None:
+                sum_prompt += p_u
+            if c_u is not None:
+                sum_completion += c_u
+            if t_u is not None:
+                sum_total += t_u
             if print_thoughts:
                 content = (message.get("content") or "").strip()
                 thought = self._extract_thought(content)
@@ -223,6 +242,11 @@ class ChatReActAgent(Agent):
             messages=messages,
             reward=reward,
             info=info,
+            total_cost=total_cost,
+            usage_prompt_tokens=sum_prompt if usage_complete else None,
+            usage_completion_tokens=sum_completion if usage_complete else None,
+            usage_total_tokens=sum_total if usage_complete else None,
+            usage_complete=usage_complete,
         )
 
 

@@ -43,6 +43,53 @@ def _get_router(full_model: str, api_base: Optional[str]) -> Router:
     return _routers[key]
 
 
+def completion_usage_tokens(res: Any) -> Tuple[Optional[int], Optional[int], Optional[int]]:
+    """Extract (prompt_tokens, completion_tokens, total_tokens) from a litellm completion response.
+
+    ``total_tokens`` uses the API value when present, otherwise ``prompt + completion`` when both exist.
+    Returns (None, None, None) when ``usage`` is missing or has no usable fields.
+    """
+    usage = getattr(res, "usage", None)
+    if usage is None:
+        return (None, None, None)
+    if isinstance(usage, dict):
+        p = usage.get("prompt_tokens")
+        c = usage.get("completion_tokens")
+        t = usage.get("total_tokens")
+    else:
+        p = getattr(usage, "prompt_tokens", None)
+        c = getattr(usage, "completion_tokens", None)
+        t = getattr(usage, "total_tokens", None)
+
+    def _as_int(x: Any) -> Optional[int]:
+        if x is None:
+            return None
+        try:
+            return int(x)
+        except (TypeError, ValueError):
+            return None
+
+    p, c, t = _as_int(p), _as_int(c), _as_int(t)
+    if t is None and p is not None and c is not None:
+        t = p + c
+    if p is None and c is None and t is None:
+        return (None, None, None)
+    return (p, c, t)
+
+
+def empty_usage_record() -> Dict[str, Any]:
+    return {"prompt": None, "completion": None, "total": None, "complete": False}
+
+
+def usage_record_from_solve_result(result: Any) -> Dict[str, Any]:
+    return {
+        "prompt": result.usage_prompt_tokens,
+        "completion": result.usage_completion_tokens,
+        "total": result.usage_total_tokens,
+        "complete": result.usage_complete,
+    }
+
+
 def completion_with_retry(
     model: str,
     custom_llm_provider: Optional[str] = None,

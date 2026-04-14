@@ -6,6 +6,7 @@ import json
 from typing import Any, Dict, List, Optional, Tuple
 
 from tracer2.agents.chat_react_agent import ChatReActAgent
+from tracer2.llm_utils import empty_usage_record, usage_record_from_solve_result
 from tracer2.prompts.feeling_generator import FEELING_SYSTEM_PROMPT, format_feeling_user_prompt
 from tracer2.types import (
     Action,
@@ -108,9 +109,9 @@ class FeelingGeneratorAgent:
         domain: str,
         candidate: GeneratedTaskCandidate,
         max_steps: int = 12,
-    ) -> Tuple[str, List[Dict[str, Any]]]:
+    ) -> Tuple[str, List[Dict[str, Any]], Dict[str, Any]]:
         if self.model is None or self.provider is None:
-            return "", []
+            return "", [], empty_usage_record()
 
         initial_observation = format_feeling_user_prompt(
             domain=domain,
@@ -138,9 +139,10 @@ class FeelingGeneratorAgent:
         try:
             res = react_agent.solve(env=env, task_index=0, max_num_steps=max_steps)
             trajectory = res.messages
+            usage = usage_record_from_solve_result(res)
         except Exception:
-            return "", []
+            return "", [], empty_usage_record()
 
         if env.feeling is not None:
-            return env.feeling, trajectory
-        return "", trajectory
+            return env.feeling, trajectory, usage
+        return "", trajectory, usage

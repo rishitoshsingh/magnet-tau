@@ -14,7 +14,11 @@ class GetCustomersByService(Tool):
         global _call_counter
         customers = data["customers"]
         entries = [
-            {"customer_id": cid, "services": info.get("services", [])}
+            {
+                "customer_id": cid,
+                "email": info.get("demographics", {}).get("email", ""),
+                "services": info.get("services", []),
+            }
             for cid, info in customers.items()
             if service_id in info.get("services", [])
         ]
@@ -33,7 +37,7 @@ class GetCustomersByService(Tool):
                 "name": "get_customers_by_service",
                 "description": (
                     "Get a paginated batch of up to 5 customers who have a specific service. "
-                    "Returns customer_id and their full services list. "
+                    "Returns customer_id, email, and their full services list. "
                     "Use this when the trace involves removing or modifying a specific service "
                     "to ensure the customer actually has that service."
                 ),

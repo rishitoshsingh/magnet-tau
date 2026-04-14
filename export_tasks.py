@@ -1,10 +1,10 @@
-"""Export generated task JSON to a Python TASKS file.
+f"""Export generated task JSON to a Python TASKS file.
 
 Skips failed / incomplete generator rows (e.g. ``failed: true`` or missing ``user_id``).
 
 Usage:
-  python3 export_tasks.py input_tasks.json --package tracer2
-  python3 export_tasks.py input_tasks.json --package tracer2 --output output/tasks/tasks_export.py
+  python3 export_tasks.py input_tasks.json --package tracer2 
+  python3 export_tasks.py input_tasks.json --package tracer2 --output tau-repo/package/env/domain/tasks_dev.py
 """
 
 import argparse

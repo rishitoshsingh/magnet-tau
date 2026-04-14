@@ -10,6 +10,7 @@ import json
 from typing import Any, Dict, List, Optional, Tuple
 
 from tracer2.agents.chat_react_agent import ChatReActAgent
+from tracer2.llm_utils import empty_usage_record, usage_record_from_solve_result
 from tracer2.prompts.in_domain_checker import (
     SYSTEM_PROMPTS_BY_DOMAIN,
     format_in_domain_checker_user_prompt,
@@ -147,6 +148,7 @@ def _empty_analysis() -> Dict[str, Any]:
         "in_domain_reason": None,
         "trajectory": [],
         "action_replay": [],
+        "llm_usage": empty_usage_record(),
     }
 
 
@@ -331,9 +333,11 @@ class InDomainCheckerAgent:
         try:
             res = react_agent.solve(env=env, task_index=0, max_num_steps=max_steps)
             trajectory = res.messages
+            llm_usage = usage_record_from_solve_result(res)
         except Exception:
-            empty["action_replay"] = action_replay
-            return empty
+            out = _empty_analysis()
+            out["action_replay"] = action_replay
+            return out
 
         if (
             env.in_domain is not None
@@ -353,8 +357,11 @@ class InDomainCheckerAgent:
                 "difficulty_reason": env.difficulty_reason,
                 "trajectory": trajectory,
                 "action_replay": action_replay,
+                "llm_usage": llm_usage,
             }
 
-        empty["trajectory"] = trajectory
-        empty["action_replay"] = action_replay
-        return empty
+        out = _empty_analysis()
+        out["trajectory"] = trajectory
+        out["action_replay"] = action_replay
+        out["llm_usage"] = llm_usage
+        return out

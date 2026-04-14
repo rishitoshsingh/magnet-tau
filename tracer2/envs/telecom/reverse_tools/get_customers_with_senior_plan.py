@@ -14,7 +14,11 @@ class GetCustomersWithSeniorPlan(Tool):
         global _call_counter
         customers = data["customers"]
         entries = [
-            {"customer_id": cid, "services": info.get("services", [])}
+            {
+                "customer_id": cid,
+                "email": info.get("demographics", {}).get("email", ""),
+                "services": info.get("services", []),
+            }
             for cid, info in customers.items()
             if "mobile_senior" in info.get("services", [])
         ]
@@ -33,7 +37,7 @@ class GetCustomersWithSeniorPlan(Tool):
                 "name": "get_customers_with_senior_plan",
                 "description": (
                     "Get a paginated batch of up to 5 customers who are on the senior mobile plan "
-                    "(mobile_senior). Returns customer_id and their services list. "
+                    "(mobile_senior). Returns customer_id, email, and their services list. "
                     "Use this when the trace involves applying a senior discount."
                 ),
                 "parameters": {
