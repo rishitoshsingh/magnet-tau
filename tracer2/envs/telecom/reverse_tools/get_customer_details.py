@@ -3,7 +3,7 @@
 import json
 from typing import Any, Dict
 
-from tau_bench.envs.tool import Tool
+from tracer2.envs.tool import Tool
 
 
 class GetCustomerDetails(Tool):
