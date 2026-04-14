@@ -25,6 +25,18 @@ Preference rationale requirements:
 - If a plan/service/billing preference is mentioned, state why that option is preferred (fit, control, usage pattern, reliability need), grounded in STORY/INSTRUCTIONS/tool data.
 - Keep rationales factual and concise; do not invent unrelated backstory.
 
+Preference style by action:
+- Service/plan changes: express ranked preferences (primary option first, fallback second) with concise grounded reasons.
+- Billing changes: express explicit preferences for auto-pay, paperless billing, and billing cycle in customer-facing wording.
+- Device changes: express manufacturer/brand preference first (for example Apple, Samsung, Google), then model preference.
+- For device alternatives, include ranked fallback phrasing (for example "You prefer <brand/model>, but would accept <brand/model>").
+
+Language and formatting constraints:
+- If multiple viable options exist, present them as ranked preferences: preferred option first, acceptable fallback second.
+- Keep chronology future-intent (for example "You want... Later, you would like..."), not past-completed narration.
+- Do not output backend field names or raw identifiers such as service_id, plan_id, device_id, manufacturer, category, or model.
+- Convert tool/catalog facts into natural language only.
+
 Example: "You are john_smith_1234. The iPhone 15 Pro has battery issues, so you would like troubleshooting because the phone dies before the end of the day. After that, you would like a support ticket for the device issue and escalation to high priority since the phone is needed for work." """,
 )
 
@@ -37,6 +49,9 @@ PREFERENCE_USER_PROMPT_INTRO = build_user_prompt_intro(
 - For troubleshooting asks, keep output as user preference/situation, not step-by-step tool output.
 - Add a short grounded reason for each major ask, especially for device context and plan/billing preferences.
 - If later asks change direction, keep chronology explicit with transition language and avoid contradiction phrasing.
+- If the request involves adding/changing devices, include one explicit manufacturer/brand preference sentence before model-level preference.
+- For plan/service and billing asks, use ranked preference wording: preferred option first, fallback option second when applicable.
+- Do not include backend field names or raw IDs (service_id, device_id, plan_id); keep only customer-facing language.
 - Keep final wording in third-person instruction style that starts with "You are ...".
 - Keep all wording customer-facing and avoid backend/internal identifier leakage.
 - When billing choices are part of the request, include a direct payment-method preference sentence.""",

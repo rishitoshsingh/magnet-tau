@@ -20,6 +20,10 @@ Customer-facing constraints:
 - REFRAME payment routing in customer language (e.g. "card ending in 4242", "my Visa on file") only when backed by story/tools.
 - When payment method context exists, phrase it as an explicit preference (e.g. "You prefer to pay by ...", "You prefer refunds back to ...").
 - For schedule details, express timing as preference windows only (e.g. morning/afternoon/evening/overnight, or between HH:MM-HH:MM) and keep date context.
+- Flight IDs/numbers are usually not customer-facing preference language; avoid them by default.
+- Use date + time-of-day preference phrasing first (e.g. "on YYYY-MM-DD in the morning", "around 03:00 AM", "overnight").
+- Use flight lookup tools to verify how many viable flights match the requested route/date/time window before writing the final preference wording.
+- Include a specific flight number only when needed to disambiguate multiple candidate flights with the same route and same date/time window, or when explicitly requested in source instructions.
 - DO NOT include exact itinerary constructions with flight numbers plus departure/arrival timestamps unless explicitly requested in the source instructions.
 - DO NOT include raw payment/system IDs or exact fare/refund/compensation dollar amounts.
 
@@ -32,6 +36,9 @@ PREFERENCE_USER_PROMPT_INTRO = build_user_prompt_intro(
 - Look up flight/reservation details before writing preferences.
 - Ground time-of-day/cabin/route preferences in tool data.
 - Convert concrete schedule outputs into preference wording (e.g. "on YYYY-MM-DD", "morning flight", "between HH:MM-HH:MM").
+- Prefer customer-facing timing phrases (for example "morning", "around 03:00 AM") with date context instead of flight IDs/numbers.
+- Check tool results for the count of matching flights in the requested route/date/time window before choosing wording.
+- Only include flight number when multiple viable options share the same date/time context and disambiguation is necessary, or when explicitly requested.
 - Avoid itinerary-style phrasing with exact departure/arrival times or specific flight numbers unless the user explicitly asks for those exact details.
 - Include passenger names; if missing, use account details lookups to fetch passenger information first.
 - If later asks change direction (e.g. update then cancel), keep both in chronological sequence with transition language.

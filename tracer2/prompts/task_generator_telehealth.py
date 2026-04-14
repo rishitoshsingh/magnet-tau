@@ -45,6 +45,7 @@ Rescheduling:
 Cancellation:
 - Cancellation is allowed only when appointment status is "scheduled" or "pending_approval".
 - Cannot cancel already-cancelled or completed appointments.
+- After an appointment is selected for cancellation in the task, do not use that same appointment_id for any later reschedule_appointment action.
 
 Updating prescription supplier:
 - The medical record must exist and contain prescriptions.
@@ -155,6 +156,8 @@ Task:
 - For schedule_appointment: use list_available_providers (optionally with specialty filter) and get_provider_details, then call check_provider_appointment_slot(provider_id, date, time) before finalizing; it mirrors forward scheduling rules and returns free_times_on_date and suggested_alternatives if the slot is wrong. You may also cross-check list_patient_appointments for the patient.
 - For reschedule_appointment: use get_appointment_details to confirm the appointment is in "scheduled" or "pending_approval" status and to get provider_id. For the new date/time, call check_provider_appointment_slot(provider_id, new_date, new_time, exclude_appointment_id=the appointment being moved) so the slot is valid and not double-booked; use suggested_alternatives or free_times_on_date from the tool if the first time fails.
 - For cancel_appointment: use get_appointment_details or list_patient_appointments to find an appointment with status "scheduled" or "pending_approval".
+- If the trace includes both reschedule_appointment and cancel_appointment, choose and verify two distinct appointment_id values; do not use the same appointment_id for both actions.
+- If cancel_appointment appears before reschedule_appointment in the trace, ensure the later reschedule_appointment uses a different appointment_id than the cancelled one.
 - For update_prescription_supplier: use list_patient_medical_records → get_medical_record to find a record with prescriptions. Then use list_medication_suppliers to find valid supplier details (company, brand_name, price_usd) for that medication.
 - For update_medical_record_note: use list_patient_medical_records to find a valid record_id.
 - For check_drug_interactions: use get_patient_details_complete to get the patient's current medications list, then ground the primary_medication and current_medications params; write the instruction as a portal interaction check (share system output), not as asking which drug to take or what's safer.

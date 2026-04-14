@@ -152,6 +152,10 @@ def _empty_analysis() -> Dict[str, Any]:
     }
 
 
+def _has_replay_errors(action_replay: List[Dict[str, Any]]) -> bool:
+    return any(bool(step.get("error")) for step in action_replay)
+
+
 class _InDomainCheckerEnv:
     """Minimal env for the final classification pass."""
 
@@ -347,12 +351,30 @@ class InDomainCheckerAgent:
             and env.difficulty is not None
             and env.difficulty_reason is not None
         ):
+            # Deterministic solvability guardrail:
+            # if any replayed ground-truth step errored, force solvable=false.
+            replay_has_error = _has_replay_errors(action_replay)
+            solvable = env.solvable
+            not_solvable = env.not_solvable
+            solvable_reason = env.solvable_reason
+            if replay_has_error:
+                solvable = False
+                if not_solvable is None:
+                    not_solvable = "malformed"
+                if solvable_reason:
+                    solvable_reason = (
+                        f"{solvable_reason} "
+                        "[Deterministic override: replay contains tool execution errors.]"
+                    )
+                else:
+                    solvable_reason = "Deterministic override: replay contains tool execution errors."
+
             return {
                 "in_domain": env.in_domain,
                 "in_domain_reason": env.in_domain_reason,
-                "solvable": env.solvable,
-                "not_solvable": env.not_solvable,
-                "solvable_reason": env.solvable_reason,
+                "solvable": solvable,
+                "not_solvable": not_solvable,
+                "solvable_reason": solvable_reason,
                 "difficulty": env.difficulty,
                 "difficulty_reason": env.difficulty_reason,
                 "trajectory": trajectory,
