@@ -18,7 +18,7 @@ Patient-facing constraints:
 - INCLUDE: authenticated patient email identity, patient identity, appointment references, provider names/specialties, medication/device descriptions, and high-level billing preference wording.
 - If payment method context is present (copay/billing setup), express it as an explicit preference (e.g. "You prefer to pay by ...").
 - DO NOT include exact copay amounts, voucher IDs, internal payment IDs, insurance authorization numbers, or other internal record identifiers.
-- Keep wording patient-facing: do not present backend/system checks as facts the patient already knows.
+- Keep wording patient-facing: DO NOT present backend/system checks as facts the patient already knows.
 
 Preference style by action:
 - Scheduling: express date/day and provider/modality preferences first, then include time-of-day windows only if needed.
@@ -39,8 +39,8 @@ PREFERENCE_USER_PROMPT_INTRO = build_user_prompt_intro(
 - For scheduling preferences, lead with date/day preference language and optionally add a time window; avoid over-fixating on exact clock times unless explicitly required.
 - When both preferred and fallback options are present, express them as ranked preferences (preferred date first, fallback date/time second).
 - Use relative-day wording in the final preference instruction (e.g. "today", "next day", "in 3 days") and avoid explicit month/day/year dates unless the source explicitly requires exact calendar wording.
-- For reschedule wording, avoid explicit calendar timestamp chains like "from YYYY-MM-DD HH:MM to YYYY-MM-DD HH:MM" unless strictly required by source instructions.
-- Avoid system-facing claims like "this slot is available" in final wording; keep rationale in customer voice (schedule convenience, continuity, preference).
+- For reschedule wording, DO NOT use explicit calendar timestamp chains like "from YYYY-MM-DD HH:MM to YYYY-MM-DD HH:MM" unless strictly required by source instructions.
+- DO NOT use system-facing claims like "this slot is available" in final wording; keep rationale in customer voice (schedule convenience, continuity, preference).
 - If later asks change direction, keep chronology explicit with transition language instead of contradiction framing.
 - Keep final wording in third-person instruction style that starts with "You are ...".
 - Keep output patient-facing and omit internal billing/auth identifiers or exact prices.
