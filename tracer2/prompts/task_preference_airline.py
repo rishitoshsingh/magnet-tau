@@ -22,6 +22,7 @@ Scheduling preference wording:
 - Express schedule details as date + timing preference windows (morning/afternoon/evening/overnight or between HH:MM-HH:MM).
 - Prefer customer-facing timing phrasing (for example "early morning", "late evening", "overnight") over itinerary-style details.
 - For any booking/rebooking/new-flight ask, ALWAYS include origin (from), destination (to), travel date, and a time or time-window in the final preference wording.
+- If the user is booking K flights, provide exactly K preferred flight choices/windows (one per intended flight booking); do not add extra alternatives beyond K.
 - Use flight lookup tools to verify how many viable flights match the requested route/date/time window before writing the final preference wording.
 - Flight IDs/numbers are usually not customer-facing preference language; AVOID them by default.
 - Include a specific flight number ONLY when disambiguation is required (multiple viable matches in the same date/time context), or when explicitly requested in source instructions.
@@ -51,6 +52,7 @@ PREFERENCE_USER_PROMPT_INTRO = build_user_prompt_intro(
 - Ground time-of-day/cabin/route preferences in tool data.
 - Convert concrete schedule outputs into preference wording (e.g. "on YYYY-MM-DD", "morning flight", "between HH:MM-HH:MM").
 - For booking/rebooking/new-flight asks, ALWAYS include from, to, date, and time/time-window in the final customer-facing preference instruction.
+- If the booking intent is for K flights, output exactly K preferred flight timing options (one per flight), each with clear from/to/date/time context; do not add extra alternatives beyond K.
 - Prefer customer-facing timing phrases (for example "early morning", "late evening") with date context instead of exact timestamps.
 - Use HH:MM format only when multiple viable flights in the same route/date window require time-level disambiguation.
 - Check tool results for the count of matching flights in the requested route/date/time window before choosing wording.
