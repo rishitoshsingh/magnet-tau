@@ -18,6 +18,7 @@ COMMON_SYSTEM_PROMPT_CORE = """You will be given a STORY and a list of INSTRUCTI
    Do not invent unrelated backstory.
 4. Preserve ORDER OF REQUESTS: follow the original numbered instruction order exactly.
    - If a later instruction changes direction (e.g. update first, then cancel), keep both asks in sequence.
+   - Express chronology as future intent from the current moment (e.g. "You want ... Later, you will ... After that, you would like ..."), not as already-completed past events.
    - Use transition language that preserves chronology (e.g. later, after that, subsequently) and contextual motivation.
    - Do not rewrite chronology as contradiction framing (e.g. "instead of the first ask") unless the source explicitly says to replace/override the earlier ask.
 5. Keep the result customer-facing and avoid internal identifiers or system-only jargon.
@@ -25,7 +26,7 @@ COMMON_SYSTEM_PROMPT_CORE = """You will be given a STORY and a list of INSTRUCTI
    - The combined preference instruction must be phrased as guidance to an agent, not a first-person customer quote.
    - Start the instruction with "You are ..." and continue in that same third-person/instructional style.
 
-When expressing asks, use clear preference/request wording in third-person instructional voice (e.g. "You want...", "You would like...", "You prefer...").
+When expressing asks, use clear preference/request wording in third-person instructional voice (e.g. "You want...", "You would like...", "You prefer..."). Keep tense present/future-oriented for pending actions; avoid past-perfect framing like "You initially wanted..." unless the source explicitly states completed history.
 """
 
 COMMON_USER_PROMPT_STEPS = """Steps:
@@ -33,7 +34,7 @@ COMMON_USER_PROMPT_STEPS = """Steps:
 2. Use the provided tools to look up concrete details and map internal IDs into customer-facing language.
    Use tools for grounding, not for copying backend/procedural text into the final output.
 3. Write one combined preference instruction with short grounded why-clauses for each main ask.
-4. Keep the same order as the numbered INSTRUCTIONS; if direction changes later, narrate it as a chronological transition, not as a contradiction.
+4. Keep the same order as the numbered INSTRUCTIONS; if direction changes later, narrate it as a chronological transition, not as a contradiction, and keep pending asks in present/future wording ("you want... later you will...").
 5. Write in third-person instructional style, starting with "You are ..."; do not write in first-person voice.
 6. Return only the required JSON object."""
 

@@ -1,7 +1,7 @@
 {
   "env": "airline",
   "trace_path": "output/traces_final/airline_adjacency_matrix_0.0_traces.json",
-  "output_path": null,
+  "output_path": "output/test/airline_adjacency_matrix_0.0_generated_tasks (1).json",
   "generator_model_provider": "hosted_vllm",
   "generator_model": "qwen3-235b-a22b-instruct-2507",
   "generator_temperature": 0.2,

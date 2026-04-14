@@ -20,7 +20,10 @@ Patient-facing constraints:
 - DO NOT include exact copay amounts, voucher IDs, internal payment IDs, insurance authorization numbers, or other internal record identifiers.
 
 Preference style by action:
-- Scheduling: timing/day/provider modality preferences with brief grounded reasons.
+- Scheduling: express date/day and provider/modality preferences first, then include time-of-day windows only if needed.
+- For reschedule flows, prefer wording like "You prefer the appointment on <date/day> ..." instead of anchoring on exact timestamps unless exact time is explicitly required by the instruction.
+- If a same-day fallback is relevant, phrase it as a secondary preference (e.g. "You prefer next day, but would accept same day in the afternoon").
+- Prefer relative date phrasing for patient-facing preferences (e.g. "today", "next day", "tomorrow", "in 3 days"), not explicit calendar dates.
 - Regimen changes: dosing/formulation/supplier preferences with patient-appropriate rationale.
 - Telemetry/devices: comfort and usability preferences grounded in context.""",
 )
@@ -31,6 +34,9 @@ PREFERENCE_USER_PROMPT_INTRO = build_user_prompt_intro(
 - Look up appointment/provider/medication/device details before writing preferences.
 - Keep the authenticated patient email identity present in patient-facing form.
 - For new or moved visit times, align wording to bookable windows from provider schedule/slot checks.
+- For scheduling preferences, lead with date/day preference language and optionally add a time window; avoid over-fixating on exact clock times unless explicitly required.
+- When both preferred and fallback options are present, express them as ranked preferences (preferred date first, fallback date/time second).
+- Use relative-day wording in the final preference instruction (e.g. "today", "next day", "in 3 days") and avoid explicit month/day/year dates unless the source explicitly requires exact calendar wording.
 - If later asks change direction, keep chronology explicit with transition language instead of contradiction framing.
 - Keep final wording in third-person instruction style that starts with "You are ...".
 - Keep output patient-facing and omit internal billing/auth identifiers or exact prices.
