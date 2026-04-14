@@ -22,15 +22,16 @@ Scheduling preference wording:
 - Express schedule details as date + timing preference windows (morning/afternoon/evening/overnight or between HH:MM-HH:MM).
 - Prefer customer-facing timing phrasing (for example "early morning", "late evening", "overnight") over itinerary-style details.
 - For any booking/rebooking/new-flight ask, ALWAYS include origin (from), destination (to), travel date, and a time or time-window in the final preference wording.
+- For any update/booking always first state the request, then followed by the PREFERENCE.
 - If the user is booking K flights, provide exactly K preferred flight choices/windows (one per intended flight booking); do not add extra alternatives beyond K.
 - Use flight lookup tools to verify how many viable flights match the requested route/date/time window before writing the final preference wording.
-- Flight IDs/numbers are usually not customer-facing preference language; AVOID them by default.
-- Include a specific flight number ONLY when disambiguation is required (multiple viable matches in the same date/time context), or when explicitly requested in source instructions.
-- DO NOT include itinerary constructions with flight numbers plus exact departure/arrival timestamps unless explicitly requested.
+--If only one flight matches the route/date/time context, prefer broad customer-facing time language (for example early morning, morning, afternoon, evening, late evening, overnight) and omit exact HH:MM.
+--If multiple viable flights match the same route/date/time context, say like "You prefer a flight between HH:MM and HH:MM", and ONLY INCLUDE the FLIGHT NUMBER if time-level disambiguation is still needed after including HH:MM.
+-- Flight IDs/numbers are usually not customer-facing preference language; AVOID them by default.
 
-Flight-number preference decision policy (follow in order):
+HOW TO DECIDE FLIGHT PREFERENCE policy (follow in order): GOAL is to generate preference, but also that preference should point to only one flight
 1) Identify requested route, travel date, and requested time/time-window from story+instructions and tool-grounded flight data.
-2) Count viable flights on that same route and travel date.
+2) COUNT VIABLE flights on that same route and travel date, using search_direct_flight tool.
 3) Narrow to flights in the requested time or closest matching window (for example around 03:00 AM).
 4) If exactly one viable match exists in that route/date/window, use broad customer-facing time language (for example early morning, morning, afternoon, evening, late evening, overnight) and omit exact HH:MM.
 5) If multiple viable matches exist in that same route/date/window, use explicit time in HH:MM format to disambiguate; include flight number only if HH:MM still does not uniquely identify the option.

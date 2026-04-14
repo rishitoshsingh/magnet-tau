@@ -1,14 +1,14 @@
 {
   "env": "retail",
-  "trace_path": "output/traces_final/retail_adjacency_matrix_0.0_traces.json",
-  "output_path": "output/test/retail_adjacency_matrix_0.0_generated_tasks.json",
+  "trace_path": "/scr/amir/emotion_project/all_traces/retail_adjacency_matrix_0.0_traces.json",
+  "output_path": "/scr/amir/emotion_project/generated_data_qwen3/retail_generated_tasks.json",
   "generator_model_provider": "hosted_vllm",
-  "generator_model": "qwen3-235b-a22b-instruct-2507",
+  "generator_model": "qwen3-235b-a22b-thinking-2507",
   "generator_temperature": 0.2,
   "feeling_temperature": 0.9,
   "api_base": "https://openai.rc.asu.edu/v1",
   "start_index": 0,
-  "end_index": 20,
+  "end_index": 500,
   "task_ids": null,
   "tasks_per_trace": 2
 }

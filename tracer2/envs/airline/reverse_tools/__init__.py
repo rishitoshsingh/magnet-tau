@@ -14,6 +14,7 @@ from .get_user_ids_with_n_reservations import GetUserIdsWithNReservations
 from .get_users_with_cancelled_flights import GetUsersWithCancelledFlights
 from .get_users_with_delayed_flights import GetUsersWithDelayedFlights
 from .get_flights_from_origin import GetFlightsFromOrigin
+from .search_direct_flight import SearchDirectFlight
 from .calculate import Calculate
 from .think import Think
 
