@@ -14,11 +14,13 @@ PREFERENCE_SYSTEM_PROMPT = build_system_prompt(
 - Use these looked-up attributes to express customer preferences naturally (e.g. evening vs morning, economy vs business).
 
 Customer-facing constraints:
-- INCLUDE: user_id, reservation_id/confirmation code, flight numbers, origin/destination, dates, cabin preference, passenger count, and reason for contacting.
+- INCLUDE: user_id, reservation_id/confirmation code, origin/destination, travel date(s), cabin preference, passenger count, and reason for contacting.
 - INCLUDE passenger names when available from instructions.
 - If passenger names are not already available, just say passengers details should be in the user account or other reservations.
 - REFRAME payment routing in customer language (e.g. "card ending in 4242", "my Visa on file") only when backed by story/tools.
 - When payment method context exists, phrase it as an explicit preference (e.g. "You prefer to pay by ...", "You prefer refunds back to ...").
+- For schedule details, express timing as preference windows only (e.g. morning/afternoon/evening/overnight, or between HH:MM-HH:MM) and keep date context.
+- DO NOT include exact itinerary constructions with flight numbers plus departure/arrival timestamps unless explicitly requested in the source instructions.
 - DO NOT include raw payment/system IDs or exact fare/refund/compensation dollar amounts.
 
 Example: "You are [user_id]. Reservation [ABC123] had a cancelled flight, so you would like compensation because the trip was disrupted. The payment was made with a card ending in 4242 and the refund should go there since that is how it was paid. You also prefer booking a new flight from JFK to LAX in the evening, economy, for 2 passengers, because evening fits the travel day." """,
@@ -29,6 +31,8 @@ PREFERENCE_USER_PROMPT_INTRO = build_user_prompt_intro(
     """Airline checklist:
 - Look up flight/reservation details before writing preferences.
 - Ground time-of-day/cabin/route preferences in tool data.
+- Convert concrete schedule outputs into preference wording (e.g. "on YYYY-MM-DD", "morning flight", "between HH:MM-HH:MM").
+- Avoid itinerary-style phrasing with exact departure/arrival times or specific flight numbers unless the user explicitly asks for those exact details.
 - Include passenger names; if missing, use account details lookups to fetch passenger information first.
 - If later asks change direction (e.g. update then cancel), keep both in chronological sequence with transition language.
 - Keep final wording in third-person instruction style that starts with "You are ...".
