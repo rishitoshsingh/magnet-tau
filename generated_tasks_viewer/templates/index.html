@@ -2,211 +2,324 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Generated Tasks Viewer</title>
+  <title>Tasks Viewer</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-  <div class="page-shell">
-    <header class="hero">
-      <div>
-        <p class="eyebrow">Generated Task Viewer</p>
-        <h1>Explore LLM-generated task JSONs</h1>
-        <p class="hero-copy">Tasks are collapsed by default. Expand one to inspect user details, instruction, preference instruction, story, feeling text, optional emotion-prediction metadata, ground truth, action trace, and trajectories (including the feeling generator) with nested conversation messages.</p>
-      </div>
-      <form action="{{ url_for('load_path') }}" method="post" class="loader-card">
-        <label for="path">JSON path</label>
-        <div class="loader-row">
-          <input
-            id="path"
-            name="path"
-            type="text"
-            placeholder="output/traces/airline_adjacency_matrix_0.0_generated_tasks.json"
-            value="{{ path_tried or '' }}"
-          >
-          <button type="submit">Load</button>
+
+<h1>Tasks Viewer</h1>
+
+<form class="dir-bar" action="/" method="get">
+  <span class="dir-label">folder</span>
+  <input class="dir-input" name="dir" type="text"
+    placeholder="{{ tasks_dir }}"
+    value="{{ dir_param or '' }}">
+  <button class="dir-btn" type="submit">Load</button>
+  {%- if error %}
+  <span class="dir-error">{{ error }}</span>
+  {%- endif %}
+  <span class="dir-active">{{ tasks_dir }}</span>
+</form>
+
+<div class="tree">
+  {% for filename, tasks in files.items() %}
+  {% set fid = loop.index0 %}
+  {# compute max runs across tasks for the file-level summary #}
+  {% set ns = namespace(max_runs=0) %}
+  {% for task_id in tasks.keys() %}
+    {% if tasks[task_id]|length > ns.max_runs %}{% set ns.max_runs = tasks[task_id]|length %}{% endif %}
+  {% endfor %}
+  <button class="file-btn" data-body="fb-{{ fid }}">{{ filename }} &nbsp;·&nbsp; {{ tasks|length }}x{{ ns.max_runs }}</button>
+  <div class="file-body" id="fb-{{ fid }}" hidden>
+
+    {% for task_id in tasks.keys()|sort %}
+    {% set runs = tasks[task_id] %}
+    {% set tid = loop.index0 %}
+    {# Use first run for preview info #}
+    {% set first_run = runs[runs.keys()|sort|first] %}
+
+    <button class="task-btn" data-body="tb-{{ fid }}-{{ task_id }}">
+      Task {{ task_id }} &nbsp;·&nbsp; {{ runs|length }} run{{ '' if runs|length == 1 else 's' }} &nbsp;·&nbsp; {{ first_run._instruction_preview or '(no instruction)' }}
+    </button>
+    <div class="task-runs" id="tb-{{ fid }}-{{ task_id }}" hidden>
+
+      {% for run in runs.keys()|sort %}
+      {% set task = runs[run] %}
+      {% set key = filename ~ ":" ~ task_id ~ ":" ~ run %}
+
+      <div class="trial-wrap">
+        <div class="trial-header" data-wrap="tw-{{ fid }}-{{ task_id }}-{{ run }}">
+          <span class="trial-arrow">▶</span>
+          Run {{ run }}
+          {% if task.solvable == true %}
+            <span class="reward reward-good">solvable</span>
+          {% elif task.solvable == false %}
+            <span class="reward reward-bad">unsolvable</span>
+          {% endif %}
+          {% if task.difficulty %}
+            <span class="reward reward-mid">{{ task.difficulty }}</span>
+          {% endif %}
+          {% if task.in_domain == false %}
+            <span class="reward reward-bad">out-of-domain</span>
+          {% endif %}
         </div>
-        <p class="hint">Relative paths are resolved from the project root.</p>
-        {% if loaded_path %}
-        <p class="loaded-path">Loaded: <code>{{ loaded_path }}</code></p>
-        {% endif %}
-        {% if error %}
-        <p class="error">{{ error }}</p>
-        {% endif %}
-      </form>
-    </header>
 
-    {% if tasks %}
-    <section class="results-meta">
-      <p>{{ tasks|length }} task{{ '' if tasks|length == 1 else 's' }}</p>
-    </section>
+        <div class="trial-body" id="tw-{{ fid }}-{{ task_id }}-{{ run }}">
 
-    <section class="task-list">
-      {% for task in tasks %}
-      <details class="task-card">
-        <summary class="task-summary">
-          <div class="task-summary-main">
-            <span class="task-badge">Task {{ task._index }}</span>
-            <h2>user_id: {{ task.get('user_id', 'N/A') }}</h2>
-            <p class="summary-instruction">{{ task._instruction_preview or 'No instruction preview available.' }}</p>
-            {% if task._feeling_preview %}
-            <p class="summary-feeling"><span class="summary-feeling-label">Feeling</span> {{ task._feeling_preview }}</p>
-            {% endif %}
-          </div>
-          <div class="task-summary-side">
-            <span>task_id {{ task.get('task_id', 'N/A') }}</span>
-            <span>run {{ task.get('run', 'N/A') }}</span>
-          </div>
-        </summary>
-
-        <div class="task-body">
-          <div class="field-grid">
-            <section class="field-card">
-              <h3>User ID</h3>
-              <pre>{{ task.get('user_id', '') }}</pre>
-            </section>
-
-            <section class="field-card">
-              <h3>Instruction</h3>
-              <pre>{{ task.get('instruction', '') }}</pre>
-            </section>
-
-            <section class="field-card">
-              <h3>Preference instruction</h3>
-              {% set pref = task.get('preference_instruction') %}
-              {% if pref %}
-              <pre>{{ pref }}</pre>
-              {% else %}
-              <pre>{{ (task.get('preference_instructions') or []) | join('\n\n') }}</pre>
-              {% endif %}
-            </section>
-
-            <section class="field-card">
-              <h3>Story</h3>
-              <pre>{{ task.get('story', '') }}</pre>
-            </section>
-
-            <section class="field-card">
-              <h3>Feeling</h3>
-              <pre>{{ task.get('feeling', '') or '—' }}</pre>
-            </section>
-
-            {% if task.get('novel_emotion_prediction') %}
-            <section class="field-card span-2">
-              <h3>Novel emotion prediction</h3>
-              <p class="field-hint">Atlas-style match from enriched task JSONs (family, leaf, dimensions, closest persona instructions).</p>
-              <pre>{{ task.get('novel_emotion_prediction') | tojson(indent=2) }}</pre>
-            </section>
-            {% endif %}
-
-            <section class="field-card span-2">
-              <h3>Ground truth</h3>
-              {% if task.get('ground_truth_actions') %}
-              <div class="ground-truth-list">
-                {% for action in task.get('ground_truth_actions', []) %}
-                <details class="nested-card">
-                  <summary>
-                    <span>{{ loop.index }}. {{ action.get('name', 'Unnamed action') }}</span>
-                  </summary>
-                  <pre>{{ action | tojson(indent=2) }}</pre>
-                </details>
-                {% endfor %}
+          <!-- sidebar (rendered first; flex-direction:row-reverse floats it right) -->
+          <div class="sidebar">
+            <div class="counter-block">
+              <div class="counter-label">Score</div>
+              <div class="counter-row">
+                <button class="cbtn dec-btn" data-key="{{ key }}">−</button>
+                <span class="counter-val" id="cv-{{ fid }}-{{ task_id }}-{{ run }}">0</span>
+                <button class="cbtn inc-btn" data-key="{{ key }}">+</button>
               </div>
+            </div>
+            <button class="save-btn" onclick="saveCounters(this)">Save</button>
+            <div class="save-status" id="ss-{{ fid }}-{{ task_id }}-{{ run }}"></div>
+
+            <div class="actions-block">
+              <div class="ab-label">Ground truth</div>
+              {% for action in task.get('ground_truth_actions', []) %}
+              <div class="ab-tool">{{ action.get('name', '?') }}</div>
               {% else %}
-              <pre>{{ task.get('ground_truth', {}) | tojson(indent=2) }}</pre>
-              {% endif %}
-            </section>
-          </div>
+              <div style="color:#999">—</div>
+              {% endfor %}
+            </div>
 
-          <details class="section-card">
-            <summary>Action trace ({{ task.get('action_trace', [])|length }})</summary>
-            <div class="section-content">
-              {% for turn in task.get('action_trace', []) %}
-              <details class="nested-card">
-                <summary>Turn {{ loop.index0 }} ({{ turn|length }} nodes)</summary>
-                <div class="nested-stack">
-                  {% for node in turn %}
-                  <details class="nested-card">
-                    <summary>Node {{ node.get('idx', 'N/A') }}: {{ node.get('name', 'Unnamed') }}</summary>
-                    <pre>{{ node | tojson(indent=2) }}</pre>
-                  </details>
-                  {% endfor %}
+            {% if task.user_id %}
+            <div style="margin-top:10px">
+              <div class="counter-label">user</div>
+              <div class="meta-tag">{{ task.user_id }}</div>
+            </div>
+            {% endif %}
+            {% if task.task_id is not none %}
+            <div style="margin-top:6px">
+              <div class="counter-label">task_id / run</div>
+              <div class="meta-tag">{{ task.task_id }} / {{ task.get('run', 0) }}</div>
+            </div>
+            {% endif %}
+          </div><!-- /sidebar -->
+
+          <!-- messages -->
+          <div class="messages">
+
+            <div class="msg user"><div class="msg-role">instruction</div><div class="msg-text">{{ task.get('instruction', '') }}</div></div>
+
+            {%- if task.get('story') %}
+            <div class="msg assistant"><div class="msg-role">story</div><div class="msg-text">{{ task.story }}</div></div>
+            {%- endif %}
+
+            {%- if task.get('feeling') %}
+            <div class="msg tool"><div class="msg-role">feeling</div><div class="msg-text">{{ task.feeling }}</div></div>
+            {%- endif %}
+
+            {%- if task.get('preference_instruction') or task.get('preference_instructions') %}
+            <div class="msg assistant"><div class="msg-role">preference instruction</div><div class="msg-text">{% if task.get('preference_instruction') %}{{ task.preference_instruction }}{% else %}{{ task.get('preference_instructions', []) | join('\n\n') }}{% endif %}</div></div>
+            {%- endif %}
+
+            {%- if task.get('ground_truth_actions') %}
+            <div class="msg tool"><div class="msg-role">ground truth actions</div><div class="gt-list">
+              {%- for action in task.ground_truth_actions %}
+              <div class="gt-item" onclick="this.classList.toggle('open')"><span class="tool-name">{{ action.get('name', '?') }}</span><div class="gt-item-body">{{ action | tojson(indent=2) }}</div></div>
+              {%- endfor %}
+            </div></div>
+            {%- endif %}
+
+            {%- if task.get('task_checker_action_replay') %}
+            <div class="msg tool"><div class="msg-role">action replay ({{ task.task_checker_action_replay | length }} steps)</div><div class="call-list">
+              {%- for step in task.task_checker_action_replay %}
+              <div class="call-item">
+                <div class="call-item-hdr" onclick="const b=this.nextElementSibling;const open=b.style.display==='block';b.style.display=open?'none':'block';this.querySelector('.ci-toggle').textContent=open?'▶':'▼';">
+                  <span class="ci-toggle">▶</span>
+                  <span class="ci-step">{{ step.get('step', loop.index0) }}</span>
+                  <span class="ci-name">{{ step.get('name', '?') }}</span>
+                  {%- if step.get('data_changed') %}<span class="ci-changed">data changed</span>{%- endif %}
+                  {%- if step.get('error') %}<span class="ci-err-badge">{{ step.error | string | truncate(70, True, '…') }}</span>{%- endif %}
                 </div>
-              </details>
-              {% else %}
-              <p class="empty-state">No action trace available.</p>
-              {% endfor %}
-            </div>
-          </details>
-
-          <details class="section-card">
-            <summary>Trajectories</summary>
-            <div class="section-content">
-              {% for group in task._trajectory_groups %}
-              <details class="nested-card">
-                <summary>{{ group.label }} ({{ group.messages|length }} messages)</summary>
-                <div class="nested-stack">
-                  {% for message in group.messages %}
-                  <details class="message-card">
-                    <summary>
-                      <span class="role-pill role-{{ message.get('role', 'unknown') }}">{{ message.get('role', 'unknown') }}</span>
-                      <span>{{ message_preview(message) or 'Empty message' }}</span>
-                    </summary>
-                    <pre>{{ message | tojson(indent=2) }}</pre>
-                  </details>
-                  {% else %}
-                  <p class="empty-state">No conversation messages in this trajectory.</p>
-                  {% endfor %}
+                <div class="call-item-bdy">
+                  {%- if step.get('kwargs') %}
+                  <div class="ci-lbl">params</div>
+                  <pre class="ci-pre">{{ step.kwargs | tojson(indent=2) }}</pre>
+                  {%- endif %}
+                  {%- if step.get('observation') is not none %}
+                  <div class="ci-lbl">output</div>
+                  <pre class="ci-pre out">{{ step.observation }}</pre>
+                  {%- endif %}
+                  {%- if step.get('error') %}
+                  <div class="ci-lbl">error</div>
+                  <pre class="ci-pre err">{{ step.error }}</pre>
+                  {%- endif %}
                 </div>
-              </details>
-              {% endfor %}
-            </div>
-          </details>
+              </div>
+              {%- endfor %}
+            </div></div>
+            {%- endif %}
 
-          <details class="section-card">
-            <summary>Other metadata</summary>
-            <div class="section-content metadata-list">
-              {% for key, value in task.items() %}
-              {% if key not in [
-                '_index',
-                '_instruction_preview',
-                '_feeling_preview',
-                '_trajectory_groups',
-                'task_id',
-                'run',
-                'user_id',
-                'instruction',
-                'preference_instruction',
-                'preference_instructions',
-                'story',
-                'feeling',
-                'feeling_traj',
-                'novel_emotion_prediction',
-                'ground_truth',
-                'ground_truth_actions',
-                'action_trace',
-                'generator_traj',
-                'preference_traj',
-                'task_checker_traj'
-              ] %}
-              <details class="nested-card">
-                <summary>{{ key }}</summary>
-                <pre>{{ value | tojson(indent=2) }}</pre>
-              </details>
-              {% endif %}
-              {% endfor %}
+            {%- if task.get('novel_emotion_prediction') %}
+            <div class="msg assistant"><div class="msg-role">emotion prediction</div><div class="msg-text">{{ task.novel_emotion_prediction | tojson(indent=2) }}</div></div>
+            {%- endif %}
+
+            {%- if task.get('in_domain_reason') %}
+            <div class="msg system"><div class="msg-role">in-domain check</div><div class="msg-text">in_domain={{ task.get('in_domain') }} · {{ task.in_domain_reason }}</div></div>
+            {%- endif %}
+            {%- if task.get('solvable_reason') %}
+            <div class="msg system"><div class="msg-role">solvability</div><div class="msg-text">solvable={{ task.get('solvable') }} · {{ task.solvable_reason }}</div></div>
+            {%- endif %}
+            {%- if task.get('difficulty_reason') %}
+            <div class="msg system"><div class="msg-role">difficulty</div><div class="msg-text">{{ task.get('difficulty') }} · {{ task.difficulty_reason }}</div></div>
+            {%- endif %}
+
+            {%- set traj_groups = [
+              ('generator_traj',     'Generator trajectory'),
+              ('preference_traj',    'Preference trajectory'),
+              ('feeling_traj',       'Feeling trajectory'),
+              ('task_checker_traj',  'Task checker trajectory'),
+            ] %}
+            {%- set has_traj = namespace(value=false) %}
+            {%- for key_traj, label in traj_groups %}
+              {%- if task.get(key_traj) %}{% set has_traj.value = true %}{% endif %}
+            {%- endfor %}
+
+            {%- if has_traj.value %}
+            <span class="traj-toggle" onclick="this.nextElementSibling.classList.toggle('open'); this.textContent = this.nextElementSibling.classList.contains('open') ? '▲ hide trajectories' : '▼ show trajectories'">▼ show trajectories</span>
+            <div class="traj-section">
+              {%- for key_traj, label in traj_groups %}
+              {%- set msgs = task.get(key_traj, []) %}
+              {%- if msgs %}
+              <div class="traj-group">
+                <div class="traj-group-label">{{ label }} ({{ msgs | length }})</div>
+                {%- for m in msgs %}
+                {%- set role = m.get('type') or m.get('role') or 'unknown' %}
+                <div class="msg {{ 'assistant' if role in ['ai','assistant'] else ('user' if role in ['human','user'] else ('tool' if role == 'tool' else 'system')) }}"><div class="msg-role">{{ role }}</div><div class="msg-text">{% if m.get('content') is string %}{{ m.content }}{% else %}{{ m | tojson(indent=2) }}{% endif %}</div></div>
+                {%- endfor %}
+              </div>
+              {%- endif %}
+              {%- endfor %}
             </div>
-          </details>
-        </div>
-      </details>
-      {% endfor %}
-    </section>
-    {% else %}
-    <section class="empty-view">
-      <p>Load a generated tasks JSON file to start exploring.</p>
-      <code>python3 app.py ../output/traces/airline_adjacency_matrix_0.0_generated_tasks.json</code>
-    </section>
-    {% endif %}
-  </div>
+            {%- endif %}
+
+          </div><!-- /messages -->
+
+        </div><!-- /trial-body -->
+      </div><!-- /trial-wrap -->
+      {% endfor %}{# runs #}
+
+    </div><!-- /task-runs #}-->
+    {% endfor %}{# tasks #}
+
+  </div><!-- /file-body -->
+  {% endfor %}{# files #}
+
+  {% if not files %}
+  <p style="color:#888; padding:10px 0;">No task JSON files found in <code>{{ tasks_dir }}</code></p>
+  {% endif %}
+</div>
+
+<script>
+// ── Counters ──
+const SAVED = {{ counters_json | safe }};
+const counters = Object.assign({}, SAVED);
+
+function cvId(key) {
+  // key = "filename:task_id:run"
+  // map to element id: cv-{fid}-{task_id}-{run}
+  // We store by key string in counters dict but display by data-key
+  return null; // unused — we find by data-key
+}
+
+// Initialize display
+document.querySelectorAll('.counter-val').forEach(el => {
+  const inc = el.nextElementSibling; // inc-btn
+  const dec = el.previousElementSibling; // dec-btn
+  const key = dec.dataset.key;
+  el.textContent = counters[key] ?? 0;
+});
+
+document.querySelectorAll('.dec-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const key = btn.dataset.key;
+    const val = (counters[key] ?? 0) - 1;
+    counters[key] = val;
+    btn.nextElementSibling.textContent = val;
+  });
+});
+
+document.querySelectorAll('.inc-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const key = btn.dataset.key;
+    const val = (counters[key] ?? 0) + 1;
+    counters[key] = val;
+    btn.previousElementSibling.textContent = val;
+  });
+});
+
+function saveCounters(btn) {
+  const sidebar = btn.closest('.sidebar');
+  const status = sidebar.querySelector('.save-status');
+  fetch('/save', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(counters)
+  }).then(r => r.json()).then(() => {
+    status.textContent = 'saved ✓';
+    setTimeout(() => { status.textContent = ''; }, 2000);
+  }).catch(() => {
+    status.textContent = 'error';
+  });
+}
+
+// ── Tree toggles ──
+document.querySelectorAll('.file-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const body = document.getElementById(btn.dataset.body);
+    body.hidden = !body.hidden;
+    btn.classList.toggle('open', !body.hidden);
+  });
+});
+
+document.querySelectorAll('.task-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const body = document.getElementById(btn.dataset.body);
+    body.hidden = !body.hidden;
+    btn.classList.toggle('open', !body.hidden);
+  });
+});
+
+document.querySelectorAll('.trial-header').forEach(hdr => {
+  hdr.addEventListener('click', () => {
+    const wrap = hdr.closest('.trial-wrap');
+    wrap.classList.toggle('trial-open');
+    const arrow = hdr.querySelector('.trial-arrow');
+    arrow.textContent = wrap.classList.contains('trial-open') ? '▼' : '▶';
+  });
+});
+
+// ── Trajectory message truncation ──
+// Applied after traj-section is opened, since elements are hidden by default.
+document.querySelectorAll('.traj-toggle').forEach(toggle => {
+  toggle.addEventListener('click', () => {
+    const section = toggle.nextElementSibling;
+    // Only process once (when first opened)
+    if (section._truncated) return;
+    section._truncated = true;
+    section.querySelectorAll('.msg-text').forEach(el => {
+      if (el.textContent.length <= 300) return;
+      el.classList.add('msg-clamp');
+      const hint = document.createElement('div');
+      hint.className = 'expand-hint';
+      hint.textContent = '▼ expand';
+      el.insertAdjacentElement('afterend', hint);
+      const doToggle = () => {
+        el.classList.toggle('msg-clamp');
+        hint.textContent = el.classList.contains('msg-clamp') ? '▼ expand' : '▲ collapse';
+      };
+      el.addEventListener('click', doToggle);
+      hint.addEventListener('click', doToggle);
+    });
+  }, { capture: true });
+});
+</script>
 </body>
 </html>
