@@ -1,5 +1,6 @@
 
 import datetime
+import re
 from typing import Any, Dict
 
 from tau_bench.envs.tool import Tool
@@ -70,8 +71,20 @@ class ScheduleAppointment(Tool):
                 return f"Provider {provider_id} already has an appointment scheduled at {time} on {date}."
         
         # Generate new appointment ID
-        existing_ids = [int(appt_id.replace("APPT", "")) for appt_id in appointments.keys() if appt_id.startswith("APPT")]
-        new_id_num = max(existing_ids) + 1 if existing_ids else 1
+        existing_nums: list[int] = []
+        for appt_id in appointments.keys():
+            m = re.match(r"^APPT(?:_tracer_)?(\d+)$", appt_id)
+            if m:
+                existing_nums.append(int(m.group(1)))
+
+        new_id_num = max(existing_nums) + 1 if existing_nums else 1
+        # Ensure we don't collide with either legacy or tracer appointment IDs
+        while (
+            f"APPT{new_id_num:03d}" in appointments
+            or f"APPT_tracer_{new_id_num:03d}" in appointments
+        ):
+            new_id_num += 1
+
         new_appointment_id = f"APPT{new_id_num:03d}"
         
         # Determine copay amount based on provider specialty
