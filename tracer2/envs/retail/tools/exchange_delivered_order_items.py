@@ -21,7 +21,7 @@ class ExchangeDeliveredOrderItems(Tool):
         if order_id not in orders:
             return "Error: order not found"
         order = orders[order_id]
-        if order["status"] != "delivered":
+        if not order["status"].startswith("delivered"):
             return "Error: non-delivered order cannot be exchanged"
 
         # check the items to be exchanged exist
@@ -64,7 +64,7 @@ class ExchangeDeliveredOrderItems(Tool):
             )
 
         # modify the order
-        order["status"] = "exchange requested"
+        order["status"] = "delivered (exchange requested)"
         order["exchange_items"] = sorted(item_ids)
         order["exchange_new_items"] = sorted(new_item_ids)
         order["exchange_payment_method_id"] = payment_method_id

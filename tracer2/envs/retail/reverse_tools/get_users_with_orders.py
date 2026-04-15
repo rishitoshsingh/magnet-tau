@@ -10,6 +10,12 @@ _MAX_USERS = 5
 _call_counter = 0
 
 
+def _normalize_status(status: Optional[str]) -> Optional[str]:
+    if isinstance(status, str) and status.startswith("delivered"):
+        return "delivered"
+    return status
+
+
 def _user_ids_filtered_by_status(
     data: Dict[str, Any],
     status_filters: Optional[List[str]],
@@ -29,7 +35,9 @@ def _user_ids_filtered_by_status(
         if not status_filters:
             result.append(user_id)
             continue
-        user_statuses = {orders.get(oid, {}).get("status") for oid in order_ids}
+        user_statuses = {
+            _normalize_status(orders.get(oid, {}).get("status")) for oid in order_ids
+        }
         if all(status in user_statuses for status in status_filters):
             result.append(user_id)
     return result
@@ -41,7 +49,7 @@ def _counts_by_status(data: Dict[str, Any], user_id: str) -> Dict[str, int]:
     order_ids = users.get(user_id, {}).get("orders", [])
     counts = {"delivered": 0, "pending": 0, "cancelled": 0, "processed": 0}
     for oid in order_ids:
-        status = orders.get(oid, {}).get("status")
+        status = _normalize_status(orders.get(oid, {}).get("status"))
         if status in counts:
             counts[status] += 1
     return counts

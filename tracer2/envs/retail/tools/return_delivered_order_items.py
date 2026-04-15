@@ -17,7 +17,7 @@ class ReturnDeliveredOrderItems(Tool):
         if order_id not in orders:
             return "Error: order not found"
         order = orders[order_id]
-        if order["status"] != "delivered":
+        if not order["status"].startswith("delivered"):
             return "Error: non-delivered order cannot be returned"
 
         # Check if the payment method exists and is either the original payment method or a gift card
@@ -36,7 +36,7 @@ class ReturnDeliveredOrderItems(Tool):
                 return "Error: some item not found"
 
         # Update the order status
-        order["status"] = "return requested"
+        order["status"] = "delivered (return requested)"
         order["return_items"] = sorted(item_ids)
         order["return_payment_method_id"] = payment_method_id
 
