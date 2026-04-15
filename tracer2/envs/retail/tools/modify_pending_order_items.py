@@ -82,7 +82,7 @@ class ModifyPendingOrderItems(Tool):
             item["options"] = products[item["product_id"]]["variants"][new_item_id][
                 "options"
             ]
-        order["status"] = "pending (item modified)"
+        order["status"] = "pending"
 
         return json.dumps(order)
 
