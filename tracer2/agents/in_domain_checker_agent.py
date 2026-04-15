@@ -124,6 +124,13 @@ def _replay_ground_truth_actions(domain: str, env, ground_truth_actions: List[Di
                     and observation.strip().lower().startswith("no telemetry upload found")
                 ):
                     error = None
+                if (
+                    domain == "telehealth"
+                    and name == "list_telemetry_uploads"
+                    and isinstance(observation, str)
+                    and observation.strip().lower().startswith("no telemetry uploads found")
+                ):
+                    error = None
             except Exception as exc:
                 error = f"Error: {exc}"
                 observation = error
