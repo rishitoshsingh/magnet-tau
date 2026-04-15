@@ -67,8 +67,6 @@ def _observation_indicates_error(domain: str, tool_name: str, observation: Any) 
             "is not available at",
             "already has an appointment scheduled",
             "no providers found",
-            "no telemetry upload found",
-            "no telemetry uploads found",
             "no appointments found",
             "no medical records found",
         )
@@ -118,6 +116,14 @@ def _replay_ground_truth_actions(domain: str, env, ground_truth_actions: List[Di
                 is_error, detected_error = _observation_indicates_error(domain, name, observation)
                 if is_error:
                     error = detected_error
+                # Tool-specific exception: in telehealth, missing telemetry uploads can be an expected outcome.
+                if (
+                    domain == "telehealth"
+                    and name == "get_telemetry_upload"
+                    and isinstance(observation, str)
+                    and observation.strip().lower().startswith("no telemetry upload found")
+                ):
+                    error = None
             except Exception as exc:
                 error = f"Error: {exc}"
                 observation = error
