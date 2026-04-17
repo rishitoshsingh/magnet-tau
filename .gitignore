@@ -6,6 +6,7 @@ report*
 
 output/traces/*
 output/.DS_Store
+output/evaluations/
 
 */__pycache__/
 __pycache__/
