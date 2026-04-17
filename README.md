@@ -167,16 +167,71 @@ If your tasks are not already split across JSON files, partition the list (or ru
 
 ---
 
+## 11. Task evaluation
+
+`evaluator/` is a quality-audit subproject that scores every generated task against four criteria and produces a pass/fail verdict plus a statistical summary.
+
+### Criteria
+
+| # | Criterion | Violation condition |
+|---|---|---|
+| 1 | **Goal-oriented** | Instruction is procedural — the agent would need to elicit information from the user before it can execute anything |
+| 2 | **Template** | `preference_instruction` is missing either a concrete tool-calling task or a user preference |
+| 3 | **Solvable by ground truth** | Ground-truth action sequence fails in the environment, or the `solvable` field is `false` |
+| 4 | **No domain violation** | Task is out-of-domain but the ground truth attempts execution instead of calling the handoff tool (`transfer_to_human_agents` / `transfer_to_human_support`) |
+
+Criteria 1 and 2 are evaluated on the **`preference_instruction`** field only (the post-processed rewrite). Criteria 3 and 4 use deterministic checks against existing fields first; an LLM fallback is invoked only when those are inconclusive.
+
+### Step 1 — Evaluate tasks
+
+```bash
+python -m evaluator.runner --config evaluator/config/eval_config_airline.json
+# or
+python -m evaluator.runner \
+  --input-path output/traces/airline_adjacency_matrix_0.0_generated_tasks.json \
+  --domain airline \
+  --eval-model gpt-4.1 --eval-model-provider openai
+```
+
+Output: `output/evaluations/<name>_eval.json` — one `TaskEvaluation` record per task with per-criterion verdicts, reasons, and an `overall_passed` flag.
+
+Config fields: `input_path`, `domain`, `eval_model_provider`, `eval_model`, `api_base`, `start_index` / `end_index` / `task_ids`.
+
+Per-domain configs are in `evaluator/config/`.
+
+### Step 2 — Orchestrate / summarise
+
+```bash
+python -m evaluator.orchestrator \
+  --eval-path output/evaluations/airline_adjacency_matrix_0.0_eval.json \
+  --domain airline \
+  --eval-model gpt-4.1 --eval-model-provider openai \
+  --markdown-out report.md
+```
+
+Output: `*_summary.json` (and optional Markdown) containing:
+- **`good_tasks`** / **`bad_tasks`** — clear per-task verdict list
+- **`per_criterion`** — violation counts and rates for each of the four criteria
+- **`co_occurrence`** — how often multiple criteria fail together
+- **`error_categories`** — LLM-grouped themes explaining *why* tasks fail (e.g. "Insufficient gift card balance", "Missing user preference")
+- **`llm_summary`** — 3–5 sentence executive insight + actionable recommendation
+
+Omit `--eval-model` to run in programmatic-only mode (no LLM calls, instant).
+
+---
+
 ## Pipeline sketch
 
 ```text
-graph_builder.py       → output/graphs/...
-extend_telehealth.py   → extended telehealth JSON (optional)
-build_trace_v3.py      → output/traces/...
-tracer2/generator.py   → output/tasks/...
-emotions/              → emotions/output/emotion_persona_instructions.json
-emotion_analysis/      → encode instructions, train encoder+kNN, attach predictions to tasks, analysis/ plots
-export_tasks.py        → <tau-emotion-bench>/tau_emotion_bench/env/<domain>/tasks_dec.py
+graph_builder.py          → output/graphs/...
+extend_telehealth.py      → extended telehealth JSON (optional)
+build_trace_v3.py         → output/traces/...
+tracer2/generator.py      → output/tasks/...
+evaluator/runner.py       → output/evaluations/..._eval.json      (4-criteria quality audit)
+evaluator/orchestrator.py → output/evaluations/..._summary.json   (good/bad verdict + stats)
+emotions/                 → emotions/output/emotion_persona_instructions.json
+emotion_analysis/         → encode instructions, train encoder+kNN, attach predictions to tasks, analysis/ plots
+export_tasks.py           → <tau-emotion-bench>/tau_emotion_bench/env/<domain>/tasks_dec.py
 ```
 
 For more architecture notes (agents, envs, trace semantics), see **[CLAUDE.md](CLAUDE.md)**.
