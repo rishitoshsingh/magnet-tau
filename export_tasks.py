@@ -63,18 +63,42 @@ def pick_actions(task: Dict[str, Any]) -> List[Dict[str, Any]]:
     return []
 
 
-def map_task(task: Dict[str, Any]) -> Dict[str, Any]:
-    instruction = pick_instruction(task)
+def pick_emotion_instruction(task: Dict[str, Any]) -> str:
     pred = task.get("novel_emotion_prediction", {})
     if isinstance(pred, dict):
         top2 = pred.get("closest_instructions_top2")
         if isinstance(top2, list) and len(top2) > 0 and isinstance(top2[0], dict):
             top_text = top2[0].get("text")
             if isinstance(top_text, str) and top_text.strip():
-                if instruction.strip():
-                    instruction = f"{instruction.strip()}\n\nEmotion instruction: {top_text.strip()}"
-                else:
-                    instruction = top_text.strip()
+                return top_text.strip()
+    return ""
+
+
+def build_user_instruction(task: Dict[str, Any], include_emotion: bool) -> str:
+    base_instruction = pick_instruction(task).strip()
+    user_id = str(task.get("user_id", "")).strip()
+    auth_instruction = f"Use {user_id} for authentication." if user_id else ""
+    emotion_instruction = pick_emotion_instruction(task) if include_emotion else ""
+
+    instruction = ""
+    if base_instruction:
+        instruction = base_instruction
+    if auth_instruction:
+        if instruction:
+            instruction = f"{instruction}\n\n{auth_instruction}"
+        else:
+            instruction = auth_instruction
+    if emotion_instruction:
+        if instruction:
+            instruction = f"{instruction}\nEmotion Instruction: {emotion_instruction}"
+        else:
+            instruction = f"Emotion Instruction: {emotion_instruction}"
+    return instruction
+
+
+def map_task(task: Dict[str, Any], include_emotion: bool, include_emotion_metadata: bool) -> Dict[str, Any]:
+    instruction = build_user_instruction(task, include_emotion)
+    pred = task.get("novel_emotion_prediction", {})
 
     mapped: Dict[str, Any] = {
         "user_id": task.get("user_id"),
@@ -84,7 +108,7 @@ def map_task(task: Dict[str, Any]) -> Dict[str, Any]:
     }
 
     # Optional emotion fields
-    if isinstance(pred, dict):
+    if include_emotion_metadata and isinstance(pred, dict):
         family = pred.get("family", {}).get("label")
         leaf = pred.get("leaf", {}).get("label")
         dims = pred.get("generation_dimensions", {})
@@ -183,14 +207,22 @@ def main() -> None:
     if not raw_tasks:
         raise ValueError("No exportable tasks after filtering; check input JSON for failed runs.")
 
-    mapped = [map_task(t) for t in raw_tasks]
-    validated = basic_validate(mapped)
-    content = build_py_content(args.package, validated)
+    mapped_with_emotion = [map_task(t, include_emotion=True, include_emotion_metadata=True) for t in raw_tasks]
+    mapped_no_emotion = [map_task(t, include_emotion=False, include_emotion_metadata=False) for t in raw_tasks]
+    validated_with_emotion = basic_validate(mapped_with_emotion)
+    validated_no_emotion = basic_validate(mapped_no_emotion)
+    content_with_emotion = build_py_content(args.package, validated_with_emotion)
+    content_no_emotion = build_py_content(args.package, validated_no_emotion)
+
+    no_emotion_output_path = output_path.with_name(f"{output_path.stem}_no_emotion.py")
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(content, encoding="utf-8")
+    output_path.write_text(content_with_emotion, encoding="utf-8")
+    no_emotion_output_path.write_text(content_no_emotion, encoding="utf-8")
     print(f"Wrote {output_path}")
-    print(f"Exported {len(validated)} tasks")
+    print(f"Wrote {no_emotion_output_path}")
+    print(f"Exported {len(validated_with_emotion)} tasks (with emotion)")
+    print(f"Exported {len(validated_no_emotion)} tasks (no emotion)")
 
 
 if __name__ == "__main__":
