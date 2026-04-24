@@ -34,7 +34,8 @@ def _get_router(full_model: str, api_base: Optional[str]) -> Router:
             retry_policy=RetryPolicy(
                 RateLimitErrorRetries=6,
                 InternalServerErrorRetries=3,
-                TimeoutErrorRetries=2,
+                TimeoutErrorRetries=3,
+                ServiceUnavailableErrorRetries=3,
             ),
             num_retries=6,
             retry_after=30,       # minimum seconds between retries

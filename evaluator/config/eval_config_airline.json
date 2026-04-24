@@ -1,0 +1,12 @@
+{
+  "input_path": "output/traces/airline_adjacency_matrix_0.0_generated_tasks.json",
+  "output_path": null,
+  "domain": "airline",
+  "eval_model_provider": "openai",
+  "eval_model": "gpt-4.1",
+  "eval_temperature": 0.0,
+  "api_base": null,
+  "start_index": 0,
+  "end_index": null,
+  "task_ids": null
+}
