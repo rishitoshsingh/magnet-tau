@@ -7,6 +7,7 @@ report*
 output/traces/*
 output/.DS_Store
 output/evaluations/
+output/new_trajectories/
 
 */__pycache__/
 __pycache__/

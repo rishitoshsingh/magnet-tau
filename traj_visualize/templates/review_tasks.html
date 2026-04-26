@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>User Claim Review</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: #f4f1ea;
+            color: #1f2933;
+        }
+
+        .review-card,
+        .panel {
+            border: 1px solid #d9d2c3;
+            border-radius: 14px;
+            background: #fffdf8;
+            box-shadow: 0 6px 20px rgba(31, 41, 51, 0.05);
+        }
+
+        .panel {
+            padding: 1rem;
+            height: 100%;
+        }
+
+        .panel h5 {
+            margin-bottom: 0.8rem;
+        }
+
+        .instruction-box,
+        .message-box,
+        .json-box {
+            white-space: pre-wrap;
+            font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+            font-size: 0.92rem;
+            background: #fbf7ef;
+            border: 1px solid #e8decc;
+            border-radius: 10px;
+            padding: 0.85rem;
+        }
+
+        .message-item {
+            border-top: 1px solid #ece3d3;
+            padding-top: 0.9rem;
+            margin-top: 0.9rem;
+        }
+
+        .message-list {
+            max-height: 32rem;
+            overflow-y: auto;
+            padding-right: 0.35rem;
+        }
+
+        .message-item:first-child {
+            border-top: none;
+            margin-top: 0;
+            padding-top: 0;
+        }
+
+        .chip {
+            display: inline-block;
+            margin: 0 0.4rem 0.4rem 0;
+            padding: 0.3rem 0.55rem;
+            border-radius: 999px;
+            font-size: 0.82rem;
+            background: #efe6d4;
+            color: #5e4c2a;
+        }
+
+        .chip-warning {
+            background: #fbe2d7;
+            color: #8c2f12;
+        }
+
+        .status-badge {
+            font-size: 0.82rem;
+            border-radius: 999px;
+            padding: 0.3rem 0.65rem;
+        }
+
+        .status-ok {
+            background: #ddeedd;
+            color: #22543d;
+        }
+
+        .status-warning {
+            background: #fde3d8;
+            color: #9b2c2c;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid py-4 px-4">
+        <div class="d-flex justify-content-between align-items-start mb-4">
+            <div>
+                <h1 class="mb-1">User Claim Review</h1>
+                <div class="text-muted">Viewing: {{ file_path }}</div>
+            </div>
+            <a href="/" class="btn btn-outline-secondary">Back</a>
+        </div>
+
+        <div class="accordion" id="taskAccordion">
+            {% for task in data %}
+            <div class="accordion-item review-card mb-3">
+                <h2 class="accordion-header" id="heading-{{ loop.index }}">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapse-{{ loop.index }}" aria-expanded="false"
+                        aria-controls="collapse-{{ loop.index }}">
+                        <div class="d-flex flex-wrap align-items-center gap-2 me-3">
+                            <strong>Task {{ task.task_id }}</strong>
+                            <span class="text-muted">Trial {{ task.trial if task.trial is defined else 'N/A' }}</span>
+                            {% if task.reward is defined %}
+                            <span class="text-muted">Reward {{ task.reward }}</span>
+                            {% endif %}
+                            {% if task.has_possible_fabrication %}
+                            <span class="status-badge status-warning">possible fabrication</span>
+                            {% else %}
+                            <span class="status-badge status-ok">no extracted mismatch</span>
+                            {% endif %}
+                        </div>
+                    </button>
+                </h2>
+                <div id="collapse-{{ loop.index }}" class="accordion-collapse collapse"
+                    aria-labelledby="heading-{{ loop.index }}" data-bs-parent="#taskAccordion">
+                    <div class="accordion-body">
+                        <div class="row g-3">
+                            <div class="col-lg-5">
+                                <div class="panel">
+                                    <h5>Instruction</h5>
+                                    <div class="instruction-box">{{ task.instruction or 'No instruction found.' }}</div>
+                                </div>
+                            </div>
+                            <div class="col-lg-7">
+                                <div class="panel">
+                                    <h5>User Messages Only</h5>
+                                    {% if task.user_messages %}
+                                    <div class="message-list">
+                                        {% for msg in task.user_messages %}
+                                        <div class="message-item">
+                                            <div class="text-muted small mb-2">Turn {{ msg.turn_index }}</div>
+                                            <div class="message-box">{{ msg.content }}</div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                    {% else %}
+                                    <div class="text-muted">No user messages found.</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mt-1">
+                            <div class="col-lg-4">
+                                <div class="panel">
+                                    <h5>Reference Facts From Instruction</h5>
+                                    {% for key, values in task.reference_claims.items() %}
+                                    {% if values %}
+                                    <div class="mb-3">
+                                        <div class="fw-semibold text-capitalize mb-2">{{ key.replace('_', ' ') }}</div>
+                                        {% for value in values %}
+                                        <span class="chip">{{ value }}</span>
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="panel">
+                                    <h5>Claims Found In User Messages</h5>
+                                    {% for key, values in task.user_claims.items() %}
+                                    {% if values %}
+                                    <div class="mb-3">
+                                        <div class="fw-semibold text-capitalize mb-2">{{ key.replace('_', ' ') }}</div>
+                                        {% for value in values %}
+                                        <span class="chip">{{ value }}</span>
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="panel">
+                                    <h5>Possible Fabrications</h5>
+                                    {% if task.possible_fabrications %}
+                                    {% for key, values in task.possible_fabrications.items() %}
+                                    <div class="mb-3">
+                                        <div class="fw-semibold text-capitalize mb-2">{{ key.replace('_', ' ') }}</div>
+                                        {% for value in values %}
+                                        <span class="chip chip-warning">{{ value }}</span>
+                                        {% endfor %}
+                                    </div>
+                                    {% endfor %}
+                                    {% else %}
+                                    <div class="text-muted">No extracted mismatch between instruction facts and user claims.</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mt-1">
+                            <div class="col-lg-6">
+                                <div class="panel">
+                                    <h5>Task Metadata</h5>
+                                    <div class="json-box">{{ task.task_details | tojson(indent=2) }}</div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="panel">
+                                    <h5>Reward Metadata</h5>
+                                    <div class="json-box">{{ task.reward_details | tojson(indent=2) if task.reward_details else 'No reward metadata.' }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

@@ -131,6 +131,84 @@ def _evaluate_instruction(
     )
 
 
+def evaluate_task(
+    task: Dict[str, Any],
+    domain: str,
+    goal_agent: GoalOrientationAgent,
+    template_agent: TemplateCheckerAgent,
+    solvability_agent: SolvabilityCheckerAgent,
+    domain_agent: DomainViolationAgent,
+) -> TaskEvaluation:
+    """Evaluate a single task against all four criteria. Raises on unrecoverable error."""
+    preference_instruction: Optional[str] = task.get("preference_instruction")
+
+    # --- Criteria 1 & 2: preference_instruction only ---
+    pref_eval_dict: Optional[Dict[str, Any]] = None
+    if preference_instruction:
+        print("  [pref instr] goal + template check ...")
+        pref_ie = _evaluate_instruction(
+            instruction=preference_instruction,
+            instruction_index=-1,
+            is_preference_pass=True,
+            domain=domain,
+            goal_agent=goal_agent,
+            template_agent=template_agent,
+        )
+        pref_eval_dict = pref_ie.model_dump()
+        print(f"    goal={pref_ie.goal_orientation.passed} template={pref_ie.template.passed}")
+    else:
+        print("  [pref instr] skipped — no preference_instruction present")
+
+    # --- Criterion 3: solvability ---
+    print("  [solvability] ...")
+    solv_result = solvability_agent.check(task=task)
+    solv_cr = _build_criterion_result(
+        name="solvable_by_ground_truth",
+        passed=solv_result.get("solvable"),
+        reason=solv_result.get("reason", ""),
+        raw_llm_output={k: v for k, v in solv_result.items() if k != "trajectory"},
+        layer=solv_result.get("layer"),
+    )
+    print(f"    solvable={solv_cr.passed}  layer={solv_result.get('layer')}")
+
+    # --- Criterion 4: domain violation ---
+    print("  [domain violation] ...")
+    dom_result = domain_agent.check(task=task, domain=domain)
+    dom_cr = _build_criterion_result(
+        name="no_domain_violation",
+        passed=not dom_result.get("is_domain_violation")
+        if dom_result.get("is_domain_violation") is not None
+        else None,
+        reason=dom_result.get("reason", ""),
+        raw_llm_output={k: v for k, v in dom_result.items() if k != "trajectory"},
+        layer=dom_result.get("layer"),
+    )
+    print(f"    domain_violation={dom_cr.violation}  layer={dom_result.get('layer')}")
+
+    # --- Aggregate overall verdict ---
+    violations: List[str] = []
+    if pref_eval_dict and not pref_eval_dict["goal_orientation"]["passed"]:
+        violations.append("goal_oriented")
+    if pref_eval_dict and not pref_eval_dict["template"]["passed"]:
+        violations.append("template")
+    if solv_cr.violation:
+        violations.append("solvable_by_ground_truth")
+    if dom_cr.violation:
+        violations.append("no_domain_violation")
+
+    return TaskEvaluation(
+        task_id=task.get("task_id", -1),
+        run=task.get("run", 0),
+        user_id=task.get("user_id", ""),
+        domain=domain,
+        preference_instruction_eval=pref_eval_dict,
+        solvability=solv_cr,
+        domain_violation=dom_cr,
+        overall_passed=len(violations) == 0,
+        overall_violations=violations,
+    )
+
+
 # ---------------------------------------------------------------------------
 # CLI
 # ---------------------------------------------------------------------------
@@ -247,86 +325,19 @@ def main():
         print(f"{'='*60}")
 
         try:
-            preference_instruction: Optional[str] = task.get("preference_instruction")
-
-            # --- Criteria 1 & 2: preference_instruction only ---
-            pref_eval_dict: Optional[Dict[str, Any]] = None
-            if preference_instruction:
-                print("  [pref instr] goal + template check ...")
-                pref_ie = _evaluate_instruction(
-                    instruction=preference_instruction,
-                    instruction_index=-1,
-                    is_preference_pass=True,
-                    domain=args.domain,
-                    goal_agent=goal_agent,
-                    template_agent=template_agent,
-                )
-                pref_eval_dict = pref_ie.model_dump()
-                print(
-                    f"    goal={pref_ie.goal_orientation.passed} "
-                    f"template={pref_ie.template.passed}"
-                )
-            else:
-                print("  [pref instr] skipped — no preference_instruction present")
-
-            # --- Criterion 3: solvability ---
-            print("  [solvability] ...")
-            solv_result = solvability_agent.check(task=task)
-            solv_cr = _build_criterion_result(
-                name="solvable_by_ground_truth",
-                passed=solv_result.get("solvable"),
-                reason=solv_result.get("reason", ""),
-                raw_llm_output={k: v for k, v in solv_result.items() if k != "trajectory"},
-                layer=solv_result.get("layer"),
-            )
-            print(f"    solvable={solv_cr.passed}  layer={solv_result.get('layer')}")
-
-            # --- Criterion 4: domain violation ---
-            print("  [domain violation] ...")
-            dom_result = domain_agent.check(task=task, domain=args.domain)
-            dom_cr = _build_criterion_result(
-                name="no_domain_violation",
-                # violation when is_domain_violation is True
-                passed=not dom_result.get("is_domain_violation")
-                if dom_result.get("is_domain_violation") is not None
-                else None,
-                reason=dom_result.get("reason", ""),
-                raw_llm_output={k: v for k, v in dom_result.items() if k != "trajectory"},
-                layer=dom_result.get("layer"),
-            )
-            print(f"    domain_violation={dom_cr.violation}  layer={dom_result.get('layer')}")
-
-            # --- Aggregate overall verdict ---
-            violations: List[str] = []
-
-            # Criteria 1 & 2: both sourced solely from preference_instruction pass
-            if pref_eval_dict and not pref_eval_dict["goal_orientation"]["passed"]:
-                violations.append("goal_oriented")
-            if pref_eval_dict and not pref_eval_dict["template"]["passed"]:
-                violations.append("template")
-
-            if solv_cr.violation:
-                violations.append("solvable_by_ground_truth")
-            if dom_cr.violation:
-                violations.append("no_domain_violation")
-
-            eval_record = TaskEvaluation(
-                task_id=task_id,
-                run=run,
-                user_id=task.get("user_id", ""),
+            eval_record = evaluate_task(
+                task=task,
                 domain=args.domain,
-                preference_instruction_eval=pref_eval_dict,
-                solvability=solv_cr,
-                domain_violation=dom_cr,
-                overall_passed=len(violations) == 0,
-                overall_violations=violations,
+                goal_agent=goal_agent,
+                template_agent=template_agent,
+                solvability_agent=solvability_agent,
+                domain_agent=domain_agent,
             )
-
             results.append(eval_record.model_dump())
             print(
                 f"  ✓ task_id={task_id} run={run} "
                 f"passed={eval_record.overall_passed} "
-                f"violations={violations}"
+                f"violations={eval_record.overall_violations}"
             )
 
         except Exception as e:
