@@ -194,7 +194,7 @@ class SolvabilityCheckerAgent:
                 "trajectory": [],
             }
 
-        instruction = task.get("instruction") or ""
+        instruction = task.get("preference_instruction") or task.get("instruction") or ""
         ground_truth_actions = task.get("ground_truth_actions") or []
         replay = task.get("task_checker_action_replay") or []
 

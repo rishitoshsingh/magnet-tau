@@ -228,7 +228,7 @@ class DomainViolationAgent:
 
         # Build LLM prompt using the domain policy from the existing in_domain_checker prompts
         domain_policy = SYSTEM_PROMPTS_BY_DOMAIN.get(domain, "")
-        instruction = task.get("instruction") or ""
+        instruction = task.get("preference_instruction") or task.get("instruction") or ""
         in_domain = task.get("in_domain")
         in_domain_reason = task.get("in_domain_reason")
         ground_truth_actions = task.get("ground_truth_actions") or []
